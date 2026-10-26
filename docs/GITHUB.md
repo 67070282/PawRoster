@@ -2,7 +2,9 @@
 
 ชื่อ repository ที่เตรียม: **PawRoster** บัญชีที่ยืนยันผ่านตัวเชื่อม GitHub: **67070282**
 
-Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · **Private** · default branch `main`
+Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · **Public** · default branch `main`
+
+เปลี่ยนจาก Private เป็น Public ตามคำขอเจ้าของเพื่อแชร์ให้เพื่อนดู ทุกคนอ่านและดาวน์โหลดโค้ด เอกสาร และรายชื่อ/รหัสนักศึกษาได้ การแก้ไขโดยตรงยังต้องมีสิทธิ์ collaborator
 
 สร้าง repository ผ่านหน้าเว็บ GitHub ในบัญชีที่ผู้ใช้เข้าสู่ระบบ แล้วเผยแพร่ไฟล์ผ่านตัวเชื่อม GitHub โค้ดเป็น baseline ที่ Codex ช่วยเตรียม ไม่ fork โค้ดหรือประวัติของเพื่อน และไม่อ้างว่าเป็นผลงานร่วมที่สมาชิกทำเสร็จแล้ว ห้ามส่ง token หรือรหัสผ่านผ่านแชต
 
