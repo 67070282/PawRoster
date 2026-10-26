@@ -99,4 +99,4 @@ DB_PATH=./care-backup.db PORT=3090 node src/server.js
 
 สร้าง repository ของทีมแล้ววางไฟล์ชุดนี้ที่ root ก่อนเริ่มงานร่วมกัน ใช้ `.gitignore` ที่ให้มา ตรวจไม่มี `.env`, DB, backup หรือข้อมูลส่วนตัวใน staged files ตั้ง issue ตาม R1–R8/N1–N3 ใช้ branch และ review จริง จากนั้น tag รุ่นส่งและบันทึก commit เดียวกันในรายงาน, pipeline, Course Container
 
-Repository หลักคือ https://github.com/67070282/PawRoster แบบ Private เผยแพร่ไฟล์ผ่านตัวเชื่อม GitHub การมี baseline นี้ไม่ใช่หลักฐานการมีส่วนร่วมของสมาชิก ต้องพัฒนาผ่าน issue/branch/PR ตามงานจริงต่อไป ให้ clone repository หลักใหม่ก่อนเริ่มงานร่วมกัน เพราะ local snapshot ก่อนเผยแพร่มี commit SHA ต่างจาก remote ดู GITHUB.md
+Repository หลักคือ https://github.com/67070282/PawRoster แบบ Public ตามคำขอเจ้าของ เผยแพร่ไฟล์ผ่านตัวเชื่อม GitHub การมี baseline นี้ไม่ใช่หลักฐานการมีส่วนร่วมของสมาชิก ต้องพัฒนาผ่าน issue/branch/PR ตามงานจริงต่อไป ให้ clone repository หลักใหม่ก่อนเริ่มงานร่วมกัน เพราะ local snapshot ก่อนเผยแพร่มี commit SHA ต่างจาก remote ดู GITHUB.md
