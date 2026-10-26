@@ -1,0 +1,5 @@
+PASS: SQLite online backup, restored integrity and task states match
+{"users":1,"pets":1,"tasks":1,"events":3}
+{"users":1,"pets":1,"tasks":1,"events":3}
+NAME                     IMAGE             COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+pawroster-review-app-1   pawroster:local   "docker-entrypoint.s…"   app       7 seconds ago   Up 6 seconds (healthy)   127.0.0.1:3080->3000/tcp

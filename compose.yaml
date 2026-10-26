@@ -1,0 +1,21 @@
+services:
+  app:
+    image: pawroster:${IMAGE_TAG:-local}
+    build: .
+    ports:
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3080}:3000"
+    environment:
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      DB_PATH: /app/data/pawroster.db
+    volumes:
+      - care-data:/app/data
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  care-data:

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PawRoster • ดูแลด้วยกัน</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><a class="brand" href="/">✳ <span>PawRoster<small>ดูแลด้วยกัน ทุกวัน</small></span></a><div id="account"></div></header>
+<main>
+<div id="notice" role="status" aria-live="polite" hidden></div>
+<section id="auth" class="welcome">
+  <div><p class="eyebrow">A LITTLE CARE, TOGETHER</p><h1>งานดูแลเล็ก ๆ<br>ที่มีความหมาย<span>กับเขามาก</span></h1><p class="intro">ใครให้อาหารแล้ว? วันนี้ใครพาเดิน?<br>แบ่งหน้าที่ให้ชัด บันทึกให้รู้ ดูแลเพื่อนตัวเล็กไปด้วยกัน</p><div class="pet-art" aria-hidden="true">🐈 <span>♡</span> 🐕</div><p class="caption">หนึ่งบ้าน • หนึ่งตาราง • ความใส่ใจจากทุกคน</p></div>
+  <div class="auth-card"><div class="tabs"><button id="login-tab" class="selected" type="button">เข้าสู่ระบบ</button><button id="register-tab" type="button">สร้างบัญชี</button></div>
+    <form id="auth-form"><div id="registration" hidden><label>ชื่อที่แสดง<input name="name" maxlength="60" autocomplete="name"></label><label>ชื่อบ้านใหม่<input name="home" maxlength="60" placeholder="เช่น บ้านของโมจิ"></label><label>หรือรหัสเข้าร่วมบ้านเดิม<input name="invite" maxlength="48" placeholder="ขอรหัสจากสมาชิกในบ้าน"></label><p class="hint">ถ้าใส่รหัสเข้าร่วม จะใช้บ้านตามรหัสนั้น</p></div>
+    <label>อีเมล<input name="email" type="email" required maxlength="160" autocomplete="email" placeholder="you@example.com"></label><label>รหัสผ่าน<input name="password" type="password" required maxlength="128" autocomplete="current-password" placeholder="อย่างน้อย 10 ตัวอักษร"></label><button class="primary wide" id="auth-submit">เข้าสู่ระบบ →</button></form><p class="hint">ข้อมูลแต่ละบ้านแยกจากกัน • ไม่มีบัญชีสาธิตสำเร็จรูป</p>
+  </div>
+</section>
+<section id="dashboard" hidden>
+  <div class="heading"><div><p class="eyebrow">YOUR SHARED CARE SPACE</p><h1 id="home-title"></h1><p id="greeting" class="intro"></p></div><button id="refresh" class="secondary">↻ อัปเดตข้อมูล</button></div>
+  <div class="stats"><article><small>งานที่ยังรอดูแล</small><strong id="pending-count">0</strong><span>ช่วยกันรับงานได้เลย</span></article><article><small>เลยกำหนดแล้ว</small><strong id="overdue-count">0</strong><span>ตรวจสอบกับสมาชิกในบ้าน</span></article><article><small>ดูแลเรียบร้อย</small><strong id="done-count">0</strong><span>ขอบคุณทุกความใส่ใจ ♡</span></article></div>
+  <div class="workspace"><div class="board"><div class="section-title"><h2>ตารางดูแล</h2><select id="filter" aria-label="กรองสถานะงาน"><option value="active">งานที่ยังไม่เสร็จ</option><option value="all">งานทั้งหมด</option><option value="done">ทำแล้ว</option></select></div><div id="tasks"></div></div>
+  <aside><section class="panel"><p class="eyebrow">THE LITTLE ONES</p><h2>สมาชิกสี่ขา</h2><div id="pets"></div><details><summary>＋ เพิ่มสัตว์เลี้ยง</summary><form id="pet-form"><label>ชื่อ<input name="name" required maxlength="60"></label><label>ประเภท<select name="species"><option>แมว</option><option>สุนัข</option><option>อื่น ๆ</option></select></label><button class="primary">เพิ่มสมาชิก</button></form></details></section>
+  <section class="panel"><h2>＋ วางแผนดูแล</h2><form id="task-form"><label>สัตว์เลี้ยง<select name="pet_id" id="pet-select" required></select></label><label>งานที่ต้องทำ<input name="title" required maxlength="100" placeholder="เช่น ให้อาหารมื้อเย็น"></label><label>วันและเวลาที่ต้องทำ<input name="due" type="datetime-local" required></label><p class="hint">ใช้เวลาท้องถิ่นของอุปกรณ์ • หนึ่งรายการต่อหนึ่งครั้ง</p><button class="primary wide">เพิ่มงานดูแล</button></form></section>
+  <details class="panel"><summary>เชิญสมาชิกเข้าบ้าน</summary><p class="hint">ส่งรหัสนี้ให้คนที่ไว้ใจ ใช้ในหน้าสร้างบัญชี</p><code id="invite"></code></details></aside></div>
+  <section class="history panel"><div class="section-title"><h2>บันทึกความใส่ใจ</h2><span class="hint">50 กิจกรรมล่าสุด</span></div><div id="events"></div></section>
+  <footer>PAWROSTER / ดูแลด้วยกัน <span>ระบบบันทึกงาน ไม่ใช่คำแนะนำทางการแพทย์</span></footer>
+</section></main>
+<dialog id="complete-dialog"><form id="complete-form"><h2>บันทึกการดูแล ♡</h2><p>ยืนยันเมื่อทำงานนี้เสร็จจริงแล้ว</p><label>บันทึกเพิ่มเติม (ไม่จำเป็น)<textarea name="note" maxlength="500" rows="3" placeholder="เช่น กินอาหารหมดแล้ว"></textarea></label><div class="actions"><button type="button" id="cancel-complete" class="secondary">กลับ</button><button class="primary">ยืนยันว่าทำแล้ว</button></div></form></dialog>
+</body></html>

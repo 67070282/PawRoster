@@ -1,0 +1,13 @@
+data/
+.env
+node_modules/
+*.log
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.bundle
+*.zip
+backups/
+evidence/runtime/

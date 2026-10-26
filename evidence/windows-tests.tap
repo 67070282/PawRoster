@@ -1,0 +1,106 @@
+TAP version 13
+# (node:25780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"method":"GET","path":"/api/dashboard","status":401,"ms":2}
+# {"method":"POST","path":"/api/register","status":201,"ms":32}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/login","status":401,"ms":33}
+# {"method":"POST","path":"/api/login","status":200,"ms":30}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/register","status":400,"ms":0}
+# {"method":"POST","path":"/api/register","status":409,"ms":30}
+# Subtest: HTTP acceptance: shared care, conflicts, privacy, validation and persistence
+    # Subtest: R1 authentication and session cookie
+    ok 1 - R1 authentication and session cookie
+      ---
+      duration_ms: 159.8946
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/register","status":201,"ms":32}
+# {"method":"POST","path":"/api/register","status":201,"ms":32}
+# {"method":"POST","path":"/api/pets","status":201,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":2}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+    # Subtest: R2 join house, add real pet and scheduled task
+    ok 2 - R2 join house, add real pet and scheduled task
+      ---
+      duration_ms: 71.691
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+# {"method":"POST","path":"/api/tasks/1/claim","status":409,"ms":0}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+    # Subtest: R3 simultaneous claims have one winner
+    ok 3 - R3 simultaneous claims have one winner
+      ---
+      duration_ms: 6.0209
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/complete","status":403,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/release","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":0}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+    # Subtest: R4 owner-only completion, release and one audit record
+    ok 4 - R4 owner-only completion, release and one audit record
+      ---
+      duration_ms: 12.0803
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/tasks/1/claim","status":404,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":404,"ms":1}
+# {"method":"POST","path":"/api/pets","status":403,"ms":0}
+    # Subtest: R5 house isolation and cross-origin rejection
+    ok 5 - R5 house isolation and cross-origin rejection
+      ---
+      duration_ms: 4.635
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/tasks","status":400,"ms":0}
+# {"method":"POST","path":"/api/tasks","status":400,"ms":0}
+# {"method":"POST","path":"/api/pets","status":400,"ms":0}
+# {"method":"POST","path":"/api/pets","status":201,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"GET","path":"/","status":200,"ms":1}
+# {"method":"POST","path":"/api/login","status":400,"ms":0}
+# {"method":"POST","path":"/api/login","status":413,"ms":0}
+    # Subtest: R6 validation, injection treated as data, HTTP security
+    ok 6 - R6 validation, injection treated as data, HTTP security
+      ---
+      duration_ms: 9.3644
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"GET","path":"/health","status":200,"ms":0}
+    # Subtest: R7 restart retains database and session
+    ok 7 - R7 restart retains database and session
+      ---
+      duration_ms: 15.8003
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/logout","status":200,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":401,"ms":0}
+    # Subtest: R8 logout revokes session
+    ok 8 - R8 logout revokes session
+      ---
+      duration_ms: 4.5132
+      type: 'test'
+      ...
+    1..8
+ok 1 - HTTP acceptance: shared care, conflicts, privacy, validation and persistence
+  ---
+  duration_ms: 322.5845
+  type: 'test'
+  ...
+1..1
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 428.9026
