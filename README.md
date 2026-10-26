@@ -14,7 +14,7 @@
 | Automated HTTP tests | ผ่าน 9/9 ทั้ง Windows, Linux และ Course Container |
 | Docker Compose / persistence / backup | ตรวจผ่านแล้ว |
 | Jenkins | มี Pipeline; ยังต้องเชื่อม GitHub และรัน job จริง |
-| GitHub repository | [67070282/PawRoster](https://github.com/67070282/PawRoster) · Private |
+| GitHub repository | [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public |
 | สัมภาษณ์ผู้ใช้ / ผลกระทบ | รอเก็บข้อมูลจริง |
 
 ## โครงสร้าง Repository
