@@ -1,0 +1,115 @@
+Started by user pawroster-admin
+Checking out git https://github.com/67070282/PawRoster.git into [workspace path] to read Jenkinsfile
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir [workspace path] # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/course-readiness^{commit} # timeout=10
+Checking out Revision 03846688f69ecd3db972c23af002a14737d8a056 (refs/remotes/origin/course-readiness)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 03846688f69ecd3db972c23af002a14737d8a056 # timeout=10
+Commit message: "Remove optional Jenkins plugin dependency and verify course smoke against source revision"
+ > git rev-list --no-walk 03846688f69ecd3db972c23af002a14737d8a056 # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in [workspace path]
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 20 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] deleteDir
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/67070282/PawRoster.git
+ > git init [workspace path] # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/course-readiness^{commit} # timeout=10
+Checking out Revision 03846688f69ecd3db972c23af002a14737d8a056 (refs/remotes/origin/course-readiness)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 03846688f69ecd3db972c23af002a14737d8a056 # timeout=10
+Commit message: "Remove optional Jenkins plugin dependency and verify course smoke against source revision"
+[Pipeline] sh
++ mkdir -p evidence/runtime
++ git rev-parse HEAD
++ git ls-files -z
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] sh
++ docker run --rm -e TRACKED_FILES=evidence/runtime/tracked-files.nul -v [workspace path] -w [app path] node:24.14.0-alpine node scripts/secret-scan.mjs
+PASS: 48 tracked paths checked for common credentials and sensitive files
+[Pipeline] script
+[Pipeline] {
+[Pipeline] writeFile
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine npm run check
+
+> pawroster@1.0.0 check
+> node --check src/server.js && node --check public/app.js
+
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine node --test --test-reporter=junit --test-reporter-destination=evidence/runtime/tests.xml
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build image)
+Stage "Build image" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish image)
+Stage "Publish image" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+Stage "Deploy" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify deployed service)
+Stage "Verify deployed service" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE

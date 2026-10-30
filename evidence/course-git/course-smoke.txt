@@ -1,0 +1,5 @@
+PASS deployed HTTP flow: register -> pet -> task -> claim -> complete -> duplicate rejected
+PASS: SQLite online backup, restored integrity and task states match
+{"users":2,"pets":2,"tasks":2,"events":6}
+PASS after container recreation: session, task, note and single completion audit persisted; logout revoked session
+{"users":2,"pets":2,"tasks":2,"events":6}

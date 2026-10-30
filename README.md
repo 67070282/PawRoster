@@ -13,7 +13,7 @@
 | Web + API + Database | Implemented และตรวจ HTTP/UI แล้ว |
 | Automated HTTP tests | ผ่าน 9/9 ทั้ง Windows, Linux และ Course Container |
 | Docker Compose / persistence / backup | ตรวจผ่านแล้ว |
-| Jenkins | มี Pipeline; ยังต้องเชื่อม GitHub และรัน job จริง |
+| Jenkins | รันจริงแล้ว: SCM-triggered review build ผ่าน และ failing-test gate หยุดก่อนส่งมอบ; main deployment รออนุมัติ merge PR #1 |
 | GitHub repository | [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public |
 | สัมภาษณ์ผู้ใช้ / ผลกระทบ | รอเก็บข้อมูลจริง |
 
@@ -103,6 +103,12 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 - [โครงเรื่องนำเสนอ 10 นาทีและ Demo](docs/PRESENTATION.md)
 - [GitHub setup และ workflow ของทีม](docs/GITHUB.md)
 - [แนวทางร่วมพัฒนา](CONTRIBUTING.md)
+- [ตารางตรวจตามกติกา](docs/SUBMISSION-AUDIT.md)
+- [Traceability ครบ 6 คอลัมน์](docs/TRACEABILITY.md)
+- [แบบสัมภาษณ์และทดลองใช้จริง](docs/RESEARCH.md)
+- [สไลด์นำเสนอ HTML 10 หน้า](presentation/index.html) ดาวน์โหลดแล้วเปิดไฟล์ กดลูกศรหรือปุ่มถัดไป ใช้ Print to PDF ได้
+
+รอบตรวจวันที่30ตุลาคม2026: [PR #1](https://github.com/67070282/PawRoster/pull/1) และ evidence/jenkins อ้างถึงงานเตรียมระบบ ไม่ใช่หลักฐานว่าสมาชิกทั้ง4ร่วมพัฒนาแล้ว งานผลผู้ใช้จริงติดตาม issue #2 และข้อมูลทีมใน issue #3
 
 ## แหล่งกติกา
 

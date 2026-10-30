@@ -1,0 +1,214 @@
+Started by user pawroster-admin
+Checking out git https://github.com/67070282/PawRoster.git into [workspace path] to read Jenkinsfile
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir [workspace path] # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/course-readiness^{commit} # timeout=10
+Checking out Revision 03846688f69ecd3db972c23af002a14737d8a056 (refs/remotes/origin/course-readiness)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 03846688f69ecd3db972c23af002a14737d8a056 # timeout=10
+Commit message: "Remove optional Jenkins plugin dependency and verify course smoke against source revision"
+ > git rev-list --no-walk b8f64c69724ca3cb536d219de9ba2ed38de0ba1b # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in [workspace path]
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 20 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] deleteDir
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/67070282/PawRoster.git
+ > git init [workspace path] # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/course-readiness^{commit} # timeout=10
+Checking out Revision 03846688f69ecd3db972c23af002a14737d8a056 (refs/remotes/origin/course-readiness)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 03846688f69ecd3db972c23af002a14737d8a056 # timeout=10
+Commit message: "Remove optional Jenkins plugin dependency and verify course smoke against source revision"
+[Pipeline] sh
++ mkdir -p evidence/runtime
++ git rev-parse HEAD
++ git ls-files -z
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] sh
++ docker run --rm -e TRACKED_FILES=evidence/runtime/tracked-files.nul -v [workspace path] -w [app path] node:24.14.0-alpine node scripts/secret-scan.mjs
+Unable to find image 'node:24.14.0-alpine' locally
+24.14.0-alpine: Pulling from library/node
+867a770c9b35: Pulling fs layer
+d8573c1c310e: Pulling fs layer
+589002ba0eae: Pulling fs layer
+0653b96c7e89: Pulling fs layer
+867a770c9b35: Download complete
+0653b96c7e89: Download complete
+589002ba0eae: Download complete
+589002ba0eae: Pull complete
+7c6246675dd5: Download complete
+d8573c1c310e: Download complete
+d5bde55c4657: Download complete
+d8573c1c310e: Pull complete
+867a770c9b35: Pull complete
+0653b96c7e89: Pull complete
+Digest: sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+Status: Downloaded newer image for node:24.14.0-alpine
+PASS: 48 tracked paths checked for common credentials and sensitive files
+[Pipeline] script
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine npm run check
+
+> pawroster@1.0.0 check
+> node --check src/server.js && node --check public/app.js
+
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine node --test --test-reporter=junit --test-reporter-destination=evidence/runtime/tests.xml
+[Pipeline] sh
++ docker compose config --quiet
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build image)
+[Pipeline] sh
++ VCS_REF= docker compose build --pull
+time="2026-10-30T10:09:32Z" level=warning msg="buildx Docker CLI plugin not found: falling back to the classic builder. BuildKit-only build features (multi-arch, secrets, ssh, additional contexts, ...) will not be available"
+ Image [local registry]/pawroster:2 Building 
+ Image [local registry]/pawroster:2 Building 
+Sending build context to Docker daemon  21.14kB
+
+Step 1/16 : FROM node:24.14.0-alpine
+24.14.0-alpine: Pulling from library/node
+Digest: sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+Status: Image is up to date for node:24.14.0-alpine
+ ---> 7fddd9ddeae8
+Step 2/16 : ARG VCS_REF=development
+ ---> Running in 2b97d3b242b6
+ ---> Removed intermediate container 2b97d3b242b6
+ ---> a7a6d6082daf
+Step 3/16 : WORKDIR [app path]
+ ---> Running in 5004e9c5ce8a
+ ---> Removed intermediate container 5004e9c5ce8a
+ ---> 5c1a0f34652b
+Step 4/16 : COPY --chown=node:node package.json ./
+ ---> 79a5002f081c
+Step 5/16 : COPY --chown=node:node src ./src
+ ---> f75580a750d3
+Step 6/16 : COPY --chown=node:node public ./public
+ ---> 1286795680a9
+Step 7/16 : COPY --chown=node:node scripts ./scripts
+ ---> 9e142f89681d
+Step 8/16 : RUN mkdir -p [app path] && chown node:node [app path]
+ ---> Running in 9bbe2e889c6d
+ ---> Removed intermediate container 9bbe2e889c6d
+ ---> 0b46fe6dc75c
+Step 9/16 : USER node
+ ---> Running in 589fe9047d7c
+ ---> Removed intermediate container 589fe9047d7c
+ ---> 7ab6819dc43a
+Step 10/16 : ENV NODE_ENV=production PORT=3000 DB_PATH=[app path]
+ ---> Running in 2de44d89ebef
+ ---> Removed intermediate container 2de44d89ebef
+ ---> 227c5cb1af92
+Step 11/16 : ENV APP_REVISION=$VCS_REF
+ ---> Running in 8e17ab992db3
+ ---> Removed intermediate container 8e17ab992db3
+ ---> 7f4080edeef7
+Step 12/16 : LABEL org.opencontainers.image.source="https://github.com/67070282/PawRoster" org.opencontainers.image.revision=$VCS_REF
+ ---> Running in 2b8e8b570ea3
+ ---> Removed intermediate container 2b8e8b570ea3
+ ---> 7402b13fea25
+Step 13/16 : EXPOSE 3000
+ ---> Running in 93b6326cd701
+ ---> Removed intermediate container 93b6326cd701
+ ---> 91e15ce73355
+Step 14/16 : HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 CMD node -e "fetch('[local service]/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+ ---> Running in d049cd20e3f6
+ ---> Removed intermediate container d049cd20e3f6
+ ---> 5211496b3bc8
+Step 15/16 : CMD ["node", "src/server.js"]
+ ---> Running in 635e84fede90
+ ---> Removed intermediate container 635e84fede90
+ ---> 54aa66e163ab
+Step 16/16 : LABEL com.docker.compose.image.builder=classic
+ ---> Running in 1615f8aefd43
+ ---> Removed intermediate container 1615f8aefd43
+ ---> 7e5cf649602b
+Successfully built 7e5cf649602b
+Successfully tagged [local registry]/pawroster:2
+ Image [local registry]/pawroster:2 Built 
+ Image [local registry]/pawroster:2 Built 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish image)
+[Pipeline] sh
++ docker push [local registry]/pawroster:2
+The push refers to repository [[local registry]/pawroster]
+2dea9baad8bc: Waiting
+2eae6edb6c80: Waiting
+867a770c9b35: Pushed
+b5aaabf419a3: Pushed
+2eae6edb6c80: Pushed
+bdbe87b4cc4f: Pushed
+589002ba0eae: Pushed
+0653b96c7e89: Pushed
+2dea9baad8bc: Pushed
+a413b2ffb730: Pushed
+382c2079a4b2: Pushed
+d8573c1c310e: Pushed
+2: digest: sha256:7e5cf649602b328517352bbbbc32f07bd6f306c19bc67a4f04c06b4f46a443c1 size: 2493
++ docker image inspect [local registry]/pawroster:2 --format {{json .RepoDigests}}
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+Stage "Deploy" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify deployed service)
+Stage "Verify deployed service" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
