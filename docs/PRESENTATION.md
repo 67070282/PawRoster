@@ -1,6 +1,6 @@
 # โครงเรื่องนำเสนอและ Demo (10 นาที + Q&A 5 นาที)
 
-มีสไลด์ HTML 10 หน้าใน `presentation/index.html` พร้อมเปิดใน Browser และพิมพ์เป็น PDF เอกสารนี้เป็นลำดับพูดและ Demo ประกอบ ผลสัมภาษณ์ต้องเก็บจริง ผล Jenkins ที่รันแล้วดู evidence/jenkins โดย main deployment ยังรอ merge PR #1 ผล Course Container ล่าสุดจาก GitHub commit จริงอยู่ evidence/course-git/
+มีสไลด์ HTML 10 หน้าใน `presentation/index.html` พร้อมเปิดใน Browser และพิมพ์เป็น PDF เอกสารนี้เป็นลำดับพูดและ Demo ประกอบ ผลสัมภาษณ์ต้องเก็บจริง ผล Jenkins main build #4 ผ่านครบแล้วดู evidence/jenkins และผล Course Container จาก GitHub commit จริงดู evidence/course-main/ (รอบก่อนใน evidence/course-git/)
 
 ## หน้าปก / ผู้จัดทำ
 

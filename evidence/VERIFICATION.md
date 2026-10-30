@@ -13,7 +13,7 @@
 | Compose recreation + data persistence | PASS งาน 1 รายการและ audit 3 รายการยังอยู่ ดู ops-check.txt |
 | Backup restore | PASS SQLite online backup, integrity_check=ok และ task states ตรงต้นฉบับ ดู ops-check.txt |
 | Jenkins runtime/SCM polling/branch gate | PASS review build #4 ถูกกระตุ้นจาก SCM change, build/test/publish ผ่าน และข้าม deploy ตาม branch; failure probe #3 หยุดก่อน Build/Publish/Deploy ดู jenkins/ |
-| Jenkins main deployment | PENDING รอเจ้าของอนุมัติ merge PR #1; main #1 ยังใช้ Jenkinsfile เก่าและพบ optional-plugin dependency ซึ่งแก้แล้วใน PR |
+| Jenkins main deployment | PASS main #4 เริ่มจาก SCM change; Build/Publish/Deploy/Health/HTTP smoke ครบ; health revision ตรง 86866281b6df405f61c2d81097b2c74b4e1cb3be ดู jenkins/artifacts/main-pass/ |
 | Course Container Docker-in-Docker | PASS 9/9 tests, Compose build/health, deployed HTTP flow, duplicate rejection, backup/restore, recreation persistence และ logout ดู course/ |
 | User study/impact/team contribution | NOT COLLECTED ต้องเก็บจริง |
 
@@ -26,3 +26,7 @@
 ภาพ dashboard.png เป็นข้อมูลสังเคราะห์ “ผู้ทดสอบ/โมจิ” ใช้ตรวจ UI ไม่ใช่ผลสัมภาษณ์หรือการเลี้ยงจริง
 
 ข้อจำกัด: ไม่มี password reset, invite rotation, member removal, role admin, pagination งาน, recurring tasks, push notification, automatic rollback หรือ multi-instance; สิทธิ์สมาชิกในบ้านเท่ากัน มีการ refresh ด้วยปุ่ม ไม่มี live sync; audit trail ไม่ใช่ immutable audit สำหรับ compliance
+
+หลังเจ้าของอนุมัติ merge: PR #1 รวมเป็น 1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9 พบ main #2 ข้ามDeployเพราะค่าจากcheckoutไม่ถูกส่งเข้าenv จึงแก้ Jenkinsfile ให้ใช้checkout resultโดยตรงที่ 86866281b6df405f61c2d81097b2c74b4e1cb3be จากนั้น main #3 และ SCM-triggered main #4 ผ่านครบ ไม่ใช้สถานะSUCCESSของmain #2แทนหลักฐานการdeploy
+
+Formal Course Container รอบmain: checkout8686628เดียวกับJenkinsmain #4 และรันcourse-verify.shผ่าน9/9พร้อมbackup/recreateจริง ดู evidence/course-main/ เอกสารผลที่เพิ่มหลังรอบนี้ไม่เปลี่ยนพฤติกรรมแอป

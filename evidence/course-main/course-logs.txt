@@ -1,0 +1,8 @@
+app-1  | (node:1) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+app-1  | (Use `node --trace-warnings ...` to show where the warning was created)
+app-1  | PawRoster listening on port 3000
+app-1  | {"method":"GET","path":"/health","status":200,"ms":2}
+app-1  | {"method":"GET","path":"/health","status":200,"ms":1}
+app-1  | {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+app-1  | {"method":"POST","path":"/api/logout","status":200,"ms":4}
+app-1  | {"method":"GET","path":"/api/dashboard","status":401,"ms":1}

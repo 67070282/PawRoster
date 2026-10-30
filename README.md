@@ -13,7 +13,7 @@
 | Web + API + Database | Implemented และตรวจ HTTP/UI แล้ว |
 | Automated HTTP tests | ผ่าน 9/9 ทั้ง Windows, Linux และ Course Container |
 | Docker Compose / persistence / backup | ตรวจผ่านแล้ว |
-| Jenkins | รันจริงแล้ว: SCM-triggered review build ผ่าน และ failing-test gate หยุดก่อนส่งมอบ; main deployment รออนุมัติ merge PR #1 |
+| Jenkins | รันจริงแล้ว: SCM-triggered main build #4 ผ่าน Build/Publish/Deploy/Health/Smoke; review branch และ failing-test gate ตรวจแล้ว |
 | GitHub repository | [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public |
 | สัมภาษณ์ผู้ใช้ / ผลกระทบ | รอเก็บข้อมูลจริง |
 
@@ -93,7 +93,7 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 
 ตรวจระบบใน Course Container `tuchsanai/devtools:2569_1` แล้ว: tests 9/9, Compose build/health, HTTP flow, backup/restore และข้อมูลหลัง recreate ผ่าน ดู [หลักฐาน Course Container](evidence/course/README.md)
 
-**ยังไม่ใช่งานพร้อมส่งโดยไม่มีขั้นตอนเพิ่ม:** ต้องรัน Jenkins จริง ระบุ Section/หมายเลขกลุ่มและหน้าที่จริง เก็บหลักฐานปัญหาและผลจากผู้ใช้จริง รวมถึงสร้าง GitHub history/PR จากการทำงานของทีมตามจริง แล้วตรวจรุ่นส่งจาก commit ของ repository ทีมอีกครั้ง
+**ยังไม่ใช่งานพร้อมส่งโดยไม่มีขั้นตอนเพิ่ม:** ส่วนระบบและ Jenkins มีผลรันจริงแล้ว ยังต้องระบุ Section/หมายเลขกลุ่มและหน้าที่จริง เก็บหลักฐานปัญหาและผลทดลองจากผู้ใช้จริง สมาชิกต้องร่วม review และอธิบายโค้ดได้ พร้อมตรวจ commit รุ่นส่งอีกครั้งหากเปลี่ยนระบบภายหลัง
 
 ## เอกสารสำหรับพัฒนาและนำเสนอ
 
@@ -108,7 +108,7 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 - [แบบสัมภาษณ์และทดลองใช้จริง](docs/RESEARCH.md)
 - [สไลด์นำเสนอ HTML 10 หน้า](presentation/index.html) ดาวน์โหลดแล้วเปิดไฟล์ กดลูกศรหรือปุ่มถัดไป ใช้ Print to PDF ได้
 
-รอบตรวจวันที่30ตุลาคม2026: [PR #1](https://github.com/67070282/PawRoster/pull/1) และ evidence/jenkins อ้างถึงงานเตรียมระบบ ไม่ใช่หลักฐานว่าสมาชิกทั้ง4ร่วมพัฒนาแล้ว งานผลผู้ใช้จริงติดตาม issue #2 และข้อมูลทีมใน issue #3
+รอบตรวจวันที่30ตุลาคม2026: [PR #1](https://github.com/67070282/PawRoster/pull/1) รวมเข้าmainแล้วตามที่เจ้าของอนุมัติ แก้การอ่าน branch/revision จาก checkout แล้ว main build #4 ผ่านครบที่ commit `86866281b6df405f61c2d81097b2c74b4e1cb3be` ดู evidence/jenkins ไม่ถือว่านี่เป็นหลักฐานว่าสมาชิกทั้ง4ร่วมพัฒนาแล้ว งานผลผู้ใช้จริงติดตาม issue #2 และข้อมูลทีมใน issue #3
 
 ## แหล่งกติกา
 

@@ -1,0 +1,1 @@
+["[local registry]/pawroster@sha256:4e92dfa2c04c200e4cc49d07d77def25da3ef61c269af64d2c77a96ab38eabcc"]

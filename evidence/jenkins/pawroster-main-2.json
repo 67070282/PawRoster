@@ -1,0 +1,454 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UserIdCause",
+          "shortDescription": "Started by user pawroster-admin",
+          "userId": "pawroster-admin",
+          "userName": "pawroster-admin"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/main": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 2,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+            "branch": [
+              {
+                "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+            "branch": [
+              {
+                "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+        "branch": [
+          {
+            "SHA1": "1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9",
+            "name": "refs/remotes/origin/main"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 8,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [
+    {
+      "displayPath": "commit.txt",
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "displayPath": "image-digest.txt",
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "displayPath": "tests.xml",
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "displayPath": "tracked-files.nul",
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "description": null,
+  "displayName": "#2",
+  "duration": 12853,
+  "estimatedDuration": 7012,
+  "executor": null,
+  "fullDisplayName": "pawroster-main #2",
+  "id": "2",
+  "keepLog": false,
+  "number": 2,
+  "queueId": 11,
+  "result": "SUCCESS",
+  "timestamp": 1793360405140,
+  "url": "[local service]/job/pawroster-main/2/",
+  "changeSets": [
+    {
+      "_class": "hudson.plugins.git.GitChangeSetList",
+      "items": [
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            ".gitignore",
+            "docs/RESEARCH.md",
+            "scripts/secret-scan.mjs",
+            "Jenkinsfile",
+            "Dockerfile",
+            "docs/TRACEABILITY.md",
+            "docs/SUBMISSION-AUDIT.md",
+            "jenkins/init.groovy",
+            "src/server.js",
+            "compose.yaml",
+            "test/system.test.js",
+            "jenkins/start-course-jenkins.sh",
+            "jenkins/Dockerfile"
+          ],
+          "commitId": "b8f64c69724ca3cb536d219de9ba2ed38de0ba1b",
+          "timestamp": 1793354833000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Add runnable Jenkins delivery, commit verification and complete requirement audit\n",
+          "date": "2026-10-30 17:07:13 +0700",
+          "id": "b8f64c69724ca3cb536d219de9ba2ed38de0ba1b",
+          "msg": "Add runnable Jenkins delivery, commit verification and complete requirement audit",
+          "paths": [
+            {
+              "editType": "edit",
+              "file": "Dockerfile"
+            },
+            {
+              "editType": "edit",
+              "file": "compose.yaml"
+            },
+            {
+              "editType": "add",
+              "file": "jenkins/Dockerfile"
+            },
+            {
+              "editType": "add",
+              "file": "jenkins/init.groovy"
+            },
+            {
+              "editType": "add",
+              "file": "scripts/secret-scan.mjs"
+            },
+            {
+              "editType": "add",
+              "file": "jenkins/start-course-jenkins.sh"
+            },
+            {
+              "editType": "add",
+              "file": "docs/RESEARCH.md"
+            },
+            {
+              "editType": "add",
+              "file": "docs/SUBMISSION-AUDIT.md"
+            },
+            {
+              "editType": "add",
+              "file": "docs/TRACEABILITY.md"
+            },
+            {
+              "editType": "edit",
+              "file": "Jenkinsfile"
+            },
+            {
+              "editType": "edit",
+              "file": "test/system.test.js"
+            },
+            {
+              "editType": "edit",
+              "file": ".gitignore"
+            },
+            {
+              "editType": "edit",
+              "file": "src/server.js"
+            }
+          ]
+        },
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            "Jenkinsfile",
+            "scripts/smoke.mjs",
+            "scripts/course-verify.sh"
+          ],
+          "commitId": "03846688f69ecd3db972c23af002a14737d8a056",
+          "timestamp": 1793354944000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Remove optional Jenkins plugin dependency and verify course smoke against source revision\n",
+          "date": "2026-10-30 17:09:04 +0700",
+          "id": "03846688f69ecd3db972c23af002a14737d8a056",
+          "msg": "Remove optional Jenkins plugin dependency and verify course smoke against source revision",
+          "paths": [
+            {
+              "editType": "edit",
+              "file": "scripts/course-verify.sh"
+            },
+            {
+              "editType": "edit",
+              "file": "Jenkinsfile"
+            },
+            {
+              "editType": "edit",
+              "file": "scripts/smoke.mjs"
+            }
+          ]
+        },
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            "docs/ARCHITECTURE.md",
+            "Jenkinsfile",
+            "docs/OPERATIONS.md",
+            "presentation/index.html"
+          ],
+          "commitId": "3d93c7a7215671ee8bf96e939451991393985cc5",
+          "timestamp": 1793355213000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Document actual CI setup, isolate image tags and add a ten-slide presentation\n",
+          "date": "2026-10-30 17:13:33 +0700",
+          "id": "3d93c7a7215671ee8bf96e939451991393985cc5",
+          "msg": "Document actual CI setup, isolate image tags and add a ten-slide presentation",
+          "paths": [
+            {
+              "editType": "add",
+              "file": "presentation/index.html"
+            },
+            {
+              "editType": "edit",
+              "file": "docs/ARCHITECTURE.md"
+            },
+            {
+              "editType": "edit",
+              "file": "docs/OPERATIONS.md"
+            },
+            {
+              "editType": "edit",
+              "file": "Jenkinsfile"
+            }
+          ]
+        },
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            "evidence/jenkins/pawroster-main-1.json",
+            "evidence/course-git/course-smoke.txt",
+            "evidence/jenkins/pawroster-review-1.txt",
+            "evidence/jenkins/pawroster-review-3.json",
+            "evidence/course-git/course-engine.txt",
+            "docs/PRESENTATION.md",
+            "evidence/jenkins/artifacts/review-failure/commit.txt",
+            "evidence/course-git/course-compose.txt",
+            "docs/PROJECT.md",
+            "evidence/jenkins/pawroster-review-1.json",
+            "evidence/jenkins/pawroster-main-1.txt",
+            "evidence/jenkins/pawroster-review-2.txt",
+            "evidence/jenkins/pawroster-review-4.json",
+            "evidence/course-git/course-commit.txt",
+            "evidence/jenkins/pawroster-review-2.json",
+            "evidence/jenkins/pawroster-review-3.txt",
+            "evidence/course-git/README.md",
+            "evidence/jenkins/artifacts/review-pass/commit.txt",
+            "evidence/jenkins/artifacts/review-failure/tests.xml",
+            "README.md",
+            "evidence/course-git/course-worktree.txt",
+            "evidence/VERIFICATION.md",
+            "evidence/jenkins/artifacts/review-pass/image-digest.txt",
+            "evidence/jenkins/artifacts/review-pass/tests.xml",
+            "evidence/jenkins/pawroster-review-4.txt",
+            "evidence/course-git/course-tests.tap",
+            "evidence/course-git/course-logs.txt",
+            "evidence/jenkins/README.md"
+          ],
+          "commitId": "6f49d138613de3bdf16109fec96538749b270079",
+          "timestamp": 1793355677000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Add redacted CI evidence and document pending final-submission items\n",
+          "date": "2026-10-30 17:21:17 +0700",
+          "id": "6f49d138613de3bdf16109fec96538749b270079",
+          "msg": "Add redacted CI evidence and document pending final-submission items",
+          "paths": [
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-worktree.txt"
+            },
+            {
+              "editType": "edit",
+              "file": "README.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-tests.tap"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-1.txt"
+            },
+            {
+              "editType": "edit",
+              "file": "evidence/VERIFICATION.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-4.json"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-logs.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/artifacts/review-failure/commit.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-3.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-commit.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-main-1.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-3.json"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-2.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-compose.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-2.json"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/artifacts/review-pass/image-digest.txt"
+            },
+            {
+              "editType": "edit",
+              "file": "docs/PRESENTATION.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/README.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/artifacts/review-failure/tests.xml"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/README.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-main-1.json"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-engine.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/artifacts/review-pass/tests.xml"
+            },
+            {
+              "editType": "edit",
+              "file": "docs/PROJECT.md"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-1.json"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/pawroster-review-4.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/course-git/course-smoke.txt"
+            },
+            {
+              "editType": "add",
+              "file": "evidence/jenkins/artifacts/review-pass/commit.txt"
+            }
+          ]
+        }
+      ],
+      "kind": "git"
+    }
+  ],
+  "culprits": [
+    {
+      "absoluteUrl": "[local service]/user/67070282",
+      "fullName": "67070282"
+    }
+  ],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 1,
+    "url": "[local service]/job/pawroster-main/1/"
+  }
+}

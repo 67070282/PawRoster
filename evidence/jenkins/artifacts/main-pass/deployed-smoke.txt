@@ -1,0 +1,2 @@
+PASS deployed HTTP flow: register -> pet -> task -> claim -> complete -> duplicate rejected
+PASS after container recreation: session, task, note and single completion audit persisted; logout revoked session

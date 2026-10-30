@@ -8,13 +8,13 @@
 | Target users/use case/ขอบเขต | PROJECT.md และ flow หลัก | มี baseline และข้อจำกัด |
 | Traceability | TRACEABILITY.md ครบ6คอลัมน์ เชื่อมปัญหาไปผลตรวจ | อัปเดตผลตาม evidence รุ่นสุดท้าย |
 | Web+Backend+Database จริง | HTML/JS → Node HTTP → SQLite | มีระบบและ HTTP/UI evidence |
-| Git/GitHub | repository, branch, commit, PR templates | เพิ่ม PR รอบแก้จริง; สมาชิกต้องร่วมงานจริงต่อ |
+| Git/GitHub | repository, branch, commit, PR #1 รวมแล้วตามอนุมัติ | workflowใช้งานจริง; สมาชิกต้องร่วมงาน/reviewด้วยตนเองต่อ |
 | Docker/Compose | image, volume, health, config | ทดสอบ commit ใหม่ใน Course Container |
-| Jenkins CI/CD | Jenkinsfile และ bootstrap พร้อม auth/registry | ตรวจ job จริงและ failure gate ในรอบนี้ |
+| Jenkins CI/CD | Jenkinsfile และ bootstrap พร้อม auth/registry | PASS main #4 จาก SCM change ครบ publish/deploy/health/smoke; review #4/failure #3 ยืนยัน branch และ failure gate |
 | System Design/Integration | ARCHITECTURE.md / API / schema / failures | เพิ่มรายละเอียด registry/SCM/commit verification |
 | Security/Privacy/Operations | session, home authorization, validation, CSP, backup | เพิ่ม tracked-secret scan; ไม่มี public production hosting |
-| Course Container | มีรอบเก่าแบบ source snapshot | รันทดสอบจาก clone commit GitHub จริงและเก็บSHA |
-| Slide ครบ7มิติ | PRESENTATION.md พร้อมลำดับ10นาที | เป็นเนื้อหาสไลด์ ต้องจัดสไลด์และซ้อมจริง |
+| Course Container | ทดสอบจาก clone commit GitHub จริงและเก็บSHA | ดู evidence/course-main และ course-git; ไม่ใช้ snapshot เดิมแทนผลล่าสุด |
+| Slide ครบ7มิติ | presentation/index.html 10หน้า และ PRESENTATION.md พร้อมลำดับ10นาที | มีสไลด์จริงและตรวจทุกหน้าแล้ว; ทีมยังต้องเติมผลจริงและซ้อม |
 | Team/Network | รายชื่อ4คน | เจ้าของจะเติมหน้าที่/Section/กลุ่มภายหลัง; ไม่อ้าง partner |
 | Social impact | นิยาม baseline/เป้าหมาย/วิธีเก็บ | ต้องทดลองและรายงานผลจริง |
 | Sustainability/advantage | สมมติฐานผู้สนับสนุนและ roadmap | ยังไม่มี willingness-to-pay หรือ advantage ที่ยืนยัน |

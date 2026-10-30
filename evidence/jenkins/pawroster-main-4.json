@@ -1,0 +1,159 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.triggers.SCMTrigger$SCMTriggerCause",
+          "shortDescription": "Started by an SCM change"
+        }
+      ]
+    },
+    {},
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "VERIFY_FAILURE_GATE",
+          "value": false
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/main": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 4,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+            "branch": [
+              {
+                "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+            "branch": [
+              {
+                "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+        "branch": [
+          {
+            "SHA1": "86866281b6df405f61c2d81097b2c74b4e1cb3be",
+            "name": "refs/remotes/origin/main"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 8,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [
+    {
+      "displayPath": "commit.txt",
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "displayPath": "compose-status.txt",
+      "fileName": "compose-status.txt",
+      "relativePath": "evidence/runtime/compose-status.txt"
+    },
+    {
+      "displayPath": "deployed-smoke.txt",
+      "fileName": "deployed-smoke.txt",
+      "relativePath": "evidence/runtime/deployed-smoke.txt"
+    },
+    {
+      "displayPath": "health.txt",
+      "fileName": "health.txt",
+      "relativePath": "evidence/runtime/health.txt"
+    },
+    {
+      "displayPath": "image-digest.txt",
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "displayPath": "source-branch.txt",
+      "fileName": "source-branch.txt",
+      "relativePath": "evidence/runtime/source-branch.txt"
+    },
+    {
+      "displayPath": "tests.xml",
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "displayPath": "tracked-files.nul",
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "description": null,
+  "displayName": "#4",
+  "duration": 17483,
+  "estimatedDuration": 17429,
+  "executor": null,
+  "fullDisplayName": "pawroster-main #4",
+  "id": "4",
+  "keepLog": false,
+  "number": 4,
+  "queueId": 15,
+  "result": "SUCCESS",
+  "timestamp": 1793360542123,
+  "url": "[local service]/job/pawroster-main/4/",
+  "changeSets": [],
+  "culprits": [],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 3,
+    "url": "[local service]/job/pawroster-main/3/"
+  }
+}

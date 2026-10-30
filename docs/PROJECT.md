@@ -41,7 +41,7 @@
 | R7 | รีสตาร์ต service แล้วยังเห็นงานที่เสร็จ note และ session เดิมก่อนหมดอายุ | SQLite file + volume | R7 ผ่าน restart แบบ Node; Compose recreation ดู evidence |
 | R8 | ออกจากระบบแล้ว session เดิมใช้ไม่ได้ | delete sessions + clear cookie | R8 ผ่าน |
 | N1 | เริ่มบริการจาก Compose และ health เป็น ok | Dockerfile, compose.yaml, /health | ผ่าน Docker Desktop และ Course Container |
-| N2 | Pipeline หยุดเมื่อ test ล้มเหลว; main deploy แล้วตรวจ health | Jenkinsfile | Jenkins review #4 ผ่านจาก SCM change; failure probe #3 หยุดก่อน build/publish/deploy; main deployment รอ merge PR #1 |
+| N2 | Pipeline หยุดเมื่อ test ล้มเหลว; main deploy แล้วตรวจ health | Jenkinsfile | main #4 ผ่านจาก SCM change ครบ build/publish/deploy/health/smoke; review #4 ข้ามdeploy; failure probe #3 หยุดก่อนส่งมอบ ดู evidence/jenkins |
 | N3 | สำรอง SQLite แบบ consistent และนำกลับมาใช้ได้ | scripts/backup.mjs | ตรวจ backup/restore ตาม evidence |
 
 UI ไม่ทำ live sync อัตโนมัติ สมาชิกกด “อัปเดตข้อมูล” เพื่อดูงานใหม่ กรณีชนตอนรับงาน API ตรวจสถานะล่าสุดและ UI โหลดข้อมูลใหม่พร้อมแสดงข้อความผิดพลาด ห้ามรับปากว่าหน้าจอทุกเครื่องอัปเดตทันที

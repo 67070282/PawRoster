@@ -1,0 +1,187 @@
+Started by user pawroster-admin
+Checking out git https://github.com/67070282/PawRoster.git into [workspace path] to read Jenkinsfile
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir [workspace path] # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9 # timeout=10
+Commit message: "Merge owner-approved course readiness and Jenkins verification"
+ > git rev-list --no-walk 96b009fad9dbe23ade6721e383c41e8795d8bfb9 # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in [workspace path]
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 20 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] deleteDir
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/67070282/PawRoster.git
+ > git init [workspace path] # timeout=10
+Fetching upstream changes from https://github.com/67070282/PawRoster.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/67070282/PawRoster.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/67070282/PawRoster.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 1b3d2c7b08a4f4cd9bcd1cf58fd41a3f7d5b3cf9 # timeout=10
+Commit message: "Merge owner-approved course readiness and Jenkins verification"
+[Pipeline] sh
++ mkdir -p evidence/runtime
++ git rev-parse HEAD
++ git ls-files -z
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify)
+[Pipeline] sh
++ docker run --rm -e TRACKED_FILES=evidence/runtime/tracked-files.nul -v [workspace path] -w [app path] node:24.14.0-alpine node scripts/secret-scan.mjs
+PASS: 73 tracked paths checked for common credentials and sensitive files
+[Pipeline] script
+[Pipeline] {
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine npm run check
+
+> pawroster@1.0.0 check
+> node --check src/server.js && node --check public/app.js
+
+[Pipeline] sh
++ docker run --rm -v [workspace path] -w [app path] node:24.14.0-alpine node --test --test-reporter=junit --test-reporter-destination=evidence/runtime/tests.xml
+[Pipeline] sh
++ docker compose config --quiet
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build image)
+[Pipeline] sh
++ VCS_REF= docker compose build --pull
+time="2026-10-30T11:40:14Z" level=warning msg="buildx Docker CLI plugin not found: falling back to the classic builder. BuildKit-only build features (multi-arch, secrets, ssh, additional contexts, ...) will not be available"
+ Image [local registry]/pawroster:pawroster-main-2 Building 
+ Image [local registry]/pawroster:pawroster-main-2 Building 
+Sending build context to Docker daemon  25.01kB
+
+Step 1/16 : FROM node:24.14.0-alpine
+24.14.0-alpine: Pulling from library/node
+Digest: sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+Status: Image is up to date for node:24.14.0-alpine
+ ---> 7fddd9ddeae8
+Step 2/16 : ARG VCS_REF=development
+ ---> Using cache
+ ---> a7a6d6082daf
+Step 3/16 : WORKDIR [app path]
+ ---> Using cache
+ ---> 5c1a0f34652b
+Step 4/16 : COPY --chown=node:node package.json ./
+ ---> Using cache
+ ---> 79a5002f081c
+Step 5/16 : COPY --chown=node:node src ./src
+ ---> Using cache
+ ---> f75580a750d3
+Step 6/16 : COPY --chown=node:node public ./public
+ ---> Using cache
+ ---> 1286795680a9
+Step 7/16 : COPY --chown=node:node scripts ./scripts
+ ---> Using cache
+ ---> 9e142f89681d
+Step 8/16 : RUN mkdir -p [app path] && chown node:node [app path]
+ ---> Using cache
+ ---> 0b46fe6dc75c
+Step 9/16 : USER node
+ ---> Using cache
+ ---> 7ab6819dc43a
+Step 10/16 : ENV NODE_ENV=production PORT=3000 DB_PATH=[app path]
+ ---> Using cache
+ ---> 227c5cb1af92
+Step 11/16 : ENV APP_REVISION=$VCS_REF
+ ---> Using cache
+ ---> 7f4080edeef7
+Step 12/16 : LABEL org.opencontainers.image.source="https://github.com/67070282/PawRoster" org.opencontainers.image.revision=$VCS_REF
+ ---> Using cache
+ ---> 7402b13fea25
+Step 13/16 : EXPOSE 3000
+ ---> Using cache
+ ---> 91e15ce73355
+Step 14/16 : HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 CMD node -e "fetch('[local service]/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+ ---> Using cache
+ ---> 5211496b3bc8
+Step 15/16 : CMD ["node", "src/server.js"]
+ ---> Using cache
+ ---> 54aa66e163ab
+Step 16/16 : LABEL com.docker.compose.image.builder=classic
+ ---> Using cache
+ ---> 7e5cf649602b
+Successfully built 7e5cf649602b
+Successfully tagged [local registry]/pawroster:pawroster-main-2
+ Image [local registry]/pawroster:pawroster-main-2 Built 
+ Image [local registry]/pawroster:pawroster-main-2 Built 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish image)
+[Pipeline] sh
++ docker push [local registry]/pawroster:pawroster-main-2
+The push refers to repository [[local registry]/pawroster]
+0653b96c7e89: Layer already exists
+589002ba0eae: Layer already exists
+bdbe87b4cc4f: Layer already exists
+a413b2ffb730: Layer already exists
+867a770c9b35: Layer already exists
+d8573c1c310e: Layer already exists
+2eae6edb6c80: Layer already exists
+2dea9baad8bc: Layer already exists
+b5aaabf419a3: Layer already exists
+382c2079a4b2: Layer already exists
+pawroster-main-2: digest: sha256:7e5cf649602b328517352bbbbc32f07bd6f306c19bc67a4f04c06b4f46a443c1 size: 2493
++ docker image inspect [local registry]/pawroster:pawroster-main-2 --format {{json .RepoDigests}}
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+Stage "Deploy" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify deployed service)
+Stage "Verify deployed service" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] junit
+Recording test results
+[Checks API] No suitable checks publisher found.
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
