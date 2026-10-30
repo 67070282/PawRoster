@@ -6,7 +6,7 @@ pipeline {
   environment {
     COMPOSE_PROJECT_NAME = 'pawroster-ci'
     IMAGE_REPOSITORY = 'localhost:5000/pawroster'
-    IMAGE_TAG = "${BUILD_NUMBER}"
+    IMAGE_TAG = "${JOB_BASE_NAME}-${BUILD_NUMBER}"
     APP_PORT = '3180'
   }
   stages {
