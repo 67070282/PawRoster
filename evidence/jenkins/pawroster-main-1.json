@@ -1,0 +1,95 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UserIdCause",
+          "shortDescription": "Started by user pawroster-admin",
+          "userId": "pawroster-admin",
+          "userName": "pawroster-admin"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/main": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 1,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+            "branch": [
+              {
+                "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+            "branch": [
+              {
+                "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+                "name": "refs/remotes/origin/main"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+        "branch": [
+          {
+            "SHA1": "96b009fad9dbe23ade6721e383c41e8795d8bfb9",
+            "name": "refs/remotes/origin/main"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [],
+  "building": false,
+  "description": null,
+  "displayName": "#1",
+  "duration": 1171,
+  "estimatedDuration": 1171,
+  "executor": null,
+  "fullDisplayName": "pawroster-main #1",
+  "id": "1",
+  "keepLog": false,
+  "number": 1,
+  "queueId": 8,
+  "result": "FAILURE",
+  "timestamp": 1793355310911,
+  "url": "[local service]/job/pawroster-main/1/",
+  "changeSets": [],
+  "culprits": [],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": null
+}

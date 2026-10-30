@@ -20,7 +20,9 @@ test('HTTP acceptance: shared care, conflicts, privacy, validation and persisten
         assert.match(res.headers.get('set-cookie'), /SameSite=Strict/);
         cookie = res.headers.get('set-cookie').split(';')[0];
       }
-      const result = await res.json(); assert.equal(res.status, expected, JSON.stringify(result)); return result;
+      const result = await res.json();
+      if (Array.isArray(expected)) { assert.ok(expected.includes(res.status), JSON.stringify(result)); return { ...result, httpStatus: res.status }; }
+      assert.equal(res.status, expected, JSON.stringify(result)); return result;
     };
   }
   const a = client(), b = client(), outsider = client(), anonymous = client();
@@ -44,9 +46,8 @@ test('HTTP acceptance: shared care, conflicts, privacy, validation and persisten
     const shared = await b('/api/dashboard'); assert.equal(shared.tasks[0].id, task.id); assert.equal(shared.pets[0].name, 'โมจิ');
   });
   await t.test('R3 simultaneous claims have one winner', async () => {
-    const results = await Promise.allSettled([a(`/api/tasks/${task.id}/claim`, {}), b(`/api/tasks/${task.id}/claim`, {})]);
-    assert.equal(results.filter(r => r.status === 'fulfilled').length, 1);
-    assert.equal(results.filter(r => r.status === 'rejected').length, 1);
+    const results = await Promise.all([a(`/api/tasks/${task.id}/claim`, {}, [200,409]), b(`/api/tasks/${task.id}/claim`, {}, [200,409])]);
+    assert.deepEqual(results.map(r => r.httpStatus).sort(), [200,409]);
     const state = await a('/api/dashboard'); assert.equal(state.events.filter(e => e.action === 'claim').length, 1);
     assert.equal(state.tasks[0].status, 'claimed');
   });

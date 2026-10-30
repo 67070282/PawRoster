@@ -7,15 +7,20 @@ flowchart LR
   N -->|Authorize home + validate + transaction| S[(SQLite /app/data/pawroster.db)]
   S -->|state + audit rows| N
   N -->|JSON result or 4xx/503| U
-  G[GitHub repository] -->|SCM webhook / checkout| J[Jenkins docker agent]
+  G[GitHub repository] -->|SCM polling / checkout| J[Jenkins docker agent]
   J --> T[Node syntax + HTTP tests]
-  T --> B[Docker image / artifact archive]
-  B -->|main only| D[Docker Compose]
+  T --> B[Build image tagged by job and build]
+  B --> R[Local registry inside course container]
+  R -->|main only| D[Docker Compose]
   D --> N
   N --> H[Health check + structured stdout logs]
 ```
 
 Runtime มี **app container เดียว** รวม static web และ REST API ฐานข้อมูลเป็น SQLite embedded จริง ไม่ใช่ database container แยก ข้อมูลเก็บ named volume `care-data` container อ่าน image แบบ read-only และเขียนเฉพาะ volume กับ tmpfs ไม่ใช้ broker, proxy, LLM หรือบริการภายนอก
+
+ชั้น CI ใช้ Jenkins และ registry แยกจาก app ภายใน Docker daemon ของ Course Container Jenkins ตรวจ SCM ทุก2นาที ไม่ต้องเปิด webhook ออกอินเทอร์เน็ต Image tag แยกตาม job/build และมี label commit; /health คืน revision ที่ build เพื่อตรวจหลัง deploy ว่ารุ่นตรงกับ checkout จริง workspace ของ Jenkins mount ที่ absolute path เดียวกันในกล่องและ controller เพื่อให้ inner Docker daemon เห็นไฟล์ build/test ถูกที่
+
+registry ใช้ HTTP เฉพาะ loopback ภายในกล่องเพื่อห้องเรียน ไม่ใช่ public registry Jenkins มีบัญชี admin และ secret สุ่มที่เก็บนอก repository; ไม่ให้ anonymous อ่านหรือ build. Docker socket ที่ mount เป็นของ inner daemon ไม่ใช่ host Docker socket แต่กล่องรายวิชาแบบ privileged ยังมีสิทธิ์สูงและควรหยุดเมื่อเลิกใช้
 
 HTTP ใช้ใน localhost/course lab; หากเปิดภายนอกต้องใช้ HTTPS reverse proxy ตั้ง `COOKIE_SECURE=true` และออกแบบ proxy/Origin ให้ตรงกับ host ที่ Browser เรียก ค่าเริ่มต้น bind แค่ loopback การเปลี่ยน `APP_BIND=0.0.0.0` ทำให้เครือข่ายเข้าถึงได้และต้องประเมินสิทธิ์และ firewall ก่อน
 

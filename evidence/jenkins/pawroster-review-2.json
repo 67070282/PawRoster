@@ -1,0 +1,175 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UserIdCause",
+          "shortDescription": "Started by user pawroster-admin",
+          "userId": "pawroster-admin",
+          "userName": "pawroster-admin"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/course-readiness": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 2,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "branch": [
+              {
+                "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "branch": [
+              {
+                "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+        "branch": [
+          {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "name": "refs/remotes/origin/course-readiness"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 8,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [
+    {
+      "displayPath": "commit.txt",
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "displayPath": "image-digest.txt",
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "displayPath": "tests.xml",
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "displayPath": "tracked-files.nul",
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "description": null,
+  "displayName": "#2",
+  "duration": 27097,
+  "estimatedDuration": 16307,
+  "executor": null,
+  "fullDisplayName": "pawroster-review #2",
+  "id": "2",
+  "keepLog": false,
+  "number": 2,
+  "queueId": 2,
+  "result": "SUCCESS",
+  "timestamp": 1793354955904,
+  "url": "[local service]/job/pawroster-review/2/",
+  "changeSets": [
+    {
+      "_class": "hudson.plugins.git.GitChangeSetList",
+      "items": [
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            "scripts/smoke.mjs",
+            "Jenkinsfile",
+            "scripts/course-verify.sh"
+          ],
+          "commitId": "03846688f69ecd3db972c23af002a14737d8a056",
+          "timestamp": 1793354944000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Remove optional Jenkins plugin dependency and verify course smoke against source revision\n",
+          "date": "2026-10-30 17:09:04 +0700",
+          "id": "03846688f69ecd3db972c23af002a14737d8a056",
+          "msg": "Remove optional Jenkins plugin dependency and verify course smoke against source revision",
+          "paths": [
+            {
+              "editType": "edit",
+              "file": "scripts/smoke.mjs"
+            },
+            {
+              "editType": "edit",
+              "file": "Jenkinsfile"
+            },
+            {
+              "editType": "edit",
+              "file": "scripts/course-verify.sh"
+            }
+          ]
+        }
+      ],
+      "kind": "git"
+    }
+  ],
+  "culprits": [
+    {
+      "absoluteUrl": "[local service]/user/67070282",
+      "fullName": "67070282"
+    }
+  ],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 1,
+    "url": "[local service]/job/pawroster-review/1/"
+  }
+}

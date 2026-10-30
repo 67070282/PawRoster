@@ -1,0 +1,189 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.triggers.SCMTrigger$SCMTriggerCause",
+          "shortDescription": "Started by an SCM change"
+        }
+      ]
+    },
+    {},
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "VERIFY_FAILURE_GATE",
+          "value": false
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/course-readiness": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 4,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+            "branch": [
+              {
+                "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+            "branch": [
+              {
+                "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+        "branch": [
+          {
+            "SHA1": "3d93c7a7215671ee8bf96e939451991393985cc5",
+            "name": "refs/remotes/origin/course-readiness"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 0,
+      "skipCount": 0,
+      "totalCount": 8,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [
+    {
+      "displayPath": "commit.txt",
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "displayPath": "image-digest.txt",
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "displayPath": "tests.xml",
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "displayPath": "tracked-files.nul",
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "description": null,
+  "displayName": "#4",
+  "duration": 9689,
+  "estimatedDuration": 14350,
+  "executor": null,
+  "fullDisplayName": "pawroster-review #4",
+  "id": "4",
+  "keepLog": false,
+  "number": 4,
+  "queueId": 6,
+  "result": "SUCCESS",
+  "timestamp": 1793355250910,
+  "url": "[local service]/job/pawroster-review/4/",
+  "changeSets": [
+    {
+      "_class": "hudson.plugins.git.GitChangeSetList",
+      "items": [
+        {
+          "_class": "hudson.plugins.git.GitChangeSet",
+          "affectedPaths": [
+            "docs/ARCHITECTURE.md",
+            "Jenkinsfile",
+            "docs/OPERATIONS.md",
+            "presentation/index.html"
+          ],
+          "commitId": "3d93c7a7215671ee8bf96e939451991393985cc5",
+          "timestamp": 1793355213000,
+          "author": {
+            "absoluteUrl": "[local service]/user/67070282",
+            "fullName": "67070282"
+          },
+          "authorEmail": "[email redacted]",
+          "comment": "Document actual CI setup, isolate image tags and add a ten-slide presentation\n",
+          "date": "2026-10-30 17:13:33 +0700",
+          "id": "3d93c7a7215671ee8bf96e939451991393985cc5",
+          "msg": "Document actual CI setup, isolate image tags and add a ten-slide presentation",
+          "paths": [
+            {
+              "editType": "edit",
+              "file": "docs/OPERATIONS.md"
+            },
+            {
+              "editType": "edit",
+              "file": "docs/ARCHITECTURE.md"
+            },
+            {
+              "editType": "edit",
+              "file": "Jenkinsfile"
+            },
+            {
+              "editType": "add",
+              "file": "presentation/index.html"
+            }
+          ]
+        }
+      ],
+      "kind": "git"
+    }
+  ],
+  "culprits": [
+    {
+      "absoluteUrl": "[local service]/user/67070282",
+      "fullName": "67070282"
+    }
+  ],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 3,
+    "url": "[local service]/job/pawroster-review/3/"
+  }
+}

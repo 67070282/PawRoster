@@ -14,11 +14,15 @@ docker compose down
 
 ## Jenkins
 
-ใช้ Jenkins Multibranch Pipeline ชี้ GitHub repository ของทีม โดยมี `Jenkinsfile` ที่ root ตั้ง webhook สำหรับ push/PR ใน GitHub ตาม URL Jenkins ของทีม agent label `docker` ต้องมี Docker CLI + Compose v2 และเข้าถึง daemon ได้ workspace ต้องอยู่บน filesystem ที่ daemon bind mount ได้ ใช้ Linux agent ซึ่งมี `sh`, `gzip` และเขียน workspace ได้
+วิธีที่ทดสอบใช้ Jenkins Pipeline from SCM สอง job (`pawroster-main` และ `pawroster-review`) ชี้ main/course-readiness ตามลำดับ ใน Course Container ที่ได้รับอนุมัติ รัน `sh jenkins/start-course-jenkins.sh` จาก root repo เพื่อ build controller, local registry และสร้าง job แบบมี authentication
 
-ตั้ง branch discovery ให้พบ main และ feature branches, ติดตั้ง Git/Pipeline/Multibranch/JUnit plugins ตาม environment ผู้สอน จัด credentials ใน Jenkins Credentials ห้าม commit secret; เลือก Build Now ครั้งแรกแล้วเก็บ log ทุก stage
+ผู้ใช้คือ `pawroster-admin` รหัสสุ่มอยู่ที่ `/workspace/pawroster-jenkins-admin.secret` ภายในกล่อง ไม่อยู่ใน Git Controller home อยู่ `/workspace/pawroster-jenkins-home` ทั้ง inner host และ controller เพื่อให้ bind mount workspace ใช้งานได้จริง ต้องเปิด port forwarding ของ outer Course Container สำหรับ8080ตามสภาพแวดล้อมผู้สอน ห้ามเปิด Jenkins ออก public โดยไม่จัดการสิทธิ์และTLS
 
-Pipeline: checkout → syntax + HTTP tests ใน Linux Node image → Compose validate → build image tagged BUILD_NUMBER → บันทึก image เป็น tar.gz artifact → main เท่านั้น deploy → health check ใน container + compose status → เก็บ JUnit และ artifacts ไม่ได้ push image registry อัตโนมัติ หากอาจารย์ต้องการ registry ให้ตั้ง credentials และเพิ่ม publish stage ตามระบบจริง
+Pipeline: checkout GitHub → secret scan → syntax + HTTP tests → Compose validate → build image tagged job/build → push ไป `localhost:5000/pawroster` ใน registry ของ inner daemon → main เท่านั้น deploy project `pawroster-ci` พอร์ต3180 → health ต้องมี revision ตรง Git commit + deployed HTTP smoke → JUnit/artifacts ค่าปริยาย runtime ปกติยังรัน `docker compose up` ได้โดยไม่ต้องมี Jenkins หรือ registry
+
+Jenkinsfile ตั้ง `pollSCM('H/2 * * * *')` จึงตรวจ source ทุกประมาณ2นาทีหลังรัน job ครั้งแรก ไม่ได้ตั้ง webhook ออกอินเทอร์เน็ต Feature job ต้องข้าม Deploy และ Verify deployed service ส่วน main ต้องผ่านทุก stage พารามิเตอร์ `VERIFY_FAILURE_GATE=true` ใช้แทรก failing test เฉพาะ disposable workspace เพื่อพิสูจน์ว่า build/publish/deploy ถูกข้าม ไม่แก้โค้ดใน repository และไม่หยุด app ที่ deploy อยู่เดิม
+
+หากใช้ Multibranch กับ Jenkins ที่ทีมมีอยู่แล้ว ให้ agent label `docker` มี Docker/Compose และ workspace ที่ daemon มองเห็น เปลี่ยน registry ผ่าน environment ตามระบบจริง และเก็บ secrets ใน Jenkins Credentials
 
 PR ต้องไม่ deploy และห้ามให้ untrusted fork รัน agent ที่เข้าถึง Docker daemon ใช้ repository ของทีมที่เชื่อถือได้ agent แบบนี้มีสิทธิ์สูงต่อ Docker โฮสต์ ไม่แนะนำใช้ร่วมกับ production workload
 

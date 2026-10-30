@@ -1,6 +1,6 @@
 # โครงเรื่องนำเสนอและ Demo (10 นาที + Q&A 5 นาที)
 
-เอกสารนี้เป็นเนื้อหาสำหรับนำไปจัดสไลด์ ยังไม่ใช่ไฟล์ PowerPoint ผลสัมภาษณ์และผล Jenkins ต้องเติมจากข้อมูลจริงก่อนนำเสนอ ผล Course Container รอบพัฒนามีแล้วใน evidence/course/ ต้องตรวจ commit รุ่นส่งของทีมอีกครั้ง
+มีสไลด์ HTML 10 หน้าใน `presentation/index.html` พร้อมเปิดใน Browser และพิมพ์เป็น PDF เอกสารนี้เป็นลำดับพูดและ Demo ประกอบ ผลสัมภาษณ์ต้องเก็บจริง ผล Jenkins ที่รันแล้วดู evidence/jenkins โดย main deployment ยังรอ merge PR #1 ผล Course Container ล่าสุดจาก GitHub commit จริงอยู่ evidence/course-git/
 
 ## หน้าปก / ผู้จัดทำ
 

@@ -12,9 +12,12 @@
 | Browser layout | ตรวจ viewport แคบจาก side panel; ยังไม่ทดสอบทุก browser/อุปกรณ์ |
 | Compose recreation + data persistence | PASS งาน 1 รายการและ audit 3 รายการยังอยู่ ดู ops-check.txt |
 | Backup restore | PASS SQLite online backup, integrity_check=ok และ task states ตรงต้นฉบับ ดู ops-check.txt |
-| Jenkins runtime/webhook/branch deployment | NOT RUN ยังไม่มี Jenkins job เชื่อม GitHub ของทีม |
+| Jenkins runtime/SCM polling/branch gate | PASS review build #4 ถูกกระตุ้นจาก SCM change, build/test/publish ผ่าน และข้าม deploy ตาม branch; failure probe #3 หยุดก่อน Build/Publish/Deploy ดู jenkins/ |
+| Jenkins main deployment | PENDING รอเจ้าของอนุมัติ merge PR #1; main #1 ยังใช้ Jenkinsfile เก่าและพบ optional-plugin dependency ซึ่งแก้แล้วใน PR |
 | Course Container Docker-in-Docker | PASS 9/9 tests, Compose build/health, deployed HTTP flow, duplicate rejection, backup/restore, recreation persistence และ logout ดู course/ |
 | User study/impact/team contribution | NOT COLLECTED ต้องเก็บจริง |
+
+รอบตรวจ30ตุลาคม2026: เพิ่ม evidence/course-git/ จาก clone GitHub และ checkout `3d93c7a7215671ee8bf96e939451991393985cc5` ตรงกับ Jenkins review #4 ชุดทดสอบผ่าน9/9, smoke ตรวจrevision, backupและrecreateผ่าน ภาพและผลรอบเก่ายังเก็บไว้แยก ไม่ใช้แทนการตรวจ commit ปัจจุบัน สไลด์HTML10หน้าตรวจการแสดงผลและoverflowแล้ว
 
 ครั้งแรก Windows test ถูก sandbox ปิด localhost (EACCES); เมื่อรันโดยได้รับสิทธิ์ผ่านระบบ review แล้วผ่าน ไม่ปกปิดว่า Docker Desktop/Linux เป็นเพียงหลักฐานเสริมและไม่แทน Course Container
 

@@ -14,7 +14,9 @@ async function api(path, data, status = 200) {
   if (header) cookie = header.split(';')[0];
   return result;
 }
-assert.equal((await api('/health')).status, 'ok');
+const health = await api('/health');
+assert.equal(health.status, 'ok');
+if (process.env.EXPECTED_REVISION) assert.equal(health.revision, process.env.EXPECTED_REVISION);
 if (phase === 'seed') {
   const id = randomBytes(8).toString('hex');
   await api('/api/register', { name: 'Course tester', home: 'Synthetic course home', email: `course-${id}@example.com`, password: randomBytes(20).toString('hex') }, 201);

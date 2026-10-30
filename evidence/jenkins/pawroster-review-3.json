@@ -1,0 +1,135 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "actions": [
+    {
+      "_class": "hudson.model.ParametersAction",
+      "parameters": [
+        {
+          "_class": "hudson.model.BooleanParameterValue",
+          "name": "VERIFY_FAILURE_GATE",
+          "value": true
+        }
+      ]
+    },
+    {
+      "_class": "hudson.model.CauseAction",
+      "causes": [
+        {
+          "_class": "hudson.model.Cause$UserIdCause",
+          "shortDescription": "Started by user pawroster-admin",
+          "userId": "pawroster-admin",
+          "userName": "pawroster-admin"
+        }
+      ]
+    },
+    {
+      "_class": "hudson.plugins.git.util.BuildData",
+      "buildsByBranchName": {
+        "refs/remotes/origin/course-readiness": {
+          "_class": "hudson.plugins.git.util.Build",
+          "buildNumber": 3,
+          "buildResult": null,
+          "marked": {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "branch": [
+              {
+                "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          },
+          "revision": {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "branch": [
+              {
+                "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+                "name": "refs/remotes/origin/course-readiness"
+              }
+            ]
+          }
+        }
+      },
+      "lastBuiltRevision": {
+        "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+        "branch": [
+          {
+            "SHA1": "03846688f69ecd3db972c23af002a14737d8a056",
+            "name": "refs/remotes/origin/course-readiness"
+          }
+        ]
+      },
+      "remoteUrls": [
+        "https://github.com/67070282/PawRoster.git"
+      ],
+      "scmName": ""
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.libs.LibrariesAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.cps.EnvActionImpl"
+    },
+    {
+      "_class": "hudson.tasks.junit.TestResultAction",
+      "failCount": 1,
+      "skipCount": 0,
+      "totalCount": 9,
+      "urlName": "testReport"
+    },
+    {},
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.displayurlapi.actions.RunDisplayAction"
+    },
+    {
+      "_class": "org.jenkinsci.plugins.pipeline.modeldefinition.actions.RestartDeclarativePipelineAction"
+    },
+    {},
+    {
+      "_class": "org.jenkinsci.plugins.workflow.job.views.FlowGraphAction"
+    },
+    {},
+    {}
+  ],
+  "artifacts": [
+    {
+      "displayPath": "commit.txt",
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "displayPath": "tests.xml",
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "displayPath": "tracked-files.nul",
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "description": null,
+  "displayName": "#3",
+  "duration": 6265,
+  "estimatedDuration": 12959,
+  "executor": null,
+  "fullDisplayName": "pawroster-review #3",
+  "id": "3",
+  "keepLog": false,
+  "number": 3,
+  "queueId": 4,
+  "result": "FAILURE",
+  "timestamp": 1793355070905,
+  "url": "[local service]/job/pawroster-review/3/",
+  "changeSets": [],
+  "culprits": [],
+  "inProgress": false,
+  "nextBuild": null,
+  "previousBuild": {
+    "number": 2,
+    "url": "[local service]/job/pawroster-review/2/"
+  }
+}
