@@ -11,7 +11,15 @@ pipeline {
   }
   stages {
     stage('Checkout') {
-      steps { deleteDir(); checkout scm; sh 'mkdir -p evidence/runtime; git rev-parse HEAD > evidence/runtime/commit.txt; git ls-files -z > evidence/runtime/tracked-files.nul' }
+      steps {
+        deleteDir()
+        script {
+          def source = checkout scm
+          env.GIT_COMMIT = source.GIT_COMMIT
+          env.SOURCE_BRANCH = source.GIT_BRANCH.replaceFirst('^refs/remotes/', '').replaceFirst('^origin/', '')
+        }
+        sh 'mkdir -p evidence/runtime; git rev-parse HEAD > evidence/runtime/commit.txt; git ls-files -z > evidence/runtime/tracked-files.nul; printf "%s\\n" "$SOURCE_BRANCH" > evidence/runtime/source-branch.txt'
+      }
     }
     stage('Verify') {
       steps {
@@ -29,11 +37,11 @@ pipeline {
     stage('Build image') { steps { sh 'VCS_REF="$GIT_COMMIT" docker compose build --pull' } }
     stage('Publish image') { steps { sh 'docker push "$IMAGE_REPOSITORY:$IMAGE_TAG"; docker image inspect "$IMAGE_REPOSITORY:$IMAGE_TAG" --format "{{json .RepoDigests}}" > evidence/runtime/image-digest.txt' } }
     stage('Deploy') {
-      when { expression { env.BRANCH_NAME == 'main' || env.GIT_BRANCH == 'origin/main' } }
+      when { expression { env.SOURCE_BRANCH == 'main' } }
       steps { sh 'docker compose up -d --no-build --wait --wait-timeout 90' }
     }
     stage('Verify deployed service') {
-      when { expression { env.BRANCH_NAME == 'main' || env.GIT_BRANCH == 'origin/main' } }
+      when { expression { env.SOURCE_BRANCH == 'main' } }
       steps {
         sh '''docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(async r=>{const h=await r.json();if(!r.ok || h.revision!==process.argv[1])process.exit(1);console.log(JSON.stringify(h))}).catch(()=>process.exit(1))" "$GIT_COMMIT" > evidence/runtime/health.txt'''
         sh 'docker compose exec -T app node scripts/smoke.mjs seed > evidence/runtime/deployed-smoke.txt; docker compose exec -T app node scripts/smoke.mjs verify >> evidence/runtime/deployed-smoke.txt'
