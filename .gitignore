@@ -11,3 +11,5 @@ node_modules/
 *.zip
 backups/
 evidence/runtime/
+*.secret
+research-private/

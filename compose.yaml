@@ -1,7 +1,10 @@
 services:
   app:
-    image: pawroster:${IMAGE_TAG:-local}
-    build: .
+    image: ${IMAGE_REPOSITORY:-pawroster}:${IMAGE_TAG:-local}
+    build:
+      context: .
+      args:
+        VCS_REF: ${VCS_REF:-development}
     ports:
       - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3080}:3000"
     environment:

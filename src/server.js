@@ -75,7 +75,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         if (origin.host !== req.headers.host) fail(403, 'ไม่อนุญาตคำขอจากเว็บไซต์อื่น');
       }
       if (req.method === 'GET' && path === '/health') {
-        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '1.0.0' });
+        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '1.0.0', revision: process.env.APP_REVISION || 'development' });
       }
       if (req.method === 'GET' && ['/', '/app.js', '/style.css'].includes(path)) {
         const file = path === '/' ? 'index.html' : path.slice(1);
