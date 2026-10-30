@@ -3,6 +3,7 @@
 set -eu
 mkdir -p evidence/runtime
 export COMPOSE_PROJECT_NAME=pawroster-course
+export VCS_REF="$(git rev-parse HEAD)"
 docker version > evidence/runtime/course-engine.txt
 docker compose version >> evidence/runtime/course-engine.txt
 git rev-parse HEAD > evidence/runtime/course-commit.txt
@@ -10,7 +11,7 @@ git status --porcelain > evidence/runtime/course-worktree.txt
 docker compose config --quiet
 docker run --rm -v "$PWD:/app" -w /app node:24.14.0-alpine sh -c 'npm run check && node --test --test-reporter=tap --test-reporter-destination=evidence/runtime/course-tests.tap'
 docker compose up -d --build --wait --wait-timeout 90
-docker compose exec -T app node scripts/smoke.mjs seed > evidence/runtime/course-smoke.txt
+docker compose exec -T -e EXPECTED_REVISION="$VCS_REF" app node scripts/smoke.mjs seed > evidence/runtime/course-smoke.txt
 docker compose exec -T app node scripts/verify-storage.mjs /tmp/course-backup.db >> evidence/runtime/course-smoke.txt
 docker compose up -d --force-recreate --wait --wait-timeout 90
 docker compose exec -T app node scripts/smoke.mjs verify >> evidence/runtime/course-smoke.txt

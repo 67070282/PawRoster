@@ -1,6 +1,6 @@
 pipeline {
   agent { label 'docker' }
-  options { timestamps(); disableConcurrentBuilds(); skipDefaultCheckout(true); timeout(time: 20, unit: 'MINUTES') }
+  options { disableConcurrentBuilds(); skipDefaultCheckout(true); timeout(time: 20, unit: 'MINUTES') }
   triggers { pollSCM('H/2 * * * *') }
   parameters { booleanParam(name: 'VERIFY_FAILURE_GATE', defaultValue: false, description: 'Inject a failing test into this disposable workspace to verify deployment is stopped.') }
   environment {
