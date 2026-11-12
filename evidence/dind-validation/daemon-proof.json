@@ -1,0 +1,13 @@
+{
+  "outer_image": "tuchsanai/devtools:2569_1",
+  "privileged": true,
+  "host_socket_mounted": false,
+  "separate_daemons": true,
+  "inner_dockerd_running": true,
+  "inner_socket": "local Unix socket",
+  "app_checked": true,
+  "app_container": "pawroster-course-app-1",
+  "app_image": "pawroster:local",
+  "app_health": "healthy",
+  "app_revision": "bf87d29cf20f61d35e2c6a5e2a7b735ed0826e6c"
+}

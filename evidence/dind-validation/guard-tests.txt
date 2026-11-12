@@ -1,0 +1,3 @@
+PASS: container environment, local dockerd, local Unix socket and daemon readiness
+ERROR: No local dockerd process. A Docker CLI or mounted host socket alone is not Docker-in-Docker.
+NEGATIVE_TEST_EXIT=1 (expected 1)
