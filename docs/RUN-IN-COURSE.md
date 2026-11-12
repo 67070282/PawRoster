@@ -90,6 +90,6 @@ docker compose up -d --wait
 
 ครั้งถัดไปเปิดกล่องจากเครื่องหลักด้วย `docker start devtools` แล้วเข้า SSH ตามหัวข้อ 2 และเริ่ม Compose ภายในโฟลเดอร์เดิม Docker daemon ภายในกล่องต้องพร้อมก่อนรันคำสั่ง Compose
 
-ผลตรวจจริงของรุ่น 2.0 ผ่านเส้นทางนี้อยู่ใน [หลักฐาน Course Container ผ่าน SSH](../evidence/course-v2-ssh/README.md) ส่วนการสมัครและทดลองใช้งานดู [คู่มือเปิดโครงงาน](../README-OPEN-PROJECT.md)
+ผลตรวจจริงของรุ่น 2.0 ผ่านเส้นทางนี้อยู่ใน [หลักฐาน Course Container ผ่าน SSH](../evidence/course-v2-ssh/README.md) ส่วนการสมัครและทดลองใช้งานดู [คู่มือเปิดโครงงาน](../README.md#try-the-app)
 
 ผลตรวจสองชั้นและ Environment guard จาก Commit ที่ Pull จริง: [Docker-in-Docker validation](../evidence/dind-validation/README.md)
