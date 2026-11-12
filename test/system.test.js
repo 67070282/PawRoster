@@ -77,6 +77,10 @@ test('HTTP acceptance: shared care, conflicts, privacy, validation and persisten
     assert.equal((await a('/api/dashboard')).pets.length, 2);
     const res = await fetch(url + '/'); assert.equal(res.status, 200); assert.match(await res.text(), /PawRoster/);
     assert.match(res.headers.get('content-security-policy'), /script-src 'self'/);
+    for (const asset of ['/pet-care.svg', '/cat.svg', '/dog.svg', '/fonts/Epilogue.ttf', '/fonts/NotoSansThai.ttf']) {
+      const assetResponse = await fetch(url + asset); assert.equal(assetResponse.status, 200);
+      assert.match(assetResponse.headers.get('content-type'), asset.endsWith('.svg') ? /image\/svg\+xml/ : /font\/ttf/);
+    }
     const malformed = await fetch(url + '/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{bad' }); assert.equal(malformed.status, 400);
     const large = await fetch(url + '/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ x: 'x'.repeat(17000) }) }); assert.equal(large.status, 413);
   });

@@ -6,7 +6,7 @@ const patterns = [/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/, /gh[pousr
 const failures = [];
 for(const file of files) {
   if(forbiddenPath.test(file)) failures.push(file + ': forbidden sensitive file type');
-  if(file.endsWith('.png')) continue;
+  if(/\.(?:png|jpe?g|webp|ttf|woff2?)$/i.test(file)) continue;
   const content = readFileSync(file,'utf8');
   if(patterns.some(p=>p.test(content))) failures.push(file + ': possible credential');
 }

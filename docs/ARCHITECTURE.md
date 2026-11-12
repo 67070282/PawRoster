@@ -27,13 +27,14 @@ HTTP ใช้ใน localhost/course lab; หากเปิดภายนอ�
 ## ข้อมูล
 
 - homes: ชื่อบ้าน + invite token สุ่ม 96 bits
-- users: email unique, password hash scrypt + random salt, home_id
-- sessions: เก็บ SHA-256 ของ token สุ่ม 192 bits หมดอายุ 24 ชั่วโมง; logout ลบจริง
-- pets: home_id, name, species
-- tasks: pet_id, title, UTC due, open/claimed/done, assignee, completed_at, note
+- users: email unique, password hash scrypt + random salt; home_id เดิมเก็บไว้เพื่อรองรับฐานข้อมูลเก่า ไม่ใช้เป็นแหล่งสิทธิ์
+- memberships: คู่ home_id/user_id และ role owner/member เป็นแหล่งสิทธิ์การเข้าถึงบ้าน
+- sessions: เก็บ SHA-256 ของ token สุ่ม 192 bits หมดอายุ 24 ชั่วโมง; active_home_id แยกตาม Session; logout ลบจริง
+- pets: home_id, name, species, notes, archived
+- tasks: pet_id, title, UTC due, open/claimed/done, assignee, completed_at, note, created_by, priority, recurrence, cancelled_at
 - events: task_id, actor, action, UTC timestamp
 
-Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem รุ่น schema=1 สร้างอัตโนมัติ หากเปลี่ยน schema ต้องเพิ่ม migration ที่ทดสอบการอัปเกรดก่อนส่ง
+Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem รุ่น schema=2 อัปเกรดจากรุ่น 1 ใน Transaction เดียว โดยเก็บข้อมูลและ Session เดิม ผู้ใช้คนแรกของแต่ละบ้านเดิมเป็นเจ้าของบ้าน สมาชิกคนอื่นเป็น member การเปิดครั้งถัดไปจะไม่สร้าง membership ที่ออกจากบ้านแล้วกลับมาใหม่ มี Migration regression test M9
 
 ## HTTP API
 
@@ -45,12 +46,25 @@ Foreign key เปิดทุก connection; WAL กับ busy_timeout สำ�
 | POST | /api/register | name,email,password,home หรือ invite → session cookie |
 | POST | /api/login | email,password → session cookie |
 | POST | /api/logout | {} → revoke session |
-| GET | /api/dashboard | user,pets,tasks,events เฉพาะบ้าน |
-| POST | /api/pets | name,species → id |
-| POST | /api/tasks | pet_id,title,due (ISO UTC) → id |
+| GET | /api/dashboard | user,homes,members,pets,tasks,events เฉพาะบ้านที่เลือก |
+| GET | /api/homes | บ้านที่เป็นสมาชิกและ active_home_id |
+| POST | /api/homes | name → สร้างบ้านและเลือกใช้งาน |
+| POST | /api/homes/join | invite → เข้าร่วมบ้านด้วยบัญชีเดิม |
+| POST | /api/homes/switch | home_id → เปลี่ยนบ้านเฉพาะ Session |
+| POST | /api/homes/rename | name → เจ้าของบ้านเปลี่ยนชื่อ |
+| POST | /api/homes/invite/rotate | {} → เจ้าของบ้านเปลี่ยนรหัสเชิญ |
+| POST | /api/homes/leave | {} → สมาชิกออกและคืนงานค้าง |
+| POST | /api/homes/members/remove | user_id → เจ้าของบ้านนำสมาชิกออก |
+| POST | /api/homes/transfer | user_id → โอนสิทธิ์เจ้าของบ้าน |
+| POST | /api/pets | name,species,notes? → id |
+| POST | /api/pets/:id/edit | name,species,notes? → แก้ไข |
+| POST | /api/pets/:id/archive | archived (boolean) → เจ้าของบ้านเก็บประวัติ/นำกลับ |
+| POST | /api/tasks | pet_id,title,due (ISO UTC),priority?,recurrence? → id |
+| POST | /api/tasks/:id/edit | title,due,priority?,recurrence? → แก้ไขงาน open โดยผู้สร้าง/เจ้าของบ้าน |
+| POST | /api/tasks/:id/cancel | {} → ยกเลิกงานที่ยังไม่เสร็จ โดยเก็บประวัติ |
 | POST | /api/tasks/:id/claim | {} → open to claimed |
 | POST | /api/tasks/:id/release | {} → claimed to open |
-| POST | /api/tasks/:id/complete | note? (≤500) → claimed to done |
+| POST | /api/tasks/:id/complete | note? (≤500) → claimed to done; งานซ้ำสร้างรายการถัดไปใน Transaction เดียว |
 
 400 validation, 401 session, 403 permission/origin, 404 unseen entity, 409 state conflict, 413 oversized body, 415 media type, 429 authentication rate limit, 503 unexpected service/database error
 
@@ -59,6 +73,10 @@ Foreign key เปิดทุก connection; WAL กับ busy_timeout สำ�
 Cookie HttpOnly/SameSite Strict, Origin validation เมื่อ Browser ส่ง Origin, parameterized SQL, rendering user text ด้วย textContent, CSP same-origin และ no-store ช่วยลดความเสี่ยงที่เกี่ยวข้อง ไม่บันทึก password/cookie/body ลง access logs rate limit 30 ครั้งต่อนาทีต่อ IP อยู่ในหน่วยความจำ รีสตาร์ตแล้ว reset; scrypt แบบ synchronous อาจ block event loop จึงไม่เหมาะ public high traffic
 
 คำขอชนได้ 409 พร้อม reload ใน UI; permission ผิดได้ 403; DB error ได้ข้อความทั่วไปและรายละเอียดใน stdout; network ขัดข้อง UI แจ้ง error ผู้ใช้กดอัปเดตใหม่หลังเชื่อมต่อได้ ไม่แสดงผลสำเร็จก่อนรับ response งานสร้างไม่มี idempotency key จึงไม่ควรกดส่งใหม่โดยไม่ตรวจ dashboard ถ้า connection หลุดหลังบันทึก งานที่สมาชิกสร้างซ้ำเชิงความหมายยังเป็นข้อจำกัด
+
+UI ส่ง `X-Home-ID` บนคำขอแก้ไข Server เปรียบเทียบกับบ้านใน Session เพื่อป้องกันแท็บเก่า และตรวจสิทธิ์ซ้ำหลังอ่าน JSON body เผื่อถูกถอนสิทธิ์ระหว่างส่งคำขอ สมาชิกเห็นชื่อและบทบาทของคนในบ้าน โดยไม่ส่งอีเมลสมาชิกอื่น รหัสเชิญแสดงเฉพาะเจ้าของบ้าน การนำสมาชิกออกไม่ทำให้รหัสเชิญเดิมหมดอายุ จึงมีเมนูเปลี่ยนรหัสสำหรับกรณีจำกัดการเข้าร่วมใหม่
+
+งานซ้ำสร้างครั้งถัดไปเมื่อ Complete สำเร็จเท่านั้น กำหนดเวลานับจาก due เดิม +24 ชั่วโมงหรือ +7 วัน ไม่ใช่ Cron และไม่ชดเชยรายการที่ตกหล่นโดยอัตโนมัติ การยกเลิกงานไม่สร้างรายการถัดไป
 
 ## เส้นทาง Demo
 

@@ -1,0 +1,7 @@
+PASS deployed HTTP flow: baseline care, duplicate rejection, multi-home creation, existing-account join, isolation and recurring successor
+PASS: SQLite online backup, restored integrity and task states match
+{"users":2,"homes":3,"memberships":4,"pets":2,"tasks":3,"events":7}
+PASS persistence verification: session, task, note, memberships, selected home, recurring successor and audit retained; member removal and logout revoked access
+PASS: SQLite online backup, restored integrity and task states match
+{"users":2,"homes":3,"memberships":3,"pets":2,"tasks":3,"events":7}
+{"status":"ok","version":"2.0.0","revision":"worktree-v2"}
