@@ -1,38 +1,47 @@
 # PawRoster — ดูแลด้วยกัน ทุกวัน
 
-ระบบแบ่งงานดูแลสัตว์เลี้ยงสำหรับคนที่อาศัยอยู่บ้านเดียวกัน: สร้างบ้าน → ชวนสมาชิก → เพิ่มสัตว์เลี้ยง → สร้างงานพร้อมกำหนดเวลา → รับงาน → ยืนยันการดูแล → ตรวจประวัติร่วมกัน
+ระบบแบ่งงานดูแลสัตว์เลี้ยงสำหรับสมาชิกในครัวเรือน ช่วยให้เห็นผู้รับผิดชอบ กำหนดเวลา และประวัติการดูแลในพื้นที่เดียวกัน เพื่อลดความสับสนในการประสานงานดูแลสัตว์เลี้ยงร่วมกัน
 
-โครงงาน **PetTech × DevTools** ใช้ JavaScript, Node.js 24 และ SQLite โดยไม่มี npm dependencies สำหรับ runtime พร้อม Docker Compose, Jenkinsfile และหลักฐานจาก Course Container
+โครงงานนี้จัดทำภายใต้หัวข้อ **PetTech × DevTools** โดยใช้ JavaScript, Node.js 24 และ SQLite พร้อมกระบวนการพัฒนาและทดสอบผ่าน Git, Docker Compose และ Jenkins
 
-![PawRoster dashboard — ข้อมูลสังเคราะห์ที่ใช้ทดสอบ](evidence/dashboard.png)
+![หน้าหลักของ PawRoster แสดงข้อมูลจำลองสำหรับทดสอบ](evidence/dashboard.png)
 
-## สถานะโครงการ
+## ที่มาและวัตถุประสงค์
 
-| ส่วน | สถานะ |
+การดูแลสัตว์เลี้ยงในบ้านที่มีผู้ดูแลหลายคนอาจเกิดความไม่ชัดเจนว่าใครรับผิดชอบงานใด และงานนั้นดำเนินการแล้วหรือยัง PawRoster จึงออกแบบให้สมาชิกมองเห็นสถานะงานร่วมกัน ตั้งแต่การสร้างงาน รับงาน บันทึกการดูแล ไปจนถึงตรวจสอบประวัติย้อนหลัง
+
+วัตถุประสงค์ของโครงงาน ได้แก่
+
+- จัดการงานดูแลสัตว์เลี้ยงและกำหนดผู้รับผิดชอบในครัวเรือน
+- แสดงสถานะและกำหนดเวลาของงานอย่างเป็นระบบ
+- จัดเก็บประวัติการดำเนินงานเพื่อให้ตรวจสอบย้อนหลังได้
+- ประยุกต์ใช้เครื่องมือ DevTools ตั้งแต่การจัดการเวอร์ชันจนถึงการทดสอบและนำระบบขึ้นใช้งานในสภาพแวดล้อมทดสอบ
+
+## คุณสมบัติของระบบ
+
+- สมัครบัญชี เข้าสู่ระบบ ออกจากระบบ และเข้าร่วมบ้านด้วยรหัสเชิญ
+- แยกข้อมูลและตรวจสอบสิทธิ์การเข้าถึงระหว่างครัวเรือนที่ฝั่ง Backend
+- เพิ่มข้อมูลสัตว์เลี้ยงและสร้างงานแบบครั้งเดียวพร้อมกำหนดวันเวลา
+- รับงาน คืนงาน และบันทึกงานที่เสร็จแล้วพร้อมหมายเหตุ
+- จำกัดผู้รับงานครั้งละหนึ่งคน และอนุญาตให้ผู้รับงานเป็นผู้คืนงานหรือยืนยันการดูแล
+- แสดงงานที่เลยกำหนด กรองรายการงาน และดูประวัติ 50 กิจกรรมล่าสุด
+- บันทึกการเปลี่ยนสถานะงานและประวัติใน Transaction เดียวกัน พร้อมจัดเก็บข้อมูลถาวรด้วย SQLite
+
+ลำดับการใช้งานหลัก: **สร้างบ้าน → เชิญสมาชิก → เพิ่มสัตว์เลี้ยง → สร้างงาน → รับงาน → บันทึกการดูแล → ตรวจสอบประวัติ**
+
+## เทคโนโลยีที่ใช้
+
+| ส่วนประกอบ | เทคโนโลยี |
 |---|---|
-| Web + API + Database | Implemented และตรวจ HTTP/UI แล้ว |
-| Automated HTTP tests | ผ่าน 9/9 ทั้ง Windows, Linux และ Course Container |
-| Docker Compose / persistence / backup | ตรวจผ่านแล้ว |
-| Jenkins | รันจริงแล้ว: SCM-triggered main build #4 ผ่าน Build/Publish/Deploy/Health/Smoke; review branch และ failing-test gate ตรวจแล้ว |
-| GitHub repository | [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public |
-| สัมภาษณ์ผู้ใช้ / ผลกระทบ | รอเก็บข้อมูลจริง |
+| Frontend | HTML, CSS และ JavaScript |
+| Backend | Node.js 24 และ HTTP API |
+| ฐานข้อมูล | SQLite ผ่าน `node:sqlite` |
+| การจัดการเวอร์ชัน | Git และ GitHub |
+| สภาพแวดล้อมใช้งาน | Docker และ Docker Compose |
+| CI/CD | Jenkins |
+| การทดสอบ | Node.js Test Runner, HTTP acceptance tests และ Smoke tests |
 
-## โครงสร้าง Repository
-
-```text
-PawRoster/
-├── src/server.js          # HTTP API, authentication, business rules, SQLite
-├── public/                # หน้าเว็บ HTML/CSS/JavaScript
-├── test/system.test.js    # HTTP acceptance tests
-├── scripts/               # Backup, smoke และ Course Container verification
-├── docs/                  # Proposal, architecture, operations และ presentation
-├── evidence/              # ผลตรวจจริง รวม Course Container logs
-├── .github/               # Issue และ Pull Request templates
-├── compose.yaml
-├── Dockerfile
-├── Jenkinsfile
-└── CONTRIBUTING.md
-```
+ระบบไม่ใช้ npm dependencies สำหรับ Runtime
 
 ## สมาชิกผู้จัดทำ
 
@@ -43,43 +52,35 @@ PawRoster/
 | นายรัชชานนท์ กิตติสัตยาวัจน์ | 67070273 |
 | นายศรันย์ สุภาเพียร | 67070282 |
 
-Section และหมายเลขกลุ่มยังไม่ระบุ รายละเอียดการแบ่งหน้าที่ดู docs/PROJECT.md
+ข้อมูล Section หมายเลขกลุ่ม และรายละเอียดหน้าที่รับผิดชอบอยู่ระหว่างการจัดทำ โดยรวบรวมไว้ใน [เอกสารโครงงาน](docs/PROJECT.md)
 
-## เริ่มใช้เร็ว
+## การติดตั้งและใช้งาน
 
-ต้องมี Docker Engine และ Docker Compose v2:
+### ใช้งานผ่าน Docker Compose
+
+สภาพแวดล้อมที่ใช้: Docker Engine และ Docker Compose v2
 
 ```sh
 docker compose up -d --build --wait
 ```
 
-เปิด http://localhost:3080 แล้วสร้างบัญชีและบ้านใหม่ ไม่มีข้อมูลส่วนตัวหรือบัญชีเริ่มต้นในโค้ด สมาชิกถัดไปสมัครด้วยรหัสจาก “เชิญสมาชิกเข้าบ้าน” ไม่ควรแชร์รหัสนี้สาธารณะ
+เปิด [http://localhost:3080](http://localhost:3080) เพื่อสมัครบัญชีและสร้างบ้าน สมาชิกคนอื่นสามารถสมัครเข้าร่วมบ้านด้วยรหัสจากเมนู “เชิญสมาชิกเข้าบ้าน” รหัสเชิญใช้สำหรับเข้าถึงข้อมูลของบ้าน จึงเหมาะสำหรับแบ่งปันเฉพาะสมาชิกในครัวเรือน
 
-ถ้าพอร์ตชน: คัดลอก `.env.example` เป็น `.env` แล้วเปลี่ยน `APP_PORT` การทดสอบที่ผู้ช่วยทำไว้ใช้ Compose project `pawroster-review` และกำลังให้บริการที่พอร์ต 3080 หากต้องการใช้คอนเทนเนอร์เดิม ให้รัน `docker compose -p pawroster-review ...` แทนคำสั่งปกติ
+หากพอร์ต 3080 ถูกใช้งานอยู่ สามารถคัดลอก `.env.example` เป็น `.env` แล้วกำหนดค่า `APP_PORT` ใหม่ได้
 
-### รันโดยไม่ใช้ Docker
+### ใช้งานด้วย Node.js
 
-ใช้ Node.js 24.14.x (มี `node:sqlite` ในตัว ไม่ต้อง npm install):
+สภาพแวดล้อมที่ใช้: Node.js 24.14.x ซึ่งรองรับ `node:sqlite` โดยไม่ต้องติดตั้งแพ็กเกจเพิ่มเติม
 
 ```sh
 npm start
 ```
 
-เปิด http://localhost:3000 ข้อมูลเก็บที่ `data/pawroster.db` SQLite อาจพิมพ์ ExperimentalWarning จาก Node ซึ่งไม่ใช่ผลทดสอบล้มเหลว
+เปิด [http://localhost:3000](http://localhost:3000) ข้อมูลถูกจัดเก็บใน `data/pawroster.db` ทั้งนี้ Node.js อาจแสดง `ExperimentalWarning` เกี่ยวกับ SQLite ซึ่งแยกจากผลการทดสอบระบบ
 
-## สิ่งที่ทำได้
+## การทดสอบและผลการตรวจสอบ
 
-- สร้างบัญชี เข้าสู่ระบบ ออกจากระบบ และเข้าบ้านด้วยรหัสเชิญ
-- แยกข้อมูลคนละบ้านด้วยสิทธิ์ที่ Backend ทุกคำขอ
-- เพิ่มสัตว์เลี้ยงและสร้างงานครั้งเดียวพร้อมวันเวลา
-- รับงานได้คนเดียว คืนงาน หรือบันทึกว่าเสร็จแล้วพร้อมหมายเหตุ
-- เฉพาะผู้รับงานเปลี่ยนสถานะงานนั้นได้ ป้องกันทำเสร็จซ้ำ
-- แสดงงานเลยกำหนด กรองงาน และดูประวัติผู้ทำรายการ 50 กิจกรรมล่าสุด
-- บันทึกงานกับประวัติใน transaction เดียว ข้อมูลคงอยู่หลังรีสตาร์ต
-
-ไม่ได้ใช้ LLM, อีเมล, push notification, งานเกิดซ้ำอัตโนมัติ, คำแนะนำการรักษา, การลบบัญชี หรือระบบหลายบ้านต่อบัญชี ไม่รับปากผลทางสุขภาพหรือจำนวนงานที่ลืมลดลงจนกว่าจะมีการศึกษากับผู้ใช้จริง
-
-## การทดสอบและหลักฐาน
+คำสั่งสำหรับตรวจสอบโค้ด ทดสอบระบบ และตรวจสอบบริการ:
 
 ```sh
 npm run check
@@ -89,34 +90,62 @@ docker compose ps
 docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(async r=>{if(!r.ok)process.exit(1);console.log(await r.text())})"
 ```
 
-ดู [ผลตรวจ](evidence/VERIFICATION.md), [ผลทดสอบ Linux ฉบับเต็ม](evidence/linux-tests.tap) และ [ภาพหน้าเว็บ](evidence/dashboard.png)
+| รายการ | ผลการตรวจสอบที่บันทึกไว้ |
+|---|---|
+| Web, API และฐานข้อมูล | ผ่านการตรวจสอบ HTTP และส่วนติดต่อผู้ใช้ |
+| HTTP acceptance tests | ผ่าน 8 กรณีทดสอบ โดย Node.js รายงานรวม 9 รายการเมื่อรวมชุดทดสอบหลัก |
+| Docker Compose | ผ่านการ Build และตรวจสอบ Health |
+| การจัดเก็บข้อมูล | ผ่านการสำรองและกู้คืน รวมถึงตรวจสอบข้อมูลหลังสร้างคอนเทนเนอร์ใหม่ |
+| Course Container | ผ่านการทดสอบใน `tuchsanai/devtools:2569_1` |
+| Jenkins | ผ่าน Build, Publish, Deploy, Health และ Smoke tests ในสภาพแวดล้อมทดสอบ |
+| การศึกษากับผู้ใช้ | อยู่ระหว่างเตรียมเก็บข้อมูลสัมภาษณ์และทดลองใช้งานจริง |
 
-ตรวจระบบใน Course Container `tuchsanai/devtools:2569_1` แล้ว: tests 9/9, Compose build/health, HTTP flow, backup/restore และข้อมูลหลัง recreate ผ่าน ดู [หลักฐาน Course Container](evidence/course/README.md)
+หลักฐานประกอบ: [ผลการตรวจสอบระบบ](evidence/VERIFICATION.md), [ผลทดสอบ Linux](evidence/linux-tests.tap), [Course Container](evidence/course/README.md), [การตรวจสอบหลังรวมโค้ด](evidence/course-main/README.md) และ [Jenkins](evidence/jenkins/README.md)
 
-**ยังไม่ใช่งานพร้อมส่งโดยไม่มีขั้นตอนเพิ่ม:** ส่วนระบบและ Jenkins มีผลรันจริงแล้ว ยังต้องระบุ Section/หมายเลขกลุ่มและหน้าที่จริง เก็บหลักฐานปัญหาและผลทดลองจากผู้ใช้จริง สมาชิกต้องร่วม review และอธิบายโค้ดได้ พร้อมตรวจ commit รุ่นส่งอีกครั้งหากเปลี่ยนระบบภายหลัง
+[Pull Request #1](https://github.com/67070282/PawRoster/pull/1) รวมเข้าสู่ `main` แล้ว โดยมีการตรวจสอบ Jenkins ทั้ง Review branch และกรณีทดสอบล้มเหลวเพื่อยืนยันการหยุด Pipeline ก่อนขั้นตอนถัดไป ผลยืนยันเพิ่มเติมจาก Main build #5 ผ่านกระบวนการครบที่ Commit [`80914ea`](https://github.com/67070282/PawRoster/commit/80914ea38d6527fc8a95bf7160a39b73413746a3) โดย Health endpoint แสดง Revision ตรงกับโค้ดที่นำขึ้นใช้งาน ผลดังกล่าวเป็นผลของรุ่นที่ระบุ
 
-## เอกสารสำหรับพัฒนาและนำเสนอ
+## ขอบเขตและแผนการประเมิน
 
-- [Proposal, Acceptance Criteria และ Traceability](docs/PROJECT.md)
-- [สถาปัตยกรรมและ API](docs/ARCHITECTURE.md)
-- [ติดตั้ง Jenkins, Course Container, สำรองและกู้คืน](docs/OPERATIONS.md)
-- [โครงเรื่องนำเสนอ 10 นาทีและ Demo](docs/PRESENTATION.md)
-- [GitHub setup และ workflow ของทีม](docs/GITHUB.md)
-- [แนวทางร่วมพัฒนา](CONTRIBUTING.md)
-- [ตารางตรวจตามกติกา](docs/SUBMISSION-AUDIT.md)
-- [Traceability ครบ 6 คอลัมน์](docs/TRACEABILITY.md)
-- [แบบสัมภาษณ์และทดลองใช้จริง](docs/RESEARCH.md)
-- [สไลด์นำเสนอ HTML 10 หน้า](presentation/index.html) ดาวน์โหลดแล้วเปิดไฟล์ กดลูกศรหรือปุ่มถัดไป ใช้ Print to PDF ได้
+รุ่นปัจจุบันรองรับการแบ่งงานภายในบ้านหนึ่งหลังต่อบัญชี โดยยังไม่ครอบคลุมงานที่เกิดซ้ำอัตโนมัติ การแจ้งเตือนทางอีเมลหรือ Push notification การลบบัญชี และคำแนะนำด้านการรักษาสัตว์เลี้ยง ระบบไม่มีการใช้ LLM ในการทำงานของแอปพลิเคชัน
 
-รอบตรวจวันที่30ตุลาคม2026: [PR #1](https://github.com/67070282/PawRoster/pull/1) รวมเข้าmainแล้วตามที่เจ้าของอนุมัติ แก้การอ่าน branch/revision จาก checkout แล้ว main build #4 ผ่านครบที่ commit `86866281b6df405f61c2d81097b2c74b4e1cb3be` ดู evidence/jenkins ไม่ถือว่านี่เป็นหลักฐานว่าสมาชิกทั้ง4ร่วมพัฒนาแล้ว งานผลผู้ใช้จริงติดตาม issue #2 และข้อมูลทีมใน issue #3
+การประเมินประโยชน์ต่อผู้ใช้จะอาศัยข้อมูลสัมภาษณ์และการทดลองใช้งานจริงตาม [แผนการศึกษา](docs/RESEARCH.md) ปัจจุบันยังไม่มีผลการศึกษาสำหรับสรุปการลดงานที่ตกหล่นหรือผลด้านสุขภาพของสัตว์เลี้ยง โดยติดตามงานส่วนนี้ใน [Issue #2](https://github.com/67070282/PawRoster/issues/2) และรายละเอียดทีมใน [Issue #3](https://github.com/67070282/PawRoster/issues/3)
 
-## แหล่งกติกา
+## โครงสร้าง Repository
 
-- https://github.com/Tuchsanai/DevTools/tree/main/Mini_Project
-- https://github.com/Tuchsanai/DevTools/tree/main/Mini_Project/project-details
+```text
+PawRoster/
+├── src/server.js          # HTTP API, authentication, business rules และ SQLite
+├── public/                # หน้าเว็บ HTML/CSS/JavaScript
+├── test/system.test.js    # HTTP acceptance tests
+├── scripts/               # Backup, smoke และ Course Container verification
+├── docs/                  # เอกสารโครงงาน สถาปัตยกรรม และการใช้งาน
+├── evidence/              # ผลทดสอบและหลักฐานการตรวจสอบ
+├── presentation/          # สไลด์นำเสนอ
+├── .github/               # Issue และ Pull Request templates
+├── compose.yaml
+├── Dockerfile
+├── Jenkinsfile
+└── CONTRIBUTING.md
+```
 
-อ้างอิงเนื้อหาที่อ่านวันที่ 27 ตุลาคม 2026 ให้ตรวจประกาศผู้สอนอีกครั้งก่อนส่ง
+## เอกสารประกอบโครงงาน
 
-## AI disclosure
+- [ข้อเสนอโครงงานและ Acceptance Criteria](docs/PROJECT.md)
+- [สถาปัตยกรรมระบบและ API](docs/ARCHITECTURE.md)
+- [การติดตั้ง Jenkins, Course Container และการสำรองข้อมูล](docs/OPERATIONS.md)
+- [ตาราง Traceability เชื่อมโยงข้อกำหนดกับหลักฐาน](docs/TRACEABILITY.md)
+- [การตรวจสอบความสอดคล้องกับเกณฑ์โครงงาน](docs/SUBMISSION-AUDIT.md)
+- [แผนสัมภาษณ์และทดลองใช้งาน](docs/RESEARCH.md)
+- [กระบวนการทำงานบน GitHub](docs/GITHUB.md)
+- [แนวทางการร่วมพัฒนา](CONTRIBUTING.md)
+- [แผนการนำเสนอและสาธิตระบบ](docs/PRESENTATION.md)
+- [สไลด์นำเสนอ 10 หน้า](presentation/index.html) — ดาวน์โหลดและเปิดด้วยเว็บเบราว์เซอร์ รองรับปุ่มลูกศรและการพิมพ์เป็น PDF
 
-ใช้ OpenAI Codex ช่วยวิเคราะห์กติกา เลือกหัวข้อ ออกแบบ เขียนโค้ด ชุดทดสอบและเอกสารในชุดนี้ สมาชิกต้องอ่าน ทบทวน แก้ไข และอธิบาย data flow กับผลทดสอบได้ด้วยตนเอง การแบ่งงานในเอกสารเป็นข้อเสนอ ไม่ใช่หลักฐานว่าแต่ละคนทำงานนั้นแล้ว
+## แหล่งอ้างอิง
+
+- [รายละเอียด Mini Project — DevTools](https://github.com/Tuchsanai/DevTools/tree/main/Mini_Project)
+- [ข้อกำหนดและเกณฑ์โครงงาน](https://github.com/Tuchsanai/DevTools/tree/main/Mini_Project/project-details)
+
+## เครื่องมือสนับสนุนการพัฒนา
+
+โครงงานนี้ใช้ OpenAI Codex เป็นเครื่องมือช่วยในการวิเคราะห์ข้อกำหนด ออกแบบระบบ พัฒนาโค้ด จัดทำชุดทดสอบ และเรียบเรียงเอกสารประกอบ
