@@ -1,6 +1,9 @@
 #!/bin/sh
 # Run INSIDE an instructor-approved course container, from the repository root.
 set -eu
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+cd "$ROOT"
+. "$ROOT/scripts/assert-course-environment.sh"
 mkdir -p evidence/runtime
 export COMPOSE_PROJECT_NAME=pawroster-course
 export VCS_REF="$(git rev-parse HEAD)"

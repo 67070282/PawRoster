@@ -2,6 +2,27 @@
 
 คู่มือนี้ใช้สภาพแวดล้อม `tuchsanai/devtools:2569_1` และรันคำสั่งโครงงานหลังเชื่อมต่อ SSH เข้าไปในกล่อง ตามรูปแบบที่ผู้สอนกำหนด
 
+## โครงสร้าง Docker-in-Docker
+
+```text
+เครื่องหลัก / Docker Desktop
+└── devtools — image: tuchsanai/devtools:2569_1, privileged
+    ├── SSH :22 ← เครื่องหลัก :2222
+    └── dockerd ภายในกล่อง (คนละ daemon กับเครื่องหลัก)
+        ├── pawroster-course-app-1 — image แอปจาก Dockerfile (Node.js 24)
+        └── care-data — Volume ฐานข้อมูล SQLite ภายใน daemon นี้
+```
+
+Image อาจารย์เป็นสภาพแวดล้อมชั้นนอกที่ใช้ Build และรันคอนเทนเนอร์โครงงานชั้นใน จึงคง `FROM node:24.14.0-alpine` ใน Dockerfile ของแอปไว้ ตัวอย่าง PawFeed ใช้รูปแบบเดียวกัน โดย Dockerfile ของแอปใช้ Node image ส่วนสคริปต์ Course Container สร้างชั้นนอกจาก image อาจารย์ ดู [สคริปต์ PawFeed](https://github.com/67070119/PawFeed/blob/main/scripts/course-container-test.sh) และ [Dockerfile](https://github.com/67070119/PawFeed/blob/main/backend/Dockerfile)
+
+ตรวจสองชั้นจาก PowerShell บนเครื่องหลัก จากโฟลเดอร์ PawRoster:
+
+```powershell
+./scripts/check-course-container.ps1 -RequireApp
+```
+
+สคริปต์ตรวจ image/privileged, ไม่มีการ Bind mount Docker socket ของเครื่องหลัก, มี dockerd ภายใน, Docker daemon ID สองชั้นต่างกัน และแอป Healthy อยู่ใน daemon ชั้นใน หากยังไม่ได้เริ่มแอป ใช้คำสั่งโดยไม่ใส่ `-RequireApp`
+
 ## 1. เปิดกล่องรายวิชาจากเครื่องหลัก
 
 ```sh
@@ -32,6 +53,7 @@ cd PawRoster
 git rev-parse HEAD
 docker version
 docker compose version
+sh scripts/assert-course-environment.sh
 export COMPOSE_PROJECT_NAME=pawroster-course
 export VCS_REF="$(git rev-parse HEAD)"
 docker compose up -d --build --wait
