@@ -159,12 +159,13 @@ npm run check
 npm test
 ```
 
-หากเปิดระบบด้วย Docker และไม่ได้ติดตั้ง Node.js บนเครื่อง สามารถใช้:
+หากเปิดระบบด้วย Docker และไม่ได้ติดตั้ง Node.js บนเครื่อง สามารถตรวจไวยากรณ์ของโค้ดในบริการได้ด้วย:
 
 ```sh
 docker compose exec -T app npm run check
-docker compose exec -T app npm test
 ```
+
+Production image ไม่รวมโฟลเดอร์ชุดทดสอบ การรัน HTTP acceptance tests จึงใช้คำสั่ง `npm test` จากโฟลเดอร์ Source code ที่มี Node.js ตามหัวข้อ 3 ส่วนผลทดสอบที่บันทึกไว้สามารถตรวจได้ในโฟลเดอร์ `evidence`
 
 ## 7. เอกสารประกอบการตรวจงาน
 
