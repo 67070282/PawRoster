@@ -67,6 +67,8 @@
 
 **สำหรับอาจารย์และผู้ตรวจ:** ดู [คู่มือเปิดโปรเจคและทดลองใช้งาน](README-OPEN-PROJECT.md) ซึ่งรวมวิธีดาวน์โหลด ติดตั้ง เปิดระบบ ทดสอบสองบัญชี และแก้ปัญหาเบื้องต้น
 
+**สำหรับกล่องรายวิชาที่เข้า SSH พอร์ต 2222:** ดู [วิธีรันภายใน Docker ของอาจารย์](docs/RUN-IN-COURSE.md) พร้อม SSH tunnel เพื่อเปิดหน้าเว็บจากเครื่องหลัก
+
 ### ใช้งานผ่าน Docker Compose
 
 สภาพแวดล้อมที่ใช้: Docker Engine และ Docker Compose v2
@@ -107,7 +109,7 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 | HTTP acceptance tests รุ่น 2.0 | ผ่าน 17 กรณี: R1–R8 และ M1–M9 โดย Node.js รายงานรวม 18 รายการเมื่อรวมชุดทดสอบหลัก |
 | Docker Compose รุ่น 2.0 | ผ่าน Build/Health, HTTP smoke หลายบ้าน, งานซ้ำ, Backup/Integrity และ Force-recreate โดยข้อมูลยังอยู่ ดู evidence/v2 |
 | การจัดเก็บข้อมูล | ผ่านการสำรองและกู้คืน รวมถึงตรวจสอบข้อมูลหลังสร้างคอนเทนเนอร์ใหม่ |
-| Course Container | ผ่านการทดสอบใน `tuchsanai/devtools:2569_1` |
+| Course Container รุ่น 2.0 | เข้า SSH พอร์ต 2222 แล้ว Clone/Build/Test ภายใน `tuchsanai/devtools:2569_1` ผ่าน รวม Health Revision และ Persistence ดู [หลักฐาน](evidence/course-v2-ssh/README.md) |
 | Jenkins รุ่น 1.0 | มีผล Build/Publish/Deploy/Health/Smoke ของรุ่นที่ระบุด้านล่าง ผลเดิมไม่ใช่ผลยืนยันรุ่น 2.0 |
 | การศึกษากับผู้ใช้ | อยู่ระหว่างเตรียมเก็บข้อมูลสัมภาษณ์และทดลองใช้งานจริง |
 

@@ -1,0 +1,288 @@
+TAP version 13
+# (node:39) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"method":"POST","path":"/api/register","status":201,"ms":77}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/register","status":201,"ms":53}
+# {"method":"POST","path":"/api/register","status":201,"ms":46}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/pets","status":201,"ms":3}
+# {"method":"POST","path":"/api/homes/join","status":201,"ms":3}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":404,"ms":1}
+# {"method":"POST","path":"/api/homes/switch","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/login","status":200,"ms":42}
+# {"method":"POST","path":"/api/homes/switch","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+# {"method":"POST","path":"/api/homes/join","status":409,"ms":1}
+# {"method":"POST","path":"/api/homes/join","status":400,"ms":1}
+# Subtest: M1 existing accounts join multiple homes, switching keeps data isolated per session
+ok 1 - M1 existing accounts join multiple homes, switching keeps data isolated per session
+  ---
+  duration_ms: 401.846391
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":45}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"POST","path":"/api/register","status":201,"ms":43}
+# {"method":"POST","path":"/api/homes/invite/rotate","status":403,"ms":0}
+# {"method":"POST","path":"/api/homes/rename","status":403,"ms":1}
+# {"method":"POST","path":"/api/homes/rename","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/homes/invite/rotate","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/homes/join","status":400,"ms":1}
+# {"method":"POST","path":"/api/homes/join","status":201,"ms":3}
+# Subtest: M2 owners manage invite rotation and names; members cannot expose or rotate codes
+ok 2 - M2 owners manage invite rotation and names; members cannot expose or rotate codes
+  ---
+  duration_ms: 204.974359
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/register","status":201,"ms":45}
+# {"method":"POST","path":"/api/register","status":201,"ms":40}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes/members/remove","status":403,"ms":0}
+# {"method":"POST","path":"/api/homes/members/remove","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":0}
+# {"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes","status":201,"ms":3}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# Subtest: M3 removal revokes access and releases claimed work with history retained
+ok 3 - M3 removal revokes access and releases claimed work with history retained
+  ---
+  duration_ms: 211.304078
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":40}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/register","status":201,"ms":45}
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"POST","path":"/api/homes/leave","status":409,"ms":0}
+# {"method":"POST","path":"/api/homes/transfer","status":400,"ms":0}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes/transfer","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/homes/invite/rotate","status":403,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/homes/join","status":201,"ms":4}
+# {"method":"POST","path":"/api/homes/switch","status":200,"ms":5}
+# {"method":"POST","path":"/api/homes/leave","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+# Subtest: M4 ownership transfer and leaving preserve remaining memberships
+ok 4 - M4 ownership transfer and leaving preserve remaining memberships
+  ---
+  duration_ms: 219.612722
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":47}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/register","status":201,"ms":46}
+# {"method":"POST","path":"/api/register","status":201,"ms":48}
+# {"method":"POST","path":"/api/homes","status":201,"ms":4}
+# {"method":"POST","path":"/api/pets","status":409,"ms":0}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# Subtest: M5 stale browser tabs cannot write into a different active household
+ok 5 - M5 stale browser tabs cannot write into a different active household
+  ---
+  duration_ms: 211.126975
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/register","status":201,"ms":51}
+# {"method":"POST","path":"/api/register","status":201,"ms":56}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/edit","status":403,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/cancel","status":403,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/edit","status":200,"ms":5}
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/edit","status":409,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/cancel","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/claim","status":409,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":400,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":400,"ms":1}
+# Subtest: M6 task edit permissions, cancellation, priorities and recurrence validation
+ok 6 - M6 task edit permissions, cancellation, priorities and recurrence validation
+  ---
+  duration_ms: 246.342819
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":39}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/register","status":201,"ms":38}
+# {"method":"POST","path":"/api/register","status":201,"ms":40}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/2/edit","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/2/claim","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/2/complete","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# Subtest: M7 completion creates exactly one recurring successor at the original interval
+ok 7 - M7 completion creates exactly one recurring successor at the original interval
+  ---
+  duration_ms: 208.020557
+  type: 'test'
+  ...
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/register","status":201,"ms":45}
+# {"method":"POST","path":"/api/register","status":201,"ms":42}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# {"method":"POST","path":"/api/pets/1/edit","status":404,"ms":1}
+# {"method":"POST","path":"/api/pets/1/edit","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/pets/1/archive","status":403,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":4}
+# {"method":"POST","path":"/api/pets/1/archive","status":409,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/cancel","status":200,"ms":3}
+# {"method":"POST","path":"/api/pets/1/archive","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks","status":404,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/pets/1/archive","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# Subtest: M8 pet notes, archival and restore retain history and enforce house boundaries
+ok 8 - M8 pet notes, archival and restore retain history and enforce house boundaries
+  ---
+  duration_ms: 221.097972
+  type: 'test'
+  ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/homes/leave","status":200,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# Subtest: M9 v1 migration preserves users, sessions and tasks; leaving is not undone on restart
+ok 9 - M9 v1 migration preserves users, sessions and tasks; leaving is not undone on restart
+  ---
+  duration_ms: 134.260167
+  type: 'test'
+  ...
+# (node:40) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"method":"GET","path":"/api/dashboard","status":401,"ms":6}
+# {"method":"POST","path":"/api/register","status":201,"ms":58}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/login","status":401,"ms":45}
+# {"method":"POST","path":"/api/login","status":200,"ms":38}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/register","status":400,"ms":1}
+# {"method":"POST","path":"/api/register","status":409,"ms":35}
+# Subtest: HTTP acceptance: shared care, conflicts, privacy, validation and persistence
+    # Subtest: R1 authentication and session cookie
+    ok 1 - R1 authentication and session cookie
+      ---
+      duration_ms: 264.307075
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/register","status":201,"ms":52}
+# {"method":"POST","path":"/api/register","status":201,"ms":53}
+# {"method":"POST","path":"/api/pets","status":201,"ms":5}
+# {"method":"POST","path":"/api/tasks","status":201,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+    # Subtest: R2 join house, add real pet and scheduled task
+    ok 2 - R2 join house, add real pet and scheduled task
+      ---
+      duration_ms: 126.994578
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/claim","status":409,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+    # Subtest: R3 simultaneous claims have one winner
+    ok 3 - R3 simultaneous claims have one winner
+      ---
+      duration_ms: 12.021465
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"POST","path":"/api/tasks/1/complete","status":403,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/release","status":200,"ms":4}
+# {"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":5}
+# {"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":3}
+# {"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+    # Subtest: R4 owner-only completion, release and one audit record
+    ok 4 - R4 owner-only completion, release and one audit record
+      ---
+      duration_ms: 27.367756
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"POST","path":"/api/tasks/1/claim","status":404,"ms":0}
+# {"method":"POST","path":"/api/tasks","status":404,"ms":1}
+# {"method":"POST","path":"/api/pets","status":403,"ms":0}
+    # Subtest: R5 house isolation and cross-origin rejection
+    ok 5 - R5 house isolation and cross-origin rejection
+      ---
+      duration_ms: 6.601693
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/tasks","status":400,"ms":1}
+# {"method":"POST","path":"/api/tasks","status":400,"ms":0}
+# {"method":"POST","path":"/api/pets","status":400,"ms":0}
+# {"method":"POST","path":"/api/pets","status":201,"ms":4}
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+# {"method":"GET","path":"/","status":200,"ms":0}
+# {"method":"GET","path":"/pet-care.svg","status":200,"ms":0}
+# {"method":"GET","path":"/cat.svg","status":200,"ms":0}
+# {"method":"GET","path":"/dog.svg","status":200,"ms":0}
+# {"method":"GET","path":"/fonts/Epilogue.ttf","status":200,"ms":0}
+# {"method":"GET","path":"/fonts/NotoSansThai.ttf","status":200,"ms":0}
+# {"method":"POST","path":"/api/login","status":400,"ms":0}
+# {"method":"POST","path":"/api/login","status":413,"ms":0}
+    # Subtest: R6 validation, injection treated as data, HTTP security
+    ok 6 - R6 validation, injection treated as data, HTTP security
+      ---
+      duration_ms: 21.166803
+      type: 'test'
+      ...
+# {"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+# {"method":"GET","path":"/health","status":200,"ms":0}
+    # Subtest: R7 restart retains database and session
+    ok 7 - R7 restart retains database and session
+      ---
+      duration_ms: 21.088077
+      type: 'test'
+      ...
+# {"method":"POST","path":"/api/logout","status":200,"ms":5}
+# {"method":"GET","path":"/api/dashboard","status":401,"ms":0}
+    # Subtest: R8 logout revokes session
+    ok 8 - R8 logout revokes session
+      ---
+      duration_ms: 8.452589
+      type: 'test'
+      ...
+    1..8
+ok 10 - HTTP acceptance: shared care, conflicts, privacy, validation and persistence
+  ---
+  duration_ms: 573.034381
+  type: 'test'
+  ...
+1..10
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2233.617557

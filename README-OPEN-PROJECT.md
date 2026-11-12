@@ -25,6 +25,8 @@ cd PawRoster
 
 ## 2. เปิดระบบด้วย Docker Compose (วิธีแนะนำ)
 
+**กรณีตรวจงานใน Docker ของอาจารย์:** ใช้ [คู่มือเปิดผ่าน SSH พอร์ต 2222](https://github.com/67070282/PawRoster/blob/main/docs/RUN-IN-COURSE.md) เพื่อรันโครงงานภายในกล่อง และเปิดเว็บจากเครื่องหลักผ่าน SSH tunnel
+
 ### สิ่งที่ใช้
 
 - Docker Desktop ที่เปิดทำงานอยู่และใช้ Linux containers หรือ Docker Engine บน Linux

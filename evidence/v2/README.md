@@ -27,6 +27,6 @@
 
 ## ขอบเขตของผลตรวจ
 
-ผลข้างต้นมาจากเครื่อง Windows และ Linux container บน Docker Desktop ผล Jenkins และ Course Container ในโฟลเดอร์หลักฐานเดิมเป็นของรุ่น 1.0 จึงไม่ใช้แทนการตรวจรุ่น 2.0 จาก GitHub SCM
+ผลข้างต้นมาจากเครื่อง Windows และ Linux container บน Docker Desktop ต่อมาตรวจรุ่น 2.0 จาก GitHub main ผ่าน SSH ในกล่องอาจารย์แล้ว ดู [หลักฐาน Course Container รุ่น 2.0](../course-v2-ssh/README.md) ส่วนผล Jenkins รุ่น 1.0 ไม่ใช้แทนการตรวจ Jenkins รุ่น 2.0
 
 ยังไม่มีผลสัมภาษณ์หรือทดลองกับผู้เลี้ยงจริง ภาพสาธิตและ Automated tests ไม่ใช่หลักฐาน Social impact

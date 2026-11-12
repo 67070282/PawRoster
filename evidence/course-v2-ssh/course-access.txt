@@ -1,0 +1,3 @@
+access=SSH root@localhost port 2222
+image=tuchsanai/devtools:2569_1
+outer_privileged=true
