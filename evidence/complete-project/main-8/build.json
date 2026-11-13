@@ -1,0 +1,70 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "artifacts": [
+    {
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "fileName": "compose-status.txt",
+      "relativePath": "evidence/runtime/compose-status.txt"
+    },
+    {
+      "fileName": "deployed-smoke.txt",
+      "relativePath": "evidence/runtime/deployed-smoke.txt"
+    },
+    {
+      "fileName": "health.txt",
+      "relativePath": "evidence/runtime/health.txt"
+    },
+    {
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "fileName": "source-branch.txt",
+      "relativePath": "evidence/runtime/source-branch.txt"
+    },
+    {
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "duration": 27706,
+  "number": 8,
+  "result": "SUCCESS",
+  "timestamp": 1794566093024,
+  "url": "http://127.0.0.1:8080/job/pawroster-main/8/",
+  "stageEvidence": {
+    "Checkout": {
+      "entered": true,
+      "skipped": false
+    },
+    "Verify": {
+      "entered": true,
+      "skipped": false
+    },
+    "Build image": {
+      "entered": true,
+      "skipped": false
+    },
+    "Publish image": {
+      "entered": true,
+      "skipped": false
+    },
+    "Deploy": {
+      "entered": true,
+      "skipped": false
+    },
+    "Verify deployed service": {
+      "entered": true,
+      "skipped": false
+    }
+  },
+  "job": "pawroster-main"
+}

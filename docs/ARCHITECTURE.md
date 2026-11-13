@@ -1,10 +1,10 @@
-# สถาปัตยกรรม เทคโนโลยี และ API — PawRoster 2.3
+# สถาปัตยกรรม เทคโนโลยี และ API — PawRoaster
 
 อ้างอิง implementation รุ่น 2.3.0, schema 5 ใน repository นี้ รายงานผลตรวจอยู่ใน [RESEARCH.md](RESEARCH.md) และภาพหน้าจอปัจจุบันอยู่ใน [SCREENSHOTS.md](SCREENSHOTS.md)
 
 ## ภาพรวม
 
-PawRoster เป็นเว็บแอปแบบ Monolith ขนาดเล็ก: หน้าเว็บและ HTTP API อยู่ใน app container เดียวกัน Node.js ประมวลผลกติกาธุรกิจและเปิดฐานข้อมูล SQLite แบบ embedded ข้อมูล SQLite เก็บบน named volume จึงแยกจากตัว image และการสร้าง container ใหม่
+PawRoaster เป็นเว็บแอปแบบ Monolith ขนาดเล็ก: หน้าเว็บและ HTTP API อยู่ใน app container เดียวกัน Node.js ประมวลผลกติกาธุรกิจและเปิดฐานข้อมูล SQLite แบบ embedded ข้อมูล SQLite เก็บบน named volume จึงแยกจากตัว image และการสร้าง container ใหม่
 
 ```mermaid
 flowchart LR
@@ -214,7 +214,7 @@ Jenkins deploy ไป project สำหรับ CI แยกจากแอป�
 | CI/CD | [Jenkinsfile](../Jenkinsfile), [jenkins](../jenkins/) |
 | Acceptance tests | [test](../test/) |
 | Course / Backup / Smoke | [scripts](../scripts/), [OPERATIONS.md](OPERATIONS.md) |
-| ผลทดสอบและ source ที่ตรวจ | [RESEARCH.md](RESEARCH.md), [Course/API/UI 2.3](../evidence/home-deletion/README.md), [Jenkins](../evidence/submission-2.2/README.md) |
+| ผลทดสอบและ source ที่ตรวจ | [RESEARCH.md](RESEARCH.md), [Course/API/UI](../evidence/home-deletion/README.md), [Jenkins](../evidence/submission-2.2/README.md) |
 | ขอบเขตความปลอดภัย | [SECURITY.md](SECURITY.md) |
 
 หลักฐานแต่ละชุดระบุวันที่และ commit ของรอบตรวจ เอกสารสถาปัตยกรรมอธิบาย implementation ปัจจุบัน ไม่ใช้ผลของรุ่นเก่ารับรอง feature ที่เพิ่มภายหลัง
@@ -225,4 +225,4 @@ Jenkins deploy ไป project สำหรับ CI แยกจากแอป�
 
 `POST /api/homes/delete` ตรวจ owner จาก session และตรวจสิทธิ์อีกครั้งหลังอ่าน request body จับคู่ home_id กับบ้านปัจจุบัน ชื่อบ้านที่พิมพ์ และรหัสเชิญที่ snapshot ตอนเปิด dialog จึงปฏิเสธ dialog ค้างหลังเปลี่ยนรหัสหรือสลับบ้าน การลบ events → tasks → pet_records → pets → blocks/history → memberships → home อยู่ใน Transaction เดียว ตั้ง active_home_id ของ session ที่เลือกบ้านนี้เป็น NULL หากขั้นใดผิดพลาด rollback ทั้งหมด
 
-ไม่ลบ users หรือ session token และไม่เปลี่ยนข้อมูลบ้านอื่น เมื่ออ่าน dashboard ครั้งถัดไป auth เลือกสมาชิกภาพที่ยังเหลือ หรือคืนสถานะไม่มีบ้านให้สร้าง/เข้าร่วมใหม่ได้ ไม่มีการย้ายสัตว์เลี้ยงข้ามบ้านและไม่มีการกู้คืนบ้านจาก UI ดู [วิธีใช้](CARE-FEATURES.md#ลบบ้านถาวร-รุ่น-23) และ [ผล H1–H5](../evidence/home-deletion/README.md)
+ไม่ลบ users หรือ session token และไม่เปลี่ยนข้อมูลบ้านอื่น เมื่ออ่าน dashboard ครั้งถัดไป auth เลือกสมาชิกภาพที่ยังเหลือ หรือคืนสถานะไม่มีบ้านให้สร้าง/เข้าร่วมใหม่ได้ ไม่มีการย้ายสัตว์เลี้ยงข้ามบ้านและไม่มีการกู้คืนบ้านจาก UI ดู [วิธีใช้](CARE-FEATURES.md#ลบบ้านถาวร) และ [ผล H1–H5](../evidence/home-deletion/README.md)

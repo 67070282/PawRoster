@@ -1,8 +1,8 @@
 # Requirements และ Traceability
 
-## ผลตรวจปัจจุบัน รุ่น 2.3.0 / schema 5
+## ผลตรวจปัจจุบัน / schema 5
 
-Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd42996e68bec56d16` ใช้ข้อมูลสังเคราะห์ แยกฐานข้อมูลทดสอบจากข้อมูลใช้งานจริง Acceptance tests ผ่าน **37 กรณี (38 TAP records รวม parent), fail 0** บน Windows และ Linux ภายใน image อาจารย์ เพิ่ม H1–H5 สำหรับลบบ้าน การรักษาบัญชีและบ้านอื่น การยืนยัน/สิทธิ์ การ rollback และ migration 4→5 ผล Browser QA และ Course Docker-in-Docker อยู่ใน [หลักฐานรุ่น 2.3](../evidence/home-deletion/README.md)
+Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd42996e68bec56d16` ใช้ข้อมูลสังเคราะห์ แยกฐานข้อมูลทดสอบจากข้อมูลใช้งานจริง Acceptance tests ผ่าน **37 กรณี (38 TAP records รวม parent), fail 0** บน Windows และ Linux ภายใน image อาจารย์ เพิ่ม H1–H5 สำหรับลบบ้าน การรักษาบัญชีและบ้านอื่น การยืนยัน/สิทธิ์ การ rollback และ migration 4→5 ผล Browser QA และ Course Docker-in-Docker อยู่ใน [หลักฐานลบบ้าน](../evidence/home-deletion/README.md)
 
 | Requirement | ผลและหลักฐาน |
 |---|---|
@@ -11,33 +11,28 @@ Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd4299
 | เฉพาะ owner และต้องยืนยันบ้าน | H2 / UI: member ถูกปฏิเสธ ชื่อ/บ้าน/รหัสค้างถูกปฏิเสธ ไม่มีการเขียนข้อมูล |
 | ลบอย่างครบถ้วนและ rollback | H1/H4: ลบข้อมูลเฉพาะบ้านเป้าหมาย foreign keys ถูกต้อง และจำลองล้มเหลวแล้วข้อมูลทุกตารางคงเดิม |
 | อัปเกรดข้อมูลเดิม | H5 และ migration fixtures รุ่น 1/2/3: schema 5 คงบัญชี credential session และสมาชิกภาพ |
-| ฟีเจอร์เดิม | R1–R8, M1–M9, C1–C9, S1–S6 ผ่านในชุด 2.3 เดียวกัน |
+| ฟีเจอร์เดิม | R1–R8, M1–M9, C1–C9, S1–S6 ผ่านในชุดทดสอบเดียวกัน |
 
-## ผลย้อนหลังและรายละเอียดวิธีตรวจรุ่น 2.2
-
-ข้อมูลด้านล่างเป็นผลจริงของรอบ 2.2 ตาม source/build ที่ระบุ ไม่ใช่หลักฐานว่า Jenkins build เดิมตรวจ source 2.3 แล้ว การทำงาน pipeline ยังใช้ Jenkinsfile ชุดเดิม และผลใหม่อ้างตาม build/source ใน evidence เท่านั้น
-
-
-วันที่ทบทวน 13 พฤศจิกายน 2569 รุ่น 2.2: R1–R8, M1–M9, C1–C9 และ S1–S6 รวม 32 กรณีผ่านทั้ง Windows และ Linux ใน image อาจารย์ หลักฐานย้อนหลังรุ่น 2.2 อยู่ใน evidence/household-security และผล UI ตาม evidence/calendar-highlights
+วันที่ทบทวน 13 พฤศจิกายน 2569: R1–R8, M1–M9, C1–C9, S1–S6 และ H1–H5 รวม 37 กรณีผ่านบน Windows/Linux ผลปัจจุบันอยู่ใน [RESEARCH](RESEARCH.md) และ [หลักฐาน](../evidence/home-deletion/README.md)
 
 ปัญหาที่ตั้งสมมติฐาน: บ้านที่มีหลายผู้ดูแลไม่มีสถานะร่วมว่าใครรับ/ทำงานแล้ว กลุ่มหลักคือผู้เลี้ยงหลายคนในบ้านเดียวกัน ผลที่ต้องการของระบบคือแสดงผู้รับผิดชอบและประวัติรายการเดียวกันได้ถูกต้อง ประเมินความถูกต้องของระบบด้วยข้อมูลสังเคราะห์ ไม่อ้างผลลดงานตกหล่นเป็นตัวเลข
 
 | Requirement หรือคำกล่าวอ้าง | ผู้ใช้หรือสถานการณ์ | Acceptance Criteria | ส่วนที่นำไปใช้ | วิธีตรวจและหลักฐาน | สถานะและข้อจำกัด |
 |---|---|---|---|---|---|
-| R1 สมัครและเข้าใช้ระบบ | สมาชิกบ้าน | หลังสมัคร/login ได้ session, ไม่ login ได้ 401, รหัสผิดไม่ผ่าน, cookie HttpOnly/SameSite | server.js register/login/auth, users/sessions | test/system.test.js R1; evidence/household-security และ evidence/submission-2.2 | ผ่านในชุดรุ่น 2.2; ไม่มี password reset |
+| R1 สมัครและเข้าใช้ระบบ | สมาชิกบ้าน | หลังสมัคร/login ได้ session, ไม่ login ได้ 401, รหัสผิดไม่ผ่าน, cookie HttpOnly/SameSite | server.js register/login/auth, users/sessions | test/system.test.js R1; evidence/household-security และ evidence/submission-2.2 | ผ่านในชุดทดสอบที่ระบุ; ไม่มี password reset |
 | R2 สร้างและแชร์ข้อมูลบ้าน | สมาชิกสองคนในบ้านเดียวกัน | รหัส invite ถูกต้องจึงเข้าบ้าน; pet/task สร้างแล้วสมาชิกอีกคนอ่านรายการเดียวกัน | homes/pets/tasks, dashboard API + public/app.js | HTTP R2 และ Browser QA ใน RESEARCH.md | รองรับหลายบ้านตาม M1/M2; ไม่มี invite expiry อัตโนมัติ |
 | R3 รับงานได้คนเดียว | สมาชิกสองคนกดพร้อมกัน | HTTP status ต้องเป็น 200 หนึ่งคำขอและ 409 อีกคำขอ; มี claim audit ครั้งเดียว | BEGIN IMMEDIATE + state validation | HTTP R3 ที่ assert สถานะจริง; Jenkins tests.xml | ตรวจตามโค้ดรุ่นใหม่; ไม่กันการสร้างสองรายการที่ความหมายเหมือนกัน |
-| R4 ปิดหรือคืนงานตามสิทธิ์ | ผู้รับงานและสมาชิกอื่น | ผู้รับงานเปลี่ยนได้, คนอื่นได้ 403, ปิดซ้ำ 409, note/audit ตรง | task transitions + events transaction | HTTP R4, deployed smoke | ผ่านในชุดรุ่น 2.2; สถานะ done เปิดกลับไม่ได้ |
+| R4 ปิดหรือคืนงานตามสิทธิ์ | ผู้รับงานและสมาชิกอื่น | ผู้รับงานเปลี่ยนได้, คนอื่นได้ 403, ปิดซ้ำ 409, note/audit ตรง | task transitions + events transaction | HTTP R4, deployed smoke | ผ่านในชุดทดสอบที่ระบุ; สถานะ done เปิดกลับไม่ได้ |
 | R5 แยกข้อมูลแต่ละบ้าน | บัญชีบ้านอื่นเดา ID | ไม่เห็นข้อมูล และแก้ไขผ่าน ID ไม่ได้; Browser cross-origin mutation ได้ 403 | home_id authorization, Origin validation | HTTP R5 + failure-case demo | สิทธิ์ตาม membership และ owner/member ดู M2–M5 |
 | R6 จัดการ input และป้องกัน injection | ผู้ใช้ส่งข้อมูลผิด | ว่าง/JSONเสีย/วันเวลาไม่ถูกต้อง/เกิน16KB ถูกปฏิเสธ; SQL text ไม่กลายเป็นคำสั่ง | parameterized SQL, body limit, field validation, CSP | HTTP R6; secret-scan แยกตรวจ tracked files | ตรวจผ่าน; secret scan เป็น pattern baseline ไม่ครอบคลุม secret ทุกชนิด |
-| R7 ข้อมูลคงอยู่ | service/container restart | งาน note และ audit เดิมยังอยู่; session เดิมใช้ได้ก่อนหมดอายุ | SQLite named volume | HTTP R7, scripts/course-verify.sh + course-smoke.txt | ผ่านในชุดรุ่น 2.2; หนึ่ง instance, local volume |
+| R7 ข้อมูลคงอยู่ | service/container restart | งาน note และ audit เดิมยังอยู่; session เดิมใช้ได้ก่อนหมดอายุ | SQLite named volume | HTTP R7, scripts/course-verify.sh + course-smoke.txt | ผ่านในชุดทดสอบที่ระบุ; หนึ่ง instance, local volume |
 | R8 ออกจากระบบ | สมาชิกออกจากระบบ | cookie/session เก่าไม่เข้าถึง dashboard | logout + session deletion | HTTP R8, deployed smoke verify | ตรวจผ่าน |
-| N1 เริ่มระบบซ้ำได้ | ผู้ตรวจ checkout โค้ด | Build/healthy และ revision ตรง source | Dockerfile, compose.yaml, /health | evidence/household-security/course-smoke.txt | ผ่าน source 4d319e8; หนึ่ง instance |
+| N1 เริ่มระบบซ้ำได้ | ผู้ตรวจ checkout โค้ด | Build/healthy และ revision ตรง source | Dockerfile, compose.yaml, /health | evidence/household-security/course-smoke.txt | ผ่าน Course verification ตาม source ในหลักฐาน; หนึ่ง instance |
 | N2 ส่งมอบด้วย Jenkins | main/feature และ failure gate | Verify ก่อน Publish/Deploy; main เท่านั้น Deploy; health/smoke ผ่าน | Jenkinsfile + jenkins/ | docs/RESEARCH.md และหลักฐาน Jenkins ที่ระบุ commit | อ่านผลแยกตามรุ่นและวันที่ |
-| N3 สำรองและกู้คืน | ผู้ดูแลระบบ | backup integrity_check=ok; จำนวนและสถานะงานตรงต้นฉบับ | backup.mjs + verify-storage.mjs | evidence/household-security/course-smoke.txt | ผ่านในชุดรุ่น 2.2; ต้องเก็บ backup ส่วนตัว |
+| N3 สำรองและกู้คืน | ผู้ดูแลระบบ | backup integrity_check=ok; จำนวนและสถานะงานตรงต้นฉบับ | backup.mjs + verify-storage.mjs | evidence/household-security/course-smoke.txt | ผ่านในชุดทดสอบที่ระบุ; ต้องเก็บ backup ส่วนตัว |
 | G1 Git workflow | ผู้พัฒนาส่งการแก้ไข | branch/commit/PR ที่ review ได้และเชื่อม requirement; ไม่มี secret ใน tracked files | GitHub + CONTRIBUTING + templates | PR ของการตรวจรอบนี้ และ Git log | ตรวจประวัติ commit และ PR ตามรายการจริง |
 
-## ส่วนเพิ่มเติมในรุ่น 2.0
+## ส่วนเพิ่มเติมใน
 
 | Problem / Requirement ID | ผู้ใช้/สถานการณ์ | Acceptance Criteria ที่สังเกตได้ | Implementation | วิธีทดสอบ/หลักฐาน | สถานะ/ข้อจำกัด |
 |---|---|---|---|---|---|
@@ -53,7 +48,7 @@ Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd4299
 
 ขอบเขตรุ่น 2.0 เพิ่มจากปัญหาการเข้าร่วมบ้านภายหลังสมัครตามคำขอผู้จัดทำ ประเมินความถูกต้องผ่านกรณีทดสอบของระบบ
 
-## ส่วนเพิ่มเติมรุ่น 2.1
+## ส่วนเพิ่มเติม
 
 | Requirement | ผู้ใช้/สถานการณ์ | Acceptance Criteria | Implementation | Test/Evidence | ข้อจำกัด |
 |---|---|---|---|---|---|
@@ -63,10 +58,10 @@ Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd4299
 | C4 Validation | ส่งข้อมูลผิด | ปฏิเสธน้ำหนัก/วัน/ประเภทผิด และข้อความเกินกำหนด | recordFields | C4 | ไม่มีคำแนะนำทางการแพทย์ |
 | C5 นัดหมายและคงข้อมูล | ผู้ดูแลนัดครั้งถัดไป | เสร็จ/เปิดกลับได้ เปลี่ยนนัดรีเซ็ต และอยู่หลัง restart | due_at/resolved_at | C5; ปฏิทินและ Docker smoke | ไม่มี Push/email |
 | C6 มอบหมาย | เจ้าของบ้านเลือกผู้ดูแล | เฉพาะ owner เลือกสมาชิกบ้านเดียวกัน งาน open และ audit ครั้งเดียว | assign transition | C6; UI owner/member | ไม่มีขั้นตอนตอบรับคำขอ |
-| C7 Migration | ฐานข้อมูล schema 2 | คง session/สัตว์/งาน/ประวัติและอัปเกรดผ่าน schema 3 ไป schema 4 | versioned migration | C7 | rollback ใช้ backup ก่อนอัปเกรด |
+| C7 Migration | ฐานข้อมูล schema 2 | คง session/สัตว์/งาน/ประวัติและอัปเกรดผ่าน schema 3/4 ไป schema 5 | versioned migration | C7 | rollback ใช้ backup ก่อนอัปเกรด |
 | U2 ปฏิทิน/มือถือ | ผู้ดูแลวางแผน | เดือน/วันถูกต้อง งานและนัดตามตัวกรอง สร้างงานในวันที่เลือก ไม่ล้น 390px | renderCalendar + UI forms | browser QA, evidence/calendar-highlights | แสดงเฉพาะงานซ้ำที่สร้างแล้ว |
 
-## ส่วนเพิ่มเติมรุ่น 2.2
+## ส่วนเพิ่มเติม
 
 | ความต้องการ | ผลและหลักฐาน | Tests |
 |---|---|---|
@@ -75,7 +70,7 @@ Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd4299
 | เจ้าของจัดการการเข้าร่วม | ปลดบล็อก พัก/เปิดรับสมาชิก และ owner-only audit | S3–S4 |
 | ข้อมูลต้องคงสภาพเมื่อผิดพลาด | Rollback ทั้งชุด; Migration และ Persistence | S5–S6 |
 
-ชุดย้อนหลังรุ่น 2.2 รวม 32 กรณี (33 TAP records รวม Parent) หลักฐานก่อนหน้าใช้กับรุ่นที่ระบุ ใช้ข้อมูลสังเคราะห์และการตรวจทางเทคนิค
+รวม 37 กรณี (38 TAP records รวม parent) หลักฐานก่อนหน้าใช้กับรุ่นที่ระบุ ใช้ข้อมูลสังเคราะห์และการตรวจทางเทคนิค
 | Requirement | สถานการณ์ | Acceptance Criteria | Implementation | หลักฐาน | ผล |
 |---|---|---|---|---|---|
 | C8 ลบถาวร | เจ้าของเลือกสัตว์ในถังขยะ | ตรวจชื่อและสถานะล่าสุด ลบเฉพาะข้อมูลตัวเป้าหมาย คงตัวอื่นและข้อมูลหลัง restart | pets/:id/purge | pet-care.test.js C8 / evidence/permanent-delete | ผ่าน |
