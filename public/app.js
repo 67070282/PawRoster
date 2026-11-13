@@ -339,24 +339,48 @@ function calendarItems() {
   const appointments = (state.records || []).filter(r => !r.pet_deleted_at && r.due_at && (all || !r.resolved_at)).map(r => ({ id:r.id,type:'appointment',pet_id:r.pet_id,title:r.title,pet_name:r.pet_name,at:r.due_at,done:Boolean(r.resolved_at),source:r }));
   return [...tasks,...appointments].filter(i => petId === 'all' || String(i.pet_id) === petId).sort((a,b) => a.at.localeCompare(b.at));
 }
-function renderCalendar() {
+function renderCalendar(focusDay) {
   if (!state) return; const root = $('calendar-grid'); root.replaceChildren(); const items = calendarItems();
   $('calendar-month').textContent = calendarMonth.toLocaleDateString('th-TH', { month:'long',year:'numeric' });
+  const today = dayKey(new Date());
+  const inMonth = items.filter(i => { const d = new Date(i.at); return d.getFullYear() === calendarMonth.getFullYear() && d.getMonth() === calendarMonth.getMonth(); });
+  const appointmentCount = inMonth.filter(i => i.type === 'appointment').length;
+  $('calendar-month-summary').textContent = `เดือนนี้มี ${appointmentCount} นัดหมาย · ${inMonth.length - appointmentCount} งานดูแล ตามตัวกรองที่เลือก`;
   for (const label of ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.']) root.append(el('span', label, 'calendar-weekday'));
   const start = new Date(calendarMonth); start.setDate(1 - (start.getDay()+6)%7);
   for (let n=0;n<42;n++) {
     const d = new Date(start); d.setDate(start.getDate()+n); const key = dayKey(d), events = items.filter(i => dayKey(i.at) === key);
-    const b = document.createElement('button'); b.type='button'; b.className='calendar-cell' + (d.getMonth()!==calendarMonth.getMonth()?' outside':'') + (key===calendarDay?' selected':'') + (key===dayKey(new Date())?' today':'');
-    b.setAttribute('aria-label', `${d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})} ${events.length} รายการ`); b.setAttribute('aria-pressed', String(key===calendarDay));
-    b.append(el('strong', d.getDate()));
-    if (events.length) { b.append(el('span', `${events.length} รายการ`, 'calendar-count')); if (events.some(i=>i.type==='appointment')) b.append(el('small','มีนัดหมาย')); }
-    b.onclick=()=>{ calendarDay=key; calendarMonth=new Date(d.getFullYear(),d.getMonth(),1); renderCalendar(); }; root.append(b);
+    const appointments = events.filter(i => i.type === 'appointment'), tasks = events.filter(i => i.type === 'task');
+    const isToday = key === today;
+    const b = document.createElement('button'); b.type='button'; b.className='calendar-cell' + (d.getMonth()!==calendarMonth.getMonth()?' outside':'') + (key===calendarDay?' selected':'') + (isToday?' today':'') + (appointments.length?' has-appointment':'') + (tasks.length?' has-tasks':'');
+    b.setAttribute('aria-label', `${d.toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}${isToday ? ' วันนี้' : ''} · ${appointments.length} นัดหมาย · ${tasks.length} งานดูแล`);
+    b.setAttribute('aria-pressed', String(key===calendarDay));
+    b.dataset.date = key; b.tabIndex = key === calendarDay ? 0 : -1;
+    if (isToday) b.setAttribute('aria-current', 'date');
+    const heading = el('span', undefined, 'calendar-date'); heading.append(el('strong', d.getDate()));
+    if (isToday) heading.append(el('span', 'วันนี้', 'today-label'));
+    b.append(heading);
+    const markers = el('span', undefined, 'day-markers');
+    if (appointments.length) { const marker=el('span', undefined, 'day-marker appointment-marker'); marker.append(el('span','นัด'),el('b',appointments.length)); markers.append(marker); }
+    if (tasks.length) { const marker=el('span', undefined, 'day-marker task-marker'); marker.append(el('span','งาน'),el('b',tasks.length)); markers.append(marker); }
+    b.append(markers);
+    if (appointments.length) b.append(el('span', appointments[0].pet_name + ' · ' + appointments[0].title, 'day-preview'));
+    const selectDay = value => { calendarDay=dayKey(value); calendarMonth=new Date(value.getFullYear(),value.getMonth(),1); renderCalendar(calendarDay); };
+    b.onclick=()=>selectDay(d);
+    b.onkeydown=e=>{
+      const offsets = { ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7, Home:-(d.getDay()+6)%7, End:6-(d.getDay()+6)%7 };
+      if (!(e.key in offsets)) return;
+      e.preventDefault(); const next=new Date(d); next.setDate(d.getDate()+offsets[e.key]); selectDay(next);
+    };
+    root.append(b);
   }
+  if (typeof focusDay === 'string') root.querySelector(`[data-date="${focusDay}"]`)?.focus({ preventScroll:true });
   const selected = new Date(calendarDay+'T12:00:00'); $('calendar-day-title').textContent = selected.toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   $('calendar-agenda').replaceChildren(); const dayItems=items.filter(i=>dayKey(i.at)===calendarDay);
+  $('calendar-day-summary').textContent = `${calendarDay === today ? 'วันนี้ · ' : ''}${dayItems.filter(i=>i.type==='appointment').length} นัดหมาย · ${dayItems.filter(i=>i.type==='task').length} งานดูแล`;
   if (!dayItems.length) $('calendar-agenda').append(el('p','ไม่มีงานหรือนัดหมายในวันที่เลือก','empty'));
   for (const item of dayItems) {
-    const row=el('article',undefined,'agenda-item'), info=el('div'); info.append(el('span',item.type==='task'?'งานดูแล':'นัดหมาย','badge'),el('h3',item.title),el('p',`${item.pet_name} · ${date(item.at)}${item.done?' · เสร็จแล้ว':''}`,'muted'));
+    const row=el('article',undefined,'agenda-item' + (item.type==='appointment'?' appointment-item':'')), info=el('div'); info.append(el('span',item.type==='task'?'งานดูแล':'นัดหมาย','badge'),el('h3',item.title),el('p',`${item.pet_name} · ${date(item.at)}${item.done?' · เสร็จแล้ว':''}`,'muted'));
     row.append(info,button(item.type==='task'?'ดูงานดูแล':'ดูบันทึกนัดหมาย',()=>{ if(item.type==='task'){ $('search').value=item.title; $('filter').value='all'; $('pet-filter').value=String(item.pet_id); renderTasks(); showView('board'); } else { $('journal-pet').value=item.pet_id; $('journal-kind').value='all'; $('journal-search').value=''; renderJournal(); showView('journal'); } })); $('calendar-agenda').append(row);
   }
 }
