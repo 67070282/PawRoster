@@ -366,7 +366,6 @@ PawRoster/
 ├── scripts/               # Backup, smoke และ Course Container verification
 ├── docs/                  # เอกสารโครงงาน สถาปัตยกรรม และการใช้งาน
 ├── evidence/              # ผลทดสอบและหลักฐานการตรวจสอบ
-├── presentation/          # สไลด์นำเสนอ
 ├── .github/               # Issue และ Pull Request templates
 ├── compose.yaml
 ├── Dockerfile
@@ -386,8 +385,6 @@ PawRoster/
 - [รายงานการประเมินระบบและผลทดสอบ](docs/RESEARCH.md)
 - [กระบวนการทำงานบน GitHub](docs/GITHUB.md)
 - [แนวทางการร่วมพัฒนา](CONTRIBUTING.md)
-- [แผนการนำเสนอและสาธิตระบบ](docs/PRESENTATION.md)
-- [สไลด์นำเสนอ 10 หน้า](presentation/index.html) — ดาวน์โหลดและเปิดด้วยเว็บเบราว์เซอร์ รองรับปุ่มลูกศรและการพิมพ์เป็น PDF
 
 ## แหล่งอ้างอิง
 

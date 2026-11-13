@@ -50,7 +50,7 @@ docker compose ps
 
 แทนค่า URL/commit ก่อนรัน ต้องตรวจ `$PWD` ว่า daemon **ภายในกล่อง** เห็น path นี้จริง ไม่ใช่ bind mount ชี้ไป host อื่น เปิด Browser ผ่านการ forward port ที่ผู้สอนจัดไว้: แอป bind 127.0.0.1:3080 ภายในกล่องโดยค่าเริ่มต้น อาจต้องปรับ bind/port ตาม setup กล่อง ไม่สมมติว่า expose 3080 ของ inner container จะเข้าถึงจากเครื่อง host ได้ทันที
 
-ทำ UI demo ตาม PRESENTATION.md เก็บ before/after, สอง session แย่งงาน, logs, pipeline และผลดังต่อไปนี้:
+ตรวจ UI flow ตาม RESEARCH.md และ SCREENSHOTS.md เก็บ before/after, สอง session แย่งงาน, logs, pipeline และผลดังต่อไปนี้:
 
 ```sh
 git rev-parse HEAD > evidence/runtime/commit.txt
