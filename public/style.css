@@ -379,3 +379,8 @@ input:focus,textarea:focus,select:focus { outline-color:var(--ink); }
 #invite-panel .actions { margin-top:16px; }
 .member .actions { max-width:230px; }
 @media(max-width:720px) { .member .actions { max-width:none; width:100%; justify-content:flex-start; } }
+
+.home-delete-panel { margin-top:24px; border-left:4px solid var(--danger); }
+.home-delete-panel p { margin:12px 0; }
+.home-delete-panel button { margin-top:12px; }
+#delete-home-form { margin-top:24px; }

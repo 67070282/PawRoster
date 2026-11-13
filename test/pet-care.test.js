@@ -161,5 +161,5 @@ test('C7 v2 database migrates to v3 without losing sessions, archived pets or ta
   const app=createApp({dbPath:path});await new Promise(r=>app.server.listen(0,'127.0.0.1',r));
   t.after(async()=>{await new Promise(r=>app.server.close(r));app.db.close();rmSync(dir,{recursive:true,force:true});});
   const response=await fetch(`http://127.0.0.1:${app.server.address().port}/api/dashboard`,{headers:{Cookie:'session='+cookie}});assert.equal(response.status,200);const saved=await response.json();
-  assert.equal(saved.pets[0].notes,'Keep notes');assert.equal(saved.pets[0].archived,1);assert.equal(saved.pets[0].deleted_at,null);assert.equal(saved.tasks[0].note,'Keep note');assert.equal(saved.events[0].action,'complete');assert.deepEqual(saved.records,[]);assert.equal(app.db.prepare('PRAGMA user_version').get().user_version,4);
+  assert.equal(saved.pets[0].notes,'Keep notes');assert.equal(saved.pets[0].archived,1);assert.equal(saved.pets[0].deleted_at,null);assert.equal(saved.tasks[0].note,'Keep note');assert.equal(saved.events[0].action,'complete');assert.deepEqual(saved.records,[]);assert.equal(app.db.prepare('PRAGMA user_version').get().user_version,5);
 });
