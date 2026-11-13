@@ -26,7 +26,9 @@ HTTP ใช้ใน localhost/course lab; หากเปิดภายนอ�
 
 ## ข้อมูล
 
-- homes: ชื่อบ้าน + invite token สุ่ม 96 bits
+- homes: ชื่อบ้าน + invite token สุ่ม 96 bits และ invite_enabled สำหรับพักรับสมาชิก
+- home_blocks: บัญชีที่ถูกบล็อกแยกตามบ้าน ผู้บล็อกและเวลา
+- home_events: ประวัติการจัดการบ้านเฉพาะเจ้าของ ไม่บันทึกรหัสเชิญหรือ session token
 - users: email unique, password hash scrypt + random salt; home_id เดิมเก็บไว้เพื่อรองรับฐานข้อมูลเก่า ไม่ใช้เป็นแหล่งสิทธิ์
 - memberships: คู่ home_id/user_id และ role owner/member เป็นแหล่งสิทธิ์การเข้าถึงบ้าน
 - sessions: เก็บ SHA-256 ของ token สุ่ม 192 bits หมดอายุ 24 ชั่วโมง; active_home_id แยกตาม Session; logout ลบจริง
@@ -35,7 +37,7 @@ HTTP ใช้ใน localhost/course lab; หากเปิดภายนอ�
 - tasks: pet_id, title, UTC due, open/claimed/done, assignee, completed_at, note, created_by, priority, recurrence, cancelled_at
 - events: task_id, actor, action, UTC timestamp และ detail สำหรับผู้รับมอบหมาย
 
-Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem รุ่น schema=3 เพิ่มสมุดบันทึก ถังขยะ และข้อมูลสัตว์เลี้ยง โดยอัปเกรดแต่ละเวอร์ชันใน Transaction แยกกัน; schema 2 อัปเกรดจากรุ่น 1 ใน Transaction เดียว โดยเก็บข้อมูลและ Session เดิม ผู้ใช้คนแรกของแต่ละบ้านเดิมเป็นเจ้าของบ้าน สมาชิกคนอื่นเป็น member การเปิดครั้งถัดไปจะไม่สร้าง membership ที่ออกจากบ้านแล้วกลับมาใหม่ มี Migration regression test M9
+Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem schema ปัจจุบันคือ 4 สำหรับการจัดการสมาชิก ส่วน schema 3 เพิ่มสมุดบันทึก ถังขยะ และข้อมูลสัตว์เลี้ยง โดยอัปเกรดแต่ละเวอร์ชันใน Transaction แยกกัน; schema 2 อัปเกรดจากรุ่น 1 ใน Transaction เดียว โดยเก็บข้อมูลและ Session เดิม ผู้ใช้คนแรกของแต่ละบ้านเดิมเป็นเจ้าของบ้าน สมาชิกคนอื่นเป็น member การเปิดครั้งถัดไปจะไม่สร้าง membership ที่ออกจากบ้านแล้วกลับมาใหม่ มี Migration regression test M9
 
 ## HTTP API
 
