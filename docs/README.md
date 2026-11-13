@@ -13,6 +13,6 @@
 | ความปลอดภัยและสมาชิก | [SECURITY](SECURITY.md) |
 | Git/GitHub | [GITHUB](GITHUB.md) |
 
-เอกสารชุดนี้อธิบายระบบฉบับสมบูรณ์ตามขอบเขตโครงงาน ชื่อที่แสดงคือ PawRoaster ส่วน repository และคำสั่ง Clone ใช้ชื่อ `67070282/PawRoster` ตามที่อยู่จริง หลักฐานการทำงานอยู่ใน [ผลลบบ้าน/API/Course](../evidence/home-deletion/README.md) และ [Jenkins main #8](../evidence/complete-project/README.md)
+เอกสารชุดนี้อธิบายระบบฉบับสมบูรณ์ตามขอบเขตโครงงาน ชื่อที่แสดงคือ PawRoaster ส่วน repository และคำสั่ง Clone ใช้ชื่อ `67070282/PawRoster` ตามที่อยู่จริง หลักฐานการทำงานอยู่ใน [ผลลบบ้าน/API/Course](../evidence/home-deletion/README.md) และ [Jenkins main #10](../evidence/task-completion/main-10/README.md)
 
 เลขเวอร์ชันของ package, schema, source commit และข้อมูลใน evidence ใช้ตรวจย้อนกลับทางเทคนิค เอกสาร UPGRADE-V2 และหลักฐานรุ่นก่อนเก็บไว้เป็นประวัติการพัฒนา
