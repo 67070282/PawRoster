@@ -96,3 +96,7 @@ Browser กดรับงาน → POST JSON + cookie → sessions lookup → 
 | POST | /api/tasks/:id/assign | owner → สมาชิกปัจจุบันของบ้าน รับงาน open พร้อม audit ชื่อผู้รับ |
 
 Dashboard ส่ง records เฉพาะบ้านปัจจุบัน ปฏิทินรวม tasks.due กับ pet_records.due_at ใน Browser ตามเวลาท้องถิ่น โดยไม่มี Scheduler/Push การส่งออก CSV ใช้ข้อมูลตามตัวกรองใน Browser และเติม apostrophe หน้าข้อความที่เริ่มเหมือนสูตร Spreadsheet
+
+### ลบสัตว์เลี้ยงถาวร
+
+`POST /api/pets/:id/purge` รับ `confirm_name` และ `deleted_at` จากข้อมูลถังขยะล่าสุด ตรวจเจ้าของบ้าน ขอบเขตบ้าน ชื่อ และสถานะใน Transaction จากนั้นลบ events → tasks → pet_records → pets ตาม Foreign key โดยไม่เปลี่ยน schema ถ้าเกิดข้อผิดพลาดจะ Rollback ทั้งชุด สัตว์เลี้ยงต้องอยู่ในถังขยะก่อน ไม่มีการลบตามเวลา และไม่ลบไฟล์สำรองของผู้ดูแล

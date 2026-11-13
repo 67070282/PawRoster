@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-let mode = 'login', state, view = 'board', editingPet, editingTask, completing, deletingPet, editingRecord, assigning;
+let mode = 'login', state, view = 'board', editingPet, editingTask, completing, deletingPet, editingRecord, assigning, purgingPet;
 let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1), calendarDay = dayKey(new Date());
 function notice(message = '') { $('notice').textContent = message; $('notice').hidden = !message; }
 function el(tag, text, className) { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (className) e.className = className; return e; }
@@ -156,6 +156,7 @@ function renderPets() {
   $('pets').replaceChildren();
   $('pet-permission').textContent = isOwner() ? 'คุณเป็นเจ้าของบ้าน: แก้ไขข้อมูล ย้ายไปถังขยะ และกู้คืนสัตว์เลี้ยงได้' : 'คุณเป็นสมาชิก: เพิ่มและแก้ไขข้อมูลได้ หากต้องการลบหรือกู้คืนสัตว์เลี้ยง ให้เจ้าของบ้านจัดการ';
   const status = $('pet-status').value;
+  $('pet-trash-policy').hidden = status !== 'deleted';
   const pets = state.pets.filter(p => status === 'deleted' ? p.deleted_at : !p.deleted_at && (status === 'all' || (status === 'archived' ? p.archived : !p.archived)));
   if (!pets.length) $('pets').append(el('div', status === 'deleted' ? 'ถังขยะว่าง สัตว์เลี้ยงที่ลบจะอยู่ที่นี่และเจ้าของบ้านกู้คืนได้' : 'ไม่มีสัตว์เลี้ยงในมุมมองนี้ เพิ่มข้อมูลใหม่หรือเปลี่ยนตัวกรองได้', 'empty'));
   for (const p of pets) {
@@ -166,7 +167,15 @@ function renderPets() {
     const actions = el('div', undefined, 'actions');
     if (p.deleted_at) {
       card.append(el('p', 'อยู่ในถังขยะตั้งแต่ ' + date(p.deleted_at), 'hint'));
-      if (isOwner()) actions.append(button('กู้คืนสัตว์เลี้ยง', () => confirmAction('กู้คืนสัตว์เลี้ยง?', 'ข้อมูลและสมุดบันทึกจะกลับมา งานที่ยกเลิกตอนลบจะไม่เปิดกลับอัตโนมัติ', () => mutate(`pets/${p.id}/restore`, {}, 'กู้คืนสัตว์เลี้ยงแล้ว'))));
+      if (isOwner()) {
+        actions.append(button('กู้คืนสัตว์เลี้ยง', () => confirmAction('กู้คืนสัตว์เลี้ยง?', 'ข้อมูลและสมุดบันทึกจะกลับมา งานที่ยกเลิกตอนลบจะไม่เปิดกลับอัตโนมัติ', () => mutate(`pets/${p.id}/restore`, {}, 'กู้คืนสัตว์เลี้ยงแล้ว'))));
+        actions.append(button('ลบถาวร', () => {
+          purgingPet = { id:p.id, deleted_at:p.deleted_at };
+          $('purge-pet-form').reset();
+          $('purge-pet-description').textContent = `ลบ “${p.name}” รวมข้อมูลสัตว์เลี้ยง งานดูแลทั้งหมด ประวัติการทำงาน สมุดบันทึก และนัดหมายของสัตว์เลี้ยงตัวนี้ออกจากระบบ กู้คืนผ่านหน้าเว็บไม่ได้`;
+          openDialog('purge-pet-dialog');
+        }, 'text-button danger'));
+      }
     } else {
       actions.append(button('สมุดบันทึก', () => { $('journal-pet').value = p.id; renderJournal(); showView('journal'); }, 'primary'));
       actions.append(button('แก้ไขข้อมูล', () => openPet(p), 'text-button'));
@@ -238,6 +247,10 @@ setInterval(() => { if (state && !document.hidden && !document.querySelector('di
 
 $('pet-status').onchange = renderPets;
 $('delete-pet-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => { await api(`pets/${deletingPet}/delete`, Object.fromEntries(new FormData(e.target))); $('delete-pet-dialog').close(); $('pet-status').value = 'deleted'; await load(); notice('ย้ายสัตว์เลี้ยงไปถังขยะแล้ว กู้คืนได้จากมุมมองถังขยะ'); }); };
+$('purge-pet-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => {
+  await api(`pets/${purgingPet.id}/purge`, { ...Object.fromEntries(new FormData(e.target)), deleted_at:purgingPet.deleted_at });
+  $('purge-pet-dialog').close(); purgingPet = undefined; await load(); notice('ลบสัตว์เลี้ยงและข้อมูลที่เกี่ยวข้องถาวรแล้ว');
+}); };
 function fillPetChoices(id, all) {
   const select = $(id), previous = select.value; select.replaceChildren();
   if (all) { const option = el('option', 'ทุกตัว'); option.value = 'all'; select.append(option); }

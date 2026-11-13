@@ -216,3 +216,7 @@ footer { font-size:14px; letter-spacing:0; }
   .welcome .intro { font-size:17px; }
   .care-diagram { font-size:14px; flex-wrap:wrap; }
 }
+
+#purge-pet-form { margin-top:24px; }
+#pet-trash-policy { margin-bottom:20px; }
+.primary.destructive,.primary.destructive:hover { background:var(--danger); color:var(--paper); }

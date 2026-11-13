@@ -24,10 +24,56 @@ async function fixture(t) {
   await member('register',{name:'Member',invite:initial.user.invite,email:'member@example.com',password:'test-password-123'},201);
   await outsider('register',{name:'Other',home:'Other home',email:'other@example.com',password:'test-password-123'},201);
   const pet=await owner('pets',{name:'Mochi',species:'cat',breed:'Mixed',birth_date:'2020-01-01',sex:'female'},201);
-  return {owner,member,outsider,pet,restart:async()=>{await new Promise(r=>app.server.close(r));app.db.close();app=createApp({dbPath:path});await start();}};
+  return {owner,member,outsider,pet,database:()=>app.db,restart:async()=>{await new Promise(r=>app.server.close(r));app.db.close();app=createApp({dbPath:path});await start();}};
 }
 const instant='2026-11-13T09:00:00.000Z';
 const weight=(pet_id,extra={})=>({pet_id,kind:'weight',title:'Weight',recorded_at:instant,weight_kg:4.25,notes:'Synthetic test',...extra});
+
+test('C8 permanent deletion requires owner, trashed state, matching name and current trash version; removes only related rows',async t=>{
+  const {owner,member,outsider,pet,database,restart}=await fixture(t);
+  const task=await owner('tasks',{pet_id:pet.id,title:'Care to erase',due:instant,recurrence:'daily'},201);
+  await owner(`tasks/${task.id}/claim`,{});await owner(`tasks/${task.id}/complete`,{note:'Erase with pet'});
+  await owner('records',weight(pet.id),201);
+  const otherPet=await owner('pets',{name:'Keep',species:'dog'},201);
+  await owner('tasks',{pet_id:otherPet.id,title:'Keep care',due:instant},201);await owner('records',weight(otherPet.id),201);
+  const foreignPet=await outsider('pets',{name:'Other home',species:'cat'},201);
+  await outsider('tasks',{pet_id:foreignPet.id,title:'Other care',due:instant},201);
+  const foreignBefore=await outsider('dashboard');
+  await owner(`pets/${pet.id}/purge`,{confirm_name:'Mochi'},409);
+  await owner(`pets/${pet.id}/delete`,{confirm_name:'Mochi'});
+  const before=await owner('dashboard'), deleted_at=before.pets.find(p=>p.id===pet.id).deleted_at;
+  const payload={confirm_name:'Mochi',deleted_at};
+  await member(`pets/${pet.id}/purge`,payload,403);await outsider(`pets/${pet.id}/purge`,payload,404);
+  await owner(`pets/${pet.id}/purge`,{...payload,confirm_name:'wrong'},400);
+  await owner(`pets/${pet.id}/purge`,{confirm_name:'Mochi'},409);
+  await owner(`pets/${pet.id}/purge`,{...payload,deleted_at:'old'},409);
+  assert.deepEqual(await owner('dashboard'),before);
+  await owner(`pets/${pet.id}/restore`,{});await owner(`pets/${pet.id}/purge`,payload,409);
+  await owner(`pets/${pet.id}/delete`,{confirm_name:'Mochi'});
+  const latest=(await owner('dashboard')).pets.find(p=>p.id===pet.id).deleted_at;
+  await owner(`pets/${pet.id}/purge`,{...payload,deleted_at:latest});
+  await owner(`pets/${pet.id}/purge`,{...payload,deleted_at:latest},404);await owner(`pets/${pet.id}/restore`,{},404);
+  for(const table of ['pets','tasks','events','pet_records']){
+    const query=table==='pets'?'SELECT count(*) n FROM pets WHERE id=?':table==='events'?'SELECT count(*) n FROM events WHERE task_id=?':'SELECT count(*) n FROM '+table+' WHERE pet_id=?';
+    assert.equal(database().prepare(query).get(table==='events'?task.id:pet.id).n,0,table);
+  }
+  assert.deepEqual(database().prepare('PRAGMA foreign_key_check').all(),[]);
+  await restart();const after=await owner('dashboard');
+  assert.deepEqual(after.pets,before.pets.filter(p=>p.id!==pet.id));assert.deepEqual(after.tasks,before.tasks.filter(x=>x.pet_id!==pet.id));assert.deepEqual(after.records,before.records.filter(x=>x.pet_id!==pet.id));
+  assert.deepEqual(await outsider('dashboard'),foreignBefore);
+});
+
+test('C9 failed permanent deletion rolls back journal, tasks and audit together',async t=>{
+  const {owner,pet,database}=await fixture(t);
+  await owner('tasks',{pet_id:pet.id,title:'Care',due:instant},201);await owner('records',weight(pet.id),201);
+  await owner(`pets/${pet.id}/delete`,{confirm_name:'Mochi'});
+  const before=await owner('dashboard'),deleted_at=before.pets[0].deleted_at;
+  database().exec("CREATE TRIGGER reject_test_purge BEFORE DELETE ON pets BEGIN SELECT RAISE(ABORT,'Synthetic failure'); END");
+  await owner(`pets/${pet.id}/purge`,{confirm_name:'Mochi',deleted_at},503);
+  assert.deepEqual(await owner('dashboard'),before);assert.deepEqual(database().prepare('PRAGMA foreign_key_check').all(),[]);
+  database().exec('DROP TRIGGER reject_test_purge');
+  await owner(`pets/${pet.id}/purge`,{confirm_name:'Mochi',deleted_at});assert.equal((await owner('dashboard')).pets.length,0);
+});
 
 test('C1 delete moves a pet to recoverable trash, cancels active work and retains audit/records',async t=>{
   const {owner,member,outsider,pet,restart}=await fixture(t);
