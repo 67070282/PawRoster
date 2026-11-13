@@ -254,25 +254,27 @@ Production image ไม่รวมโฟลเดอร์ชุดทดสอ
 
 ## ภาพรวมโครงงาน
 
-**รุ่น 2.2 — สมุดบันทึก ปฏิทิน และการจัดการสมาชิก:** เพิ่มประวัติน้ำหนัก วัคซีน นัดหมาย ปฏิทินงาน การมอบหมายสมาชิก และถังขยะสัตว์เลี้ยงที่กู้คืนได้ โดยยังรองรับหลายบ้านและงานซ้ำ ดู [ฟีเจอร์และวิธีใช้งาน](docs/CARE-FEATURES.md)
+**ใหม่ในรุ่น 2.3:** เจ้าของเปิด **บ้านและสมาชิก → ลบบ้านถาวร** แล้วพิมพ์ชื่อบ้านเพื่อยืนยัน ทุกคนย้ายไปบ้านอื่นได้โดยไม่ต้องเหลือเจ้าของไว้ บัญชีและบ้านอื่นยังอยู่ แต่ข้อมูลสัตว์เลี้ยง งาน บันทึก นัดหมาย และประวัติของบ้านที่ลบจะถูกลบถาวร ไม่ย้ายตามอัตโนมัติ [รายละเอียด](docs/CARE-FEATURES.md)
+
+**รุ่น 2.3 — สมุดบันทึก ปฏิทิน และการจัดการสมาชิก:** เพิ่มประวัติน้ำหนัก วัคซีน นัดหมาย ปฏิทินงาน การมอบหมายสมาชิก และถังขยะสัตว์เลี้ยงที่กู้คืนได้ โดยยังรองรับหลายบ้านและงานซ้ำ ดู [ฟีเจอร์และวิธีใช้งาน](docs/CARE-FEATURES.md)
 
 โครงงานนี้จัดทำภายใต้หัวข้อ **PetTech × DevTools** โดยใช้ JavaScript, Node.js 24 และ SQLite พร้อมกระบวนการพัฒนาและทดสอบผ่าน Git, Docker Compose และ Jenkins
 
-### หน้าจอรุ่นปัจจุบัน 2.2
+### หน้าจอรุ่นปัจจุบัน 2.3
 
 ภาพจากแอปที่รันจริงใน image อาจารย์ วันที่ 13 พฤศจิกายน 2569 ใช้บัญชีและข้อมูลสาธิต แสดงธีมพื้นสว่าง ข้อความเข้ม และสีส้มเน้นนัดหมาย
 
 **ตารางดูแล — สถานะงาน ผู้รับผิดชอบ และงานที่ต้องทำ**
 
-![ตารางดูแล PawRoster 2.2 พร้อมสถานะและผู้รับผิดชอบ](docs/screenshots/v2.2/dashboard.jpg)
+![ตารางดูแล PawRoster 2.3 พร้อมสถานะและผู้รับผิดชอบ](docs/screenshots/v2.3/dashboard.jpg)
 
 **ปฏิทิน — วันนี้ วันที่มีนัด และรายละเอียดวันที่เลือก**
 
-![ปฏิทิน PawRoster 2.2 แสดงวันนี้และนัดหมาย](docs/screenshots/v2.2/calendar.jpg)
+![ปฏิทิน PawRoster 2.3 แสดงวันนี้และนัดหมาย](docs/screenshots/v2.3/calendar.jpg)
 
 **สมุดบันทึก — น้ำหนักล่าสุดและประวัติของสัตว์เลี้ยง**
 
-![สมุดบันทึกน้ำหนัก PawRoster 2.2](docs/screenshots/v2.2/journal.jpg)
+![สมุดบันทึกน้ำหนัก PawRoster 2.3](docs/screenshots/v2.3/journal.jpg)
 
 ดูครบทุกหน้ารวม **สัตว์เลี้ยง บ้านและสมาชิก ประวัติ และมือถือ** ใน [ภาพหน้าจอและคำอธิบาย](docs/SCREENSHOTS.md) ผลทดสอบรุ่นปัจจุบันอยู่ใน [รายงานการประเมินระบบ](docs/RESEARCH.md) ภาพและ evidence รุ่นก่อนเก็บไว้เป็นประวัติตามเวอร์ชัน
 
@@ -355,16 +357,18 @@ docker compose ps
 docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(async r=>{if(!r.ok)process.exit(1);console.log(await r.text())})"
 ```
 
-| รายการ | ผลรุ่น 2.2 |
+| รายการ | ผลรุ่น 2.3 |
 |---|---|
-| Acceptance tests | ผ่าน 32 กรณี (33 TAP records รวม Parent), fail 0 ทั้ง Windows และ Linux ใน image อาจารย์ |
+| Acceptance tests | ผ่าน 37 กรณี (38 TAP records รวม Parent), fail 0 ทั้ง Windows และ Linux ใน image อาจารย์ |
 | Web/UI | Flow งาน สมุดบันทึก ปฏิทิน ถังขยะและการจัดการสมาชิกผ่าน |
 | Course Docker-in-Docker | Syntax, build, revision health และ deployed HTTP smoke ผ่าน |
 | ข้อมูล | Online backup/integrity และ force-recreate persistence ผ่าน |
-| Jenkins CI/CD รุ่น 2.2 | main #1 และ review #1 ผ่าน; review #2 ยืนยัน failure gate ใน workspace ทดสอบ |
+| Jenkins review รุ่น 2.3 | review #4 ผ่าน source ฟีเจอร์; feature branch ข้าม Deploy ตามเงื่อนไข |
+| Jenkins CI/CD หลักฐานย้อนหลัง 2.2 | main #1 และ review #1 ผ่าน; review #2 ยืนยัน failure gate ใน workspace ทดสอบ |
+| ลบบ้านและ migration | H1–H5 ผ่าน: เจ้าของยืนยันชื่อบ้าน บัญชี/บ้านอื่นคงอยู่ rollback ได้เมื่อการลบล้มเหลว และ schema 5 ใช้งานได้ |
 | ความปลอดภัยของบ้าน | รหัสเก่าใช้ไม่ได้ บล็อก/ปลดบล็อก พักรับสมาชิก และการตัดสิทธิ์ผ่าน |
 
-รายละเอียดวิธีทดสอบ ผลจริง และขอบเขตหลักฐานอยู่ใน [รายงานการประเมินระบบ](docs/RESEARCH.md) และ [รายการตรวจส่ง](docs/SUBMISSION-AUDIT.md) หลักฐาน source รุ่น 2.2 อยู่ใน [evidence/household-security](evidence/household-security/README.md) ส่วน evidence รุ่นก่อนใช้อ้างอิงเฉพาะวันที่และ commit ที่ระบุ
+รายละเอียดวิธีทดสอบ ผลจริง และขอบเขตหลักฐานอยู่ใน [รายงานการประเมินระบบ](docs/RESEARCH.md) และ [รายการตรวจส่ง](docs/SUBMISSION-AUDIT.md) หลักฐานรุ่น 2.3 อยู่ใน [evidence/home-deletion](evidence/home-deletion/README.md) และหลักฐานย้อนหลังรุ่น 2.2 อยู่ใน [evidence/household-security](evidence/household-security/README.md) ส่วน evidence รุ่นก่อนใช้อ้างอิงเฉพาะวันที่และ commit ที่ระบุ
 
 ## ขอบเขตการประเมิน
 

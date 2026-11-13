@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-let mode = 'login', state, view = 'board', editingPet, editingTask, completing, deletingPet, editingRecord, assigning, purgingPet;
+let mode = 'login', state, view = 'board', editingPet, editingTask, completing, deletingPet, editingRecord, assigning, purgingPet, deletingHome;
 let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1), calendarDay = dayKey(new Date());
 function notice(message = '') { $('notice').textContent = message; $('notice').hidden = !message; }
 function el(tag, text, className) { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; if (className) e.className = className; return e; }
@@ -87,6 +87,17 @@ $('toggle-invites').onclick = () => {
   confirmAction(enabled ? 'เปิดรับสมาชิกอีกครั้ง?' : 'พักรับสมาชิกใหม่?', enabled ? 'ระบบจะสร้างรหัสใหม่ รหัสก่อนพักจะใช้ไม่ได้ สมาชิกปัจจุบันยังใช้งานได้' : 'รหัสเชิญจะเข้าร่วมบ้านไม่ได้ทั้งบัญชีเดิมและการสมัครใหม่ สมาชิกปัจจุบันยังใช้งานได้', () => mutate('homes/invite/toggle', { enabled }, enabled ? 'เปิดรับสมาชิกด้วยรหัสใหม่แล้ว' : 'พักรับสมาชิกใหม่แล้ว'));
 };
 $('leave-home').onclick = () => confirmAction('ออกจากบ้านนี้?', 'คุณจะเข้าถึงข้อมูลบ้านนี้ไม่ได้จนกว่าจะเข้าร่วมใหม่ งานที่คุณรับและยังไม่เสร็จจะกลับไปรอผู้รับผิดชอบ ประวัติการดูแลจะยังอยู่', async () => { await api('homes/leave', {}); resetFilters(); view = 'board'; await load(); notice('ออกจากบ้านแล้ว'); });
+$('delete-home').onclick = () => {
+  deletingHome = { home_id:state.user.home_id, confirm_invite:state.user.invite };
+  $('delete-home-form').reset();
+  $('delete-home-description').textContent = `ลบบ้าน “${state.user.home_name}” ถาวร สมาชิก ${state.members.length} คนจะออกจากบ้านนี้ ข้อมูลสัตว์เลี้ยง ${state.pets.length} ตัว งาน ${state.tasks.length} รายการ สมุดบันทึก ${state.records.length} รายการ รวมทั้งนัดหมาย ประวัติ และรายการบล็อกของบ้านนี้จะถูกลบ กู้คืนผ่านหน้าเว็บไม่ได้`;
+  openDialog('delete-home-dialog');
+};
+$('delete-home-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => {
+  await api('homes/delete', { ...Object.fromEntries(new FormData(e.target)), ...deletingHome });
+  closeDialogs(); deletingHome = undefined; resetFilters(); view = 'board'; await load();
+  notice('ลบบ้านแล้ว บัญชีและบ้านอื่นของทุกคนยังอยู่ เลือกสร้างหรือเข้าร่วมบ้านต่อได้');
+}); };
 function openPet(pet) {
   editingPet = pet?.id; $('pet-form').reset(); $('pet-dialog-title').textContent = pet ? 'แก้ไขข้อมูลสัตว์เลี้ยง' : 'เพิ่มสัตว์เลี้ยง';
   if (pet) for (const k of ['name', 'species', 'notes', 'breed', 'birth_date', 'sex']) $('pet-form').elements[k].value = pet[k] || (k === 'sex' ? 'unknown' : '');
@@ -196,12 +207,13 @@ function renderHousehold() {
   const owner = isOwner();
   $('home-role').textContent = owner ? 'คุณเป็นเจ้าของบ้าน' : 'คุณเป็นสมาชิกบ้านนี้';
   $('rename-home-form').hidden = !owner; $('rename-home-form').elements.name.value = state.user.home_name || '';
+  $('delete-home-panel').hidden = !owner;
   $('invite-panel').hidden = !owner; $('member-invite-hint').hidden = owner; $('invite').textContent = state.user.invite || '';
   $('invite').hidden = true; $('show-invite').textContent = 'แสดงรหัสเชิญ'; $('show-invite').setAttribute('aria-expanded','false');
   $('invite-status').textContent = state.user.invite_enabled ? 'เปิดรับสมาชิกผ่านรหัสเชิญ' : 'พักรับสมาชิกใหม่';
   $('toggle-invites').textContent = state.user.invite_enabled ? 'พักรับสมาชิก' : 'เปิดรับสมาชิก';
   $('show-invite').disabled = $('copy-invite').disabled = !state.user.invite_enabled;
-  $('leave-home').disabled = owner; $('leave-hint').textContent = owner ? 'เจ้าของบ้านโอนสิทธิ์ให้สมาชิกอื่นก่อนออกจากบ้านได้' : 'ออกจากบ้านได้โดยไม่กระทบบัญชีหรือบ้านอื่น';
+  $('leave-home').disabled = owner; $('leave-hint').textContent = owner ? 'โอนสิทธิ์ก่อนออกจากบ้าน หากทุกคนต้องการย้ายออก ใช้ “ลบบ้านถาวร” ด้านล่างได้' : 'ออกจากบ้านได้โดยไม่กระทบบัญชีหรือบ้านอื่น';
   $('member-count').textContent = `(${state.members.length})`; $('members').replaceChildren();
   for (const m of state.members) {
     const row = el('div', undefined, 'member'), info = el('div'), actions = el('div', undefined, 'actions');

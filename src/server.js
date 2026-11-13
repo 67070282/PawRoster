@@ -57,9 +57,9 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
     CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY, pet_id INTEGER NOT NULL REFERENCES pets(id), title TEXT NOT NULL, due TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'open' CHECK(status IN ('open','claimed','done')), assignee INTEGER REFERENCES users(id), completed_at TEXT, note TEXT NOT NULL DEFAULT '');
     CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY, task_id INTEGER NOT NULL REFERENCES tasks(id), actor INTEGER NOT NULL REFERENCES users(id), action TEXT NOT NULL, at TEXT NOT NULL);
     `);
-  // Versioned atomic migrations. Legacy home_id remains for compatibility with old backups.
+  // Versioned atomic migrations. Schema 5 removes the unused legacy users.home_id.
   const version = db.prepare('PRAGMA user_version').get().user_version;
-  if (version > 4) { db.close(); throw new Error('Database schema is newer than this application'); }
+  if (version > 5) { db.close(); throw new Error('Database schema is newer than this application'); }
   if (version < 2) {
     db.exec('BEGIN IMMEDIATE');
     try {
@@ -100,6 +100,14 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         CREATE TABLE home_events(id INTEGER PRIMARY KEY,home_id INTEGER NOT NULL REFERENCES homes(id),actor INTEGER NOT NULL REFERENCES users(id),action TEXT NOT NULL,target INTEGER REFERENCES users(id),at TEXT NOT NULL);
         CREATE INDEX home_events_home ON home_events(home_id,id);
         PRAGMA user_version=4; COMMIT;`);
+    } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
+  }
+  if (version < 5) {
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      db.exec('ALTER TABLE users DROP COLUMN home_id; PRAGMA user_version=5;');
+      if (db.prepare('PRAGMA foreign_key_check').all().length) throw new Error('Foreign key check failed during migration');
+      db.exec('COMMIT');
     } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
   }
   const attempts = new Map();
@@ -173,7 +181,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         if (origin.host !== req.headers.host) fail(403, 'ไม่อนุญาตคำขอจากเว็บไซต์อื่น');
       }
       if (req.method === 'GET' && path === '/health') {
-        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.2.0', revision: process.env.APP_REVISION || 'development' });
+        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.3.0', revision: process.env.APP_REVISION || 'development' });
       }
       if (req.method === 'GET' && ['/', '/app.js', '/style.css', '/pet-care.svg', '/cat.svg', '/dog.svg', '/paw.svg', '/fonts/Epilogue.ttf', '/fonts/NotoSansThai.ttf'].includes(path)) {
         const file = path === '/' ? 'index.html' : path.slice(1);
@@ -192,7 +200,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
           let home;
           if (b.invite) { home = db.prepare('SELECT id FROM homes WHERE invite=? AND invite_enabled=1').get(field(b, 'invite', 48)); if (!home) fail(400, 'รหัสเข้าร่วมบ้านไม่ถูกต้อง ถูกเปลี่ยน หรือบ้านพักรับสมาชิก'); }
           else { home = { id: Number(db.prepare('INSERT INTO homes(name,invite) VALUES (?,?)').run(field(b, 'home', 60), randomBytes(12).toString('hex')).lastInsertRowid) }; }
-          const userId = Number(db.prepare('INSERT INTO users(home_id,name,email,salt,password) VALUES (?,?,?,?,?)').run(home.id, name, email, salt, digest).lastInsertRowid);
+          const userId = Number(db.prepare('INSERT INTO users(name,email,salt,password) VALUES (?,?,?,?)').run(name, email, salt, digest).lastInsertRowid);
           db.prepare('INSERT INTO memberships VALUES (?,?,?)').run(home.id, userId, b.invite ? 'member' : 'owner');
           homeAudit(home.id, userId, b.invite ? 'member_joined' : 'home_created');
           return userId;
@@ -254,6 +262,26 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         return send(200, { user: u, homes: homesFor(u.id), members, pets, tasks, events, records, blocked_members, security_events });
       }
       if (!u.home_id) fail(409, 'เลือกสร้างบ้านหรือเข้าร่วมบ้านก่อนเริ่มใช้งาน');
+      if (req.method === 'POST' && path === '/api/homes/delete') {
+        ownerOnly(u); const b = await body(req);
+        transaction(() => {
+          if (!Number.isInteger(b.home_id) || b.home_id !== u.home_id) fail(409, 'บ้านที่ยืนยันไม่ตรงกับบ้านปัจจุบัน กรุณาเปิดหน้าลบบ้านใหม่');
+          const home = db.prepare('SELECT name,invite FROM homes WHERE id=?').get(u.home_id);
+          if (!home) fail(404, 'ไม่พบบ้าน');
+          if (b.confirm_name !== home.name) fail(400, 'พิมพ์ชื่อบ้านให้ตรงเพื่อยืนยันการลบ');
+          if (b.confirm_invite !== home.invite) fail(409, 'ข้อมูลบ้านหรือรหัสเชิญเปลี่ยนแล้ว กรุณาเปิดหน้าลบบ้านใหม่');
+          db.prepare('DELETE FROM events WHERE task_id IN (SELECT t.id FROM tasks t JOIN pets p ON p.id=t.pet_id WHERE p.home_id=?)').run(u.home_id);
+          db.prepare('DELETE FROM tasks WHERE pet_id IN (SELECT id FROM pets WHERE home_id=?)').run(u.home_id);
+          db.prepare('DELETE FROM pet_records WHERE pet_id IN (SELECT id FROM pets WHERE home_id=?)').run(u.home_id);
+          db.prepare('DELETE FROM pets WHERE home_id=?').run(u.home_id);
+          db.prepare('DELETE FROM home_blocks WHERE home_id=?').run(u.home_id);
+          db.prepare('DELETE FROM home_events WHERE home_id=?').run(u.home_id);
+          db.prepare('UPDATE sessions SET active_home_id=NULL WHERE active_home_id=?').run(u.home_id);
+          db.prepare('DELETE FROM memberships WHERE home_id=?').run(u.home_id);
+          db.prepare('DELETE FROM homes WHERE id=?').run(u.home_id);
+        });
+        return send(200, { ok: true });
+      }
       if (req.method === 'POST' && path === '/api/homes/rename') {
         ownerOnly(u); const b = await body(req); transaction(()=>{ db.prepare('UPDATE homes SET name=? WHERE id=?').run(field(b, 'name', 60), u.home_id); homeAudit(u.home_id,u.id,'home_renamed'); }); return send(200, { ok: true });
       }

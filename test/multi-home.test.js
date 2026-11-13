@@ -111,9 +111,9 @@ test('S6 schema 3 upgrade preserves data and sessions; paused invites, blocks an
   const dir=mkdtempSync(join(tmpdir(),'pawroster-security-migration-')),path=join(dir,'legacy.db');
   t.after(()=>rmSync(dir,{recursive:true,force:true}));
   let app=createApp({dbPath:path});
-  app.db.exec("INSERT INTO homes(id,name,invite) VALUES(1,'Home','existing-code');INSERT INTO users VALUES(1,1,'Owner','owner@example.com','salt','hash'),(2,1,'Member','member@example.com','salt','hash');INSERT INTO memberships VALUES(1,1,'owner');INSERT INTO sessions VALUES('hashed-session',1,9999999999999,1);INSERT INTO pets(id,home_id,name,species) VALUES(1,1,'Pet','cat');DROP TABLE home_events;DROP TABLE home_blocks;ALTER TABLE homes DROP COLUMN invite_enabled;PRAGMA user_version=3;");
+  app.db.exec("INSERT INTO homes(id,name,invite) VALUES(1,'Home','existing-code');INSERT INTO users(id,name,email,salt,password) VALUES(1,'Owner','owner@example.com','salt','hash'),(2,'Member','member@example.com','salt','hash');ALTER TABLE users ADD COLUMN home_id INTEGER REFERENCES homes(id);UPDATE users SET home_id=1;INSERT INTO memberships VALUES(1,1,'owner');INSERT INTO sessions VALUES('hashed-session',1,9999999999999,1);INSERT INTO pets(id,home_id,name,species) VALUES(1,1,'Pet','cat');DROP TABLE home_events;DROP TABLE home_blocks;ALTER TABLE homes DROP COLUMN invite_enabled;PRAGMA user_version=3;");
   const old=app.db.prepare('SELECT * FROM sessions').all();app.db.close();app=createApp({dbPath:path});
-  assert.equal(app.db.prepare('PRAGMA user_version').get().user_version,4);assert.deepEqual(app.db.prepare('SELECT * FROM sessions').all(),old);assert.equal(app.db.prepare('SELECT invite FROM homes').get().invite,'existing-code');assert.equal(app.db.prepare('SELECT name FROM pets').get().name,'Pet');
+  assert.equal(app.db.prepare('PRAGMA user_version').get().user_version,5);assert.deepEqual(app.db.prepare('SELECT * FROM sessions').all(),old);assert.equal(app.db.prepare('SELECT invite FROM homes').get().invite,'existing-code');assert.equal(app.db.prepare('SELECT name FROM pets').get().name,'Pet');
   app.db.exec("UPDATE homes SET invite_enabled=0;INSERT INTO home_blocks VALUES(1,2,1,'2026-11-13T00:00:00.000Z');INSERT INTO home_events(home_id,actor,action,target,at) VALUES(1,1,'member_removed',2,'2026-11-13T00:00:00.000Z');");
   app.db.close();app=createApp({dbPath:path});
   try{assert.equal(app.db.prepare('SELECT invite_enabled FROM homes').get().invite_enabled,0);assert.equal(app.db.prepare('SELECT count(*) n FROM home_blocks').get().n,1);assert.equal(app.db.prepare('SELECT action FROM home_events').get().action,'member_removed');assert.deepEqual(app.db.prepare('PRAGMA foreign_key_check').all(),[]);}finally{app.db.close();}
@@ -216,5 +216,5 @@ test('M9 v1 migration preserves users, sessions and tasks; leaving is not undone
   const state = await request('dashboard'); assert.equal(state.user.role, 'member'); assert.equal(state.tasks[0].note, 'Preserved'); assert.equal(app.db.prepare('SELECT role FROM memberships WHERE user_id=1').get().role, 'owner');
   await request('homes/leave', {}); await new Promise(r => app.server.close(r)); app.db.close();
   app = createApp({ dbPath: path }); url = await start();
-  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 4);
+  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 5);
 });

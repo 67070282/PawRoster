@@ -1,4 +1,4 @@
-# เอกสารประกอบ PawRoster 2.2
+# เอกสารประกอบ PawRoster 2.3
 
 | ต้องการตรวจ | เอกสาร |
 |---|---|
@@ -15,3 +15,5 @@
 | Git/GitHub | [GITHUB.md](GITHUB.md) |
 
 หลักฐานปัจจุบัน: [Course/API/UI รุ่น 2.2](../evidence/household-security/README.md) และ [CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) ส่วน UPGRADE-V2.md และหลักฐานรุ่นก่อนเป็นประวัติการพัฒนา
+
+รุ่น 2.3 เพิ่ม [ลบบ้านถาวร](CARE-FEATURES.md) พร้อม [ผลตรวจและ migration](../evidence/home-deletion/README.md) ผลรุ่นก่อนเก็บไว้ตามวันที่และ source ของแต่ละรอบ

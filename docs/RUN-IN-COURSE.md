@@ -1,5 +1,8 @@
 # เปิด PawRoster ภายใน Docker ของรายวิชาผ่าน SSH
 
+> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](../evidence/home-deletion/README.md)
+
+
 คู่มือนี้ใช้สภาพแวดล้อม `tuchsanai/devtools:2569_1` และรันคำสั่งโครงงานหลังเชื่อมต่อ SSH เข้าไปในกล่อง ตามรูปแบบที่ผู้สอนกำหนด
 
 ## โครงสร้าง Docker-in-Docker
@@ -98,3 +101,9 @@ docker compose up -d --wait
 ผลตรวจสองชั้นและ Environment guard จาก Commit ที่ Pull จริง: [Docker-in-Docker validation](../evidence/dind-validation/README.md)
 
 ผลตรวจรุ่นปัจจุบัน 2.2: [Course Container และ acceptance tests](../evidence/household-security/README.md), [CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) และ [รายงานผลทดสอบ](RESEARCH.md)
+
+## อัปเกรดเป็น 2.3 และการลบบ้าน
+
+สำรอง DB ผ่าน `scripts/backup.mjs` ก่อนเปลี่ยน image เก็บไฟล์สำรองนอก Git และนอก public evidence จากนั้นใช้ขั้นตอน build/compose เดิมกับ named volume เดิม แอปจะย้าย schema 4→5 อัตโนมัติ ตรวจ `/health` ว่า version เป็น `2.3.0` และ revision ตรง commit ที่ deploy พร้อมตรวจ `PRAGMA user_version` เป็น 5, `integrity_check` เป็น ok และ `foreign_key_check` ไม่มีรายการ
+
+Schema 5 เอา `users.home_id` ที่เลิกใช้แล้วออก ค่าบัญชีและสมาชิกภาพยังอยู่ หากต้องย้อนกลับไปแอปก่อน 2.3 ต้องคืนทั้ง image และ backup ก่อน migration ด้วยกัน ไม่ใช้ฐานข้อมูล schema 5 กับแอปเก่า การลบบ้านผ่าน UI เป็นการลบถาวรทั้งบ้าน การกู้คืน backup เป็นงานผู้ดูแลและจะกระทบข้อมูลที่เปลี่ยนหลังเวลาสำรอง จึงควรทดลองคืนใน volume แยกก่อน
