@@ -1,0 +1,21 @@
+{
+  "version": "2.2.0",
+  "revision": "00ad184cc7208a3738de3df90bb836a6917c1291",
+  "date": "2026-11-13T07:51:26.442Z",
+  "syntheticData": true,
+  "source": "Live application in instructor Docker via SSH tunnel",
+  "desktopViewport": "1440x1080",
+  "mobileViewport": "390x844",
+  "pages": [
+    "welcome",
+    "dashboard",
+    "calendar",
+    "journal",
+    "pets",
+    "household",
+    "history",
+    "calendar-mobile"
+  ],
+  "inviteHidden": true,
+  "pageErrors": []
+}

@@ -3,6 +3,7 @@
 | ต้องการตรวจ | เอกสาร |
 |---|---|
 | ติดตั้งและเปิดระบบ | [README หลัก](../README.md) / [Course Container](RUN-IN-COURSE.md) |
+| หน้าจอรุ่นปัจจุบัน | [SCREENSHOTS.md](SCREENSHOTS.md) |
 | ภาพรวมโครงงานและผู้จัดทำ | [PROJECT.md](PROJECT.md) |
 | วิธีทดสอบและผลจริง | [RESEARCH.md](RESEARCH.md) |
 | Requirements ไปยังผลตรวจ | [TRACEABILITY.md](TRACEABILITY.md) |
