@@ -13,6 +13,6 @@
 | ความปลอดภัยและสมาชิก | [SECURITY.md](SECURITY.md) |
 | สมุดบันทึก/ปฏิทิน/สัตว์เลี้ยง | [CARE-FEATURES.md](CARE-FEATURES.md) / [UI-READABILITY.md](UI-READABILITY.md) |
 | Git/GitHub | [GITHUB.md](GITHUB.md) |
-| นำเสนอและ Demo | [PRESENTATION.md](PRESENTATION.md) / [สไลด์ 10 หน้า](../presentation/index.html) |
+| สไลด์ประกอบคลิปนำเสนอ | [สไลด์ 10 หน้า](../presentation/index.html) |
 
 หลักฐานปัจจุบัน: [Course/API/UI รุ่น 2.2](../evidence/household-security/README.md) และ [CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) ส่วน UPGRADE-V2.md และหลักฐานรุ่นก่อนเป็นประวัติการพัฒนา
