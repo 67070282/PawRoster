@@ -1,0 +1,22 @@
+{
+  "version": "2.3.0",
+  "revision": "development",
+  "date": "2026-11-13T10:20:26.378Z",
+  "syntheticData": true,
+  "source": "Isolated local 2.3 application, synthetic screenshot fixtures",
+  "desktopViewport": "1440x1080",
+  "mobileViewport": "390x844",
+  "pages": [
+    "welcome",
+    "dashboard",
+    "calendar",
+    "journal",
+    "pets",
+    "household",
+    "history",
+    "calendar-mobile",
+    "delete-home"
+  ],
+  "inviteHidden": true,
+  "pageErrors": []
+}

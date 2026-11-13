@@ -1,0 +1,532 @@
+(node:20040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"method":"POST","path":"/api/register","status":201,"ms":42}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":57}
+{"method":"POST","path":"/api/register","status":201,"ms":45}
+{"method":"POST","path":"/api/login","status":200,"ms":46}
+{"method":"POST","path":"/api/pets","status":201,"ms":3}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"POST","path":"/api/records","status":201,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":3}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":3}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":200,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":1}
+{"method":"POST","path":"/api/register","status":400,"ms":38}
+{"method":"POST","path":"/api/login","status":200,"ms":38}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ H1 two members move to another home; deleting the old home preserves accounts and all other-home data (442.6741ms)
+{"method":"POST","path":"/api/register","status":201,"ms":40}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":38}
+{"method":"POST","path":"/api/register","status":201,"ms":38}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":403,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":400,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":1}
+{"method":"POST","path":"/api/homes/invite/rotate","status":200,"ms":2}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ H2 home deletion rejects non-owner, incorrect confirmation and stale home/invite without changing data (173.6327ms)
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":39}
+{"method":"POST","path":"/api/register","status":201,"ms":43}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":5}
+{"method":"POST","path":"/api/homes","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/login","status":200,"ms":36}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+✔ H3 deleting the last home leaves valid accounts and sessions able to join or create homes again (257.1926ms)
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":37}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"POST","path":"/api/records","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"event":"server_error","message":"Synthetic home failure"}
+{"method":"POST","path":"/api/homes/delete","status":503,"ms":1}
+{"method":"POST","path":"/api/homes/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ H4 a failed home deletion rolls back all related data, memberships and selected sessions atomically (161.0391ms)
+{"method":"POST","path":"/api/register","status":201,"ms":36}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ H5 schema 4 migration removes legacy home coupling and preserves identities, credentials, sessions and memberships (164.4226ms)
+(node:32676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"method":"POST","path":"/api/register","status":201,"ms":42}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":56}
+{"method":"POST","path":"/api/register","status":201,"ms":45}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets","status":201,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks","status":404,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/login","status":200,"ms":40}
+{"method":"POST","path":"/api/homes/switch","status":200,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":409,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":0}
+✔ M1 existing accounts join multiple homes, switching keeps data isolated per session (311.7891ms)
+{"method":"POST","path":"/api/register","status":201,"ms":43}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":38}
+{"method":"POST","path":"/api/register","status":201,"ms":41}
+{"method":"POST","path":"/api/homes/invite/rotate","status":403,"ms":0}
+{"method":"POST","path":"/api/homes/rename","status":403,"ms":0}
+{"method":"POST","path":"/api/homes/rename","status":200,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/invite/rotate","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":2}
+✔ M2 owners manage invite rotation and names; members cannot expose or rotate codes (192.4765ms)
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":37}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"POST","path":"/api/homes/invite/rotate","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":1}
+{"method":"POST","path":"/api/register","status":400,"ms":36}
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ S1 rotated invites reject both existing joins and registration while current members retain access (243.467ms)
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/login","status":200,"ms":33}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/members/remove","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":403,"ms":1}
+{"method":"POST","path":"/api/pets","status":409,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":0}
+{"method":"POST","path":"/api/homes/join","status":403,"ms":0}
+{"method":"POST","path":"/api/pets","status":409,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/members/remove","status":400,"ms":1}
+✔ S2 removal blocks rejoining, rotates invites and revokes access in every member session without affecting another home (203.9336ms)
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/members/unblock","status":403,"ms":1}
+{"method":"POST","path":"/api/homes/members/remove","status":200,"ms":2}
+{"method":"POST","path":"/api/homes/members/unblock","status":404,"ms":0}
+{"method":"POST","path":"/api/homes/members/unblock","status":404,"ms":0}
+{"method":"POST","path":"/api/homes/members/unblock","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ S3 only the owner of the matching home can unblock; unblocking does not add membership (147.5653ms)
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"POST","path":"/api/homes/invite/toggle","status":403,"ms":1}
+{"method":"POST","path":"/api/homes/invite/toggle","status":400,"ms":1}
+{"method":"POST","path":"/api/homes/invite/toggle","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":0}
+{"method":"POST","path":"/api/register","status":400,"ms":31}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/invite/toggle","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/join","status":400,"ms":0}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":1}
+✔ S4 paused invites stop registration and joins; reopening issues a fresh code and preserves existing members (185.935ms)
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"event":"server_error","message":"Synthetic removal failure"}
+{"method":"POST","path":"/api/homes/members/remove","status":503,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ S5 failed removal rolls back the membership, block, session, released tasks and invite together (157.3661ms)
+✔ S6 schema 3 upgrade preserves data and sessions; paused invites, blocks and security history survive restart (59.3096ms)
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":1}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/members/remove","status":403,"ms":1}
+{"method":"POST","path":"/api/homes/members/remove","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":0}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ M3 removal revokes access and releases claimed work with history retained (155.7942ms)
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/homes/leave","status":409,"ms":1}
+{"method":"POST","path":"/api/homes/transfer","status":400,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/transfer","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/invite/rotate","status":403,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/homes/join","status":201,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":200,"ms":2}
+{"method":"POST","path":"/api/homes/leave","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/switch","status":403,"ms":0}
+✔ M4 ownership transfer and leaving preserve remaining memberships (148.4693ms)
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/homes","status":201,"ms":2}
+{"method":"POST","path":"/api/pets","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+✔ M5 stale browser tabs cannot write into a different active household (128.1947ms)
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/edit","status":403,"ms":0}
+{"method":"POST","path":"/api/tasks/1/cancel","status":403,"ms":0}
+{"method":"POST","path":"/api/tasks/1/edit","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/edit","status":409,"ms":1}
+{"method":"POST","path":"/api/tasks/1/cancel","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+{"method":"POST","path":"/api/tasks/1/claim","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/tasks","status":400,"ms":0}
+{"method":"POST","path":"/api/tasks","status":400,"ms":0}
+✔ M6 task edit permissions, cancellation, priorities and recurrence validation (141.6177ms)
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/pets","status":201,"ms":1}
+{"method":"POST","path":"/api/tasks","status":201,"ms":1}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks/2/edit","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/2/claim","status":200,"ms":3}
+{"method":"POST","path":"/api/tasks/2/complete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ M7 completion creates exactly one recurring successor at the original interval (142.1645ms)
+{"method":"POST","path":"/api/register","status":201,"ms":29}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/pets/1/edit","status":404,"ms":1}
+{"method":"POST","path":"/api/pets/1/edit","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/archive","status":403,"ms":0}
+{"method":"POST","path":"/api/tasks","status":201,"ms":1}
+{"method":"POST","path":"/api/pets/1/archive","status":409,"ms":1}
+{"method":"POST","path":"/api/tasks/1/cancel","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/archive","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks","status":404,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/pets/1/archive","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ M8 pet notes, archival and restore retain history and enforce house boundaries (142.7871ms)
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/homes/leave","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ M9 v1 migration preserves users, sessions and tasks; leaving is not undone on restart (79.7643ms)
+(node:32336) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"method":"POST","path":"/api/register","status":201,"ms":49}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":47}
+{"method":"POST","path":"/api/register","status":201,"ms":40}
+{"method":"POST","path":"/api/pets","status":201,"ms":3}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":2}
+{"method":"POST","path":"/api/records","status":201,"ms":3}
+{"method":"POST","path":"/api/pets","status":201,"ms":3}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"POST","path":"/api/records","status":201,"ms":3}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/pets/1/purge","status":409,"ms":1}
+{"method":"POST","path":"/api/pets/1/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/pets/1/purge","status":403,"ms":0}
+{"method":"POST","path":"/api/pets/1/purge","status":404,"ms":1}
+{"method":"POST","path":"/api/pets/1/purge","status":400,"ms":1}
+{"method":"POST","path":"/api/pets/1/purge","status":409,"ms":1}
+{"method":"POST","path":"/api/pets/1/purge","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/restore","status":200,"ms":2}
+{"method":"POST","path":"/api/pets/1/purge","status":409,"ms":1}
+{"method":"POST","path":"/api/pets/1/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/purge","status":200,"ms":3}
+{"method":"POST","path":"/api/pets/1/purge","status":404,"ms":1}
+{"method":"POST","path":"/api/pets/1/restore","status":404,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C8 permanent deletion requires owner, trashed state, matching name and current trash version; removes only related rows (339.2191ms)
+{"method":"POST","path":"/api/register","status":201,"ms":41}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":37}
+{"method":"POST","path":"/api/register","status":201,"ms":39}
+{"method":"POST","path":"/api/pets","status":201,"ms":3}
+{"method":"POST","path":"/api/tasks","status":201,"ms":3}
+{"method":"POST","path":"/api/records","status":201,"ms":2}
+{"method":"POST","path":"/api/pets/1/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"event":"server_error","message":"Synthetic failure"}
+{"method":"POST","path":"/api/pets/1/purge","status":503,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/pets/1/purge","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C9 failed permanent deletion rolls back journal, tasks and audit together (189.0586ms)
+{"method":"POST","path":"/api/register","status":201,"ms":34}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":36}
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":1}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":1}
+{"method":"POST","path":"/api/tasks/2/claim","status":200,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":2}
+{"method":"POST","path":"/api/pets/1/delete","status":403,"ms":0}
+{"method":"POST","path":"/api/pets/1/delete","status":404,"ms":0}
+{"method":"POST","path":"/api/pets/1/delete","status":400,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/delete","status":409,"ms":1}
+{"method":"POST","path":"/api/tasks/2/complete","status":404,"ms":0}
+{"method":"POST","path":"/api/records","status":404,"ms":1}
+{"method":"POST","path":"/api/records/1/edit","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/pets/1/restore","status":403,"ms":1}
+{"method":"POST","path":"/api/pets/1/restore","status":200,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C1 delete moves a pet to recoverable trash, cancels active work and retains audit/records (189.929ms)
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"POST","path":"/api/register","status":201,"ms":36}
+{"method":"POST","path":"/api/pets","status":201,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/pets/1/edit","status":400,"ms":1}
+{"method":"POST","path":"/api/pets/1/edit","status":400,"ms":1}
+{"method":"POST","path":"/api/pets/1/edit","status":400,"ms":1}
+{"method":"POST","path":"/api/pets/1/edit","status":400,"ms":0}
+{"method":"POST","path":"/api/pets/1/edit","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ C2 pet profile validates real dates, sex, length and retains optional fields (165.608ms)
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/pets","status":201,"ms":3}
+{"method":"POST","path":"/api/records","status":201,"ms":2}
+{"method":"POST","path":"/api/records","status":404,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/records/1/edit","status":404,"ms":1}
+{"method":"POST","path":"/api/records/1/delete","status":404,"ms":1}
+{"method":"POST","path":"/api/records/1/edit","status":200,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":1}
+{"method":"POST","path":"/api/records/2/edit","status":403,"ms":1}
+{"method":"POST","path":"/api/records/2/delete","status":403,"ms":1}
+{"method":"POST","path":"/api/records/1/delete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C3 journal creation and editing enforce household, author and owner permissions (160.2405ms)
+{"method":"POST","path":"/api/register","status":201,"ms":35}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":0}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":400,"ms":0}
+{"method":"POST","path":"/api/records","status":400,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+✔ C4 journal validates numeric weight, dates, notes and appointment kinds (158.3587ms)
+{"method":"POST","path":"/api/register","status":201,"ms":30}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":31}
+{"method":"POST","path":"/api/register","status":201,"ms":32}
+{"method":"POST","path":"/api/pets","status":201,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":1}
+{"method":"POST","path":"/api/records/1/resolve","status":403,"ms":0}
+{"method":"POST","path":"/api/records/1/resolve","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/records/1/resolve","status":200,"ms":3}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/records/1/resolve","status":200,"ms":1}
+{"method":"POST","path":"/api/records/1/edit","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/records","status":201,"ms":2}
+{"method":"POST","path":"/api/records/2/resolve","status":400,"ms":0}
+✔ C5 appointments resolve/reopen, reset on rescheduling and persist after restart (165.5789ms)
+{"method":"POST","path":"/api/register","status":201,"ms":37}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":201,"ms":33}
+{"method":"POST","path":"/api/register","status":201,"ms":38}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks/1/assign","status":403,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/tasks/1/assign","status":400,"ms":1}
+{"method":"POST","path":"/api/tasks/1/assign","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/assign","status":409,"ms":1}
+{"method":"POST","path":"/api/tasks/1/complete","status":403,"ms":0}
+{"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C6 owner assignment uses current membership, assignee-only completion and one audit (165.6954ms)
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+✔ C7 v2 database migrates to v3 without losing sessions, archived pets or task history (81.8735ms)
+(node:23672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"method":"GET","path":"/api/dashboard","status":401,"ms":4}
+{"method":"POST","path":"/api/register","status":201,"ms":46}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":2}
+{"method":"POST","path":"/api/login","status":401,"ms":44}
+{"method":"POST","path":"/api/login","status":200,"ms":42}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/register","status":400,"ms":0}
+{"method":"POST","path":"/api/register","status":409,"ms":40}
+▶ HTTP acceptance: shared care, conflicts, privacy, validation and persistence
+  ✔ R1 authentication and session cookie (227.961ms)
+{"method":"POST","path":"/api/register","status":201,"ms":44}
+{"method":"POST","path":"/api/register","status":201,"ms":43}
+{"method":"POST","path":"/api/pets","status":201,"ms":2}
+{"method":"POST","path":"/api/tasks","status":201,"ms":2}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+  ✔ R2 join house, add real pet and scheduled task (103.9776ms)
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":3}
+{"method":"POST","path":"/api/tasks/1/claim","status":409,"ms":0}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+  ✔ R3 simultaneous claims have one winner (9.1222ms)
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"POST","path":"/api/tasks/1/complete","status":403,"ms":1}
+{"method":"POST","path":"/api/tasks/1/release","status":200,"ms":2}
+{"method":"POST","path":"/api/tasks/1/claim","status":200,"ms":3}
+{"method":"POST","path":"/api/tasks/1/complete","status":200,"ms":3}
+{"method":"POST","path":"/api/tasks/1/complete","status":409,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+  ✔ R4 owner-only completion, release and one audit record (20.8282ms)
+{"method":"GET","path":"/api/dashboard","status":200,"ms":0}
+{"method":"POST","path":"/api/tasks/1/claim","status":404,"ms":1}
+{"method":"POST","path":"/api/tasks","status":404,"ms":1}
+{"method":"POST","path":"/api/pets","status":403,"ms":0}
+  ✔ R5 house isolation and cross-origin rejection (6.7326ms)
+{"method":"POST","path":"/api/tasks","status":400,"ms":0}
+{"method":"POST","path":"/api/tasks","status":400,"ms":1}
+{"method":"POST","path":"/api/pets","status":400,"ms":0}
+{"method":"POST","path":"/api/pets","status":201,"ms":1}
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/","status":200,"ms":1}
+{"method":"GET","path":"/pet-care.svg","status":200,"ms":2}
+{"method":"GET","path":"/cat.svg","status":200,"ms":1}
+{"method":"GET","path":"/dog.svg","status":200,"ms":1}
+{"method":"GET","path":"/fonts/Epilogue.ttf","status":200,"ms":1}
+{"method":"GET","path":"/fonts/NotoSansThai.ttf","status":200,"ms":2}
+{"method":"POST","path":"/api/login","status":400,"ms":1}
+{"method":"POST","path":"/api/login","status":413,"ms":1}
+  ✔ R6 validation, injection treated as data, HTTP security (28.6499ms)
+{"method":"GET","path":"/api/dashboard","status":200,"ms":1}
+{"method":"GET","path":"/health","status":200,"ms":0}
+  ✔ R7 restart retains database and session (20.3862ms)
+{"method":"POST","path":"/api/logout","status":200,"ms":4}
+{"method":"GET","path":"/api/dashboard","status":401,"ms":1}
+  ✔ R8 logout revokes session (6.2125ms)
+✔ HTTP acceptance: shared care, conflicts, privacy, validation and persistence (474.5116ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2623.4955

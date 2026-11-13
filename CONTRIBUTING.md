@@ -1,5 +1,8 @@
 # การร่วมพัฒนา PawRoster
 
+> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](docs/CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](evidence/home-deletion/README.md)
+
+
 ใช้ issue ที่ระบุ Requirement/Acceptance Criteria และแยก branch เช่น `feature/calendar-filter`, `fix/session-validation` หรือ `docs/architecture-details` ก่อนเปิด Pull Request รายการตรวจปัจจุบันครอบคลุม R1–R8, M1–M9, C1–C9, S1–S6 และ N1–N3 ตาม [TRACEABILITY](docs/TRACEABILITY.md)
 
 ## การตรวจการเปลี่ยนแปลง

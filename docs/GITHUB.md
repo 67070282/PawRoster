@@ -1,5 +1,8 @@
 # Repository และประวัติการส่งมอบ
 
+> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](../evidence/home-deletion/README.md)
+
+
 Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public · default branch `main`
 
 ## การจัดการเวอร์ชัน
@@ -26,3 +29,5 @@ Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Publi
 4. อ่านผลใน evidence directory พร้อมวันที่และ commit ไม่ใช้ผลรุ่นเก่าแทนรุ่นใหม่
 
 การใช้ AI เป็นเครื่องมือพัฒนาระบุใน README ประวัติการทบทวนและเปลี่ยนแปลงใช้ข้อมูลจริงใน GitHub
+
+รุ่น 2.3 ใช้ branch `feature/delete-household` เพิ่ม API/UI ลบบ้าน พร้อม migration และ H1–H5 รวมถึงอัปเดตภาพและเอกสารทั้งหมด [Source ฟีเจอร์](https://github.com/67070282/PawRoster/commit/f63e1964790fd3fc453a59bd42996e68bec56d16)

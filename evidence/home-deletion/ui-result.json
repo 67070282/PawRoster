@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-13T10:20:08.317Z",
+  "version": "2.3.0",
+  "syntheticData": true,
+  "checks": [
+    "owner-only control",
+    "cancel unchanged",
+    "typed-name mismatch",
+    "stale invite rejected",
+    "320/390/1365 widths without horizontal overflow",
+    "two members retain destination home and pets",
+    "last owned home deletion",
+    "no-home account can open create/join dialog"
+  ],
+  "pageErrors": []
+}

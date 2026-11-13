@@ -1,6 +1,6 @@
-# สถาปัตยกรรม เทคโนโลยี และ API — PawRoster 2.2
+# สถาปัตยกรรม เทคโนโลยี และ API — PawRoster 2.3
 
-อ้างอิง implementation รุ่น 2.2.0, schema 4 ใน repository นี้ รายงานผลตรวจอยู่ใน [RESEARCH.md](RESEARCH.md) และภาพหน้าจอปัจจุบันอยู่ใน [SCREENSHOTS.md](SCREENSHOTS.md)
+อ้างอิง implementation รุ่น 2.3.0, schema 5 ใน repository นี้ รายงานผลตรวจอยู่ใน [RESEARCH.md](RESEARCH.md) และภาพหน้าจอปัจจุบันอยู่ใน [SCREENSHOTS.md](SCREENSHOTS.md)
 
 ## ภาพรวม
 
@@ -57,7 +57,7 @@ SQLite เป็นไฟล์ฐานข้อมูลและ library ท�
 | Parameterized SQL | แยกค่าที่รับจากผู้ใช้จากโครงสร้างคำสั่ง SQL | ป้องกัน input ถูกนำไปตีความเป็นคำสั่ง SQL โดยตรง |
 | BEGIN IMMEDIATE / Transaction | ตรวจสถานะกับเขียนงาน/audit, เตะสมาชิก/บล็อก/หมุนรหัส และลบถาวรเป็นชุด | สำเร็จหรือย้อนกลับพร้อมกัน ป้องกันข้อมูลสำเร็จครึ่งชุดและการรับงานรายการเดียวซ้ำ |
 | WAL และ busy_timeout | ตั้งค่าการทำงานของ SQLite ในการอ่าน/เขียนและรอ lock | ช่วยการใช้งานอ่าน/เขียนในขอบเขตระบบเล็ก แต่ไม่ได้ทำให้เป็นระบบหลาย replica |
-| Versioned migrations | อัปเกรดฐานข้อมูลเดิมไป schema 4 ใน Transaction | เพิ่มฟีเจอร์โดยรักษาข้อมูลเดิมและตรวจเวอร์ชันก่อนเปิดแอป |
+| Versioned migrations | อัปเกรดฐานข้อมูลเดิมไป schema 5 ใน Transaction | เพิ่มฟีเจอร์โดยรักษาข้อมูลเดิมและตรวจเวอร์ชันก่อนเปิดแอป |
 | Online backup + integrity checks | สร้างสำเนาฐานข้อมูล ตรวจ integrity และเทียบข้อมูล | พิสูจน์ว่าสำรองอ่านกลับได้ ไม่ใช่เพียงมีไฟล์ชื่อ backup |
 
 ตารางหลัก 10 ตาราง:
@@ -162,6 +162,7 @@ Jenkins deploy ไป project สำหรับ CI แยกจากแอป�
 | POST | /api/homes | name → สร้างบ้านและเลือกใช้งาน |
 | POST | /api/homes/join | invite → เข้าร่วมด้วยบัญชีเดิม ตรวจรหัส การพักรับ และรายการบล็อก |
 | POST | /api/homes/switch | home_id → เลือกบ้านที่เป็นสมาชิก เฉพาะ session ปัจจุบัน |
+| POST | /api/homes/delete | owner + home_id, confirm_name, confirm_invite → ลบบ้านและข้อมูลของบ้านใน Transaction เดียว คงบัญชีและบ้านอื่นไว้ |
 | POST | /api/homes/rename | owner + name → เปลี่ยนชื่อและ home audit |
 | POST | /api/homes/invite/rotate | owner → รหัสใหม่; รหัสเก่าใช้ไม่ได้ทั้ง register/join |
 | POST | /api/homes/invite/toggle | owner + enabled boolean → พัก/เปิดรับและเปลี่ยนรหัสใหม่ |
@@ -213,7 +214,15 @@ Jenkins deploy ไป project สำหรับ CI แยกจากแอป�
 | CI/CD | [Jenkinsfile](../Jenkinsfile), [jenkins](../jenkins/) |
 | Acceptance tests | [test](../test/) |
 | Course / Backup / Smoke | [scripts](../scripts/), [OPERATIONS.md](OPERATIONS.md) |
-| ผลทดสอบและ source ที่ตรวจ | [RESEARCH.md](RESEARCH.md), [Course/API/UI](../evidence/household-security/README.md), [Jenkins](../evidence/submission-2.2/README.md) |
+| ผลทดสอบและ source ที่ตรวจ | [RESEARCH.md](RESEARCH.md), [Course/API/UI 2.3](../evidence/home-deletion/README.md), [Jenkins](../evidence/submission-2.2/README.md) |
 | ขอบเขตความปลอดภัย | [SECURITY.md](SECURITY.md) |
 
 หลักฐานแต่ละชุดระบุวันที่และ commit ของรอบตรวจ เอกสารสถาปัตยกรรมอธิบาย implementation ปัจจุบัน ไม่ใช้ผลของรุ่นเก่ารับรอง feature ที่เพิ่มภายหลัง
+
+## การลบบ้านและ schema 5
+
+`users` เก็บบัญชีโดยไม่ผูกกับบ้านใดบ้านหนึ่ง สมาชิกภาพอยู่ใน `memberships` เท่านั้น Migration 4→5 ลบคอลัมน์เก่า `users.home_id` ด้วย Transaction และตรวจ foreign keys โดยคง id, ชื่อ, email, salt, password hash, sessions และสมาชิกภาพเดิมไว้ ฐานข้อมูลใหม่ยังผ่านลำดับ migration เดียวกัน
+
+`POST /api/homes/delete` ตรวจ owner จาก session และตรวจสิทธิ์อีกครั้งหลังอ่าน request body จับคู่ home_id กับบ้านปัจจุบัน ชื่อบ้านที่พิมพ์ และรหัสเชิญที่ snapshot ตอนเปิด dialog จึงปฏิเสธ dialog ค้างหลังเปลี่ยนรหัสหรือสลับบ้าน การลบ events → tasks → pet_records → pets → blocks/history → memberships → home อยู่ใน Transaction เดียว ตั้ง active_home_id ของ session ที่เลือกบ้านนี้เป็น NULL หากขั้นใดผิดพลาด rollback ทั้งหมด
+
+ไม่ลบ users หรือ session token และไม่เปลี่ยนข้อมูลบ้านอื่น เมื่ออ่าน dashboard ครั้งถัดไป auth เลือกสมาชิกภาพที่ยังเหลือ หรือคืนสถานะไม่มีบ้านให้สร้าง/เข้าร่วมใหม่ได้ ไม่มีการย้ายสัตว์เลี้ยงข้ามบ้านและไม่มีการกู้คืนบ้านจาก UI ดู [วิธีใช้](CARE-FEATURES.md#ลบบ้านถาวร-รุ่น-23) และ [ผล H1–H5](../evidence/home-deletion/README.md)

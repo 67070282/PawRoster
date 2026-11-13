@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="H1 two members move to another home; deleting the old home preserves accounts and all other-home data" time="0.535262" classname="test" file="/app/test/home-delete.test.js"/>
+	<testcase name="H2 home deletion rejects non-owner, incorrect confirmation and stale home/invite without changing data" time="0.231462" classname="test" file="/app/test/home-delete.test.js"/>
+	<testcase name="H3 deleting the last home leaves valid accounts and sessions able to join or create homes again" time="0.420837" classname="test" file="/app/test/home-delete.test.js"/>
+	<testcase name="H4 a failed home deletion rolls back all related data, memberships and selected sessions atomically" time="0.269008" classname="test" file="/app/test/home-delete.test.js"/>
+	<testcase name="H5 schema 4 migration removes legacy home coupling and preserves identities, credentials, sessions and memberships" time="0.252818" classname="test" file="/app/test/home-delete.test.js"/>
+	<testcase name="M1 existing accounts join multiple homes, switching keeps data isolated per session" time="0.390426" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M2 owners manage invite rotation and names; members cannot expose or rotate codes" time="0.248820" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S1 rotated invites reject both existing joins and registration while current members retain access" time="0.359776" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S2 removal blocks rejoining, rotates invites and revokes access in every member session without affecting another home" time="0.352788" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S3 only the owner of the matching home can unblock; unblocking does not add membership" time="0.251034" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S4 paused invites stop registration and joins; reopening issues a fresh code and preserves existing members" time="0.267393" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S5 failed removal rolls back the membership, block, session, released tasks and invite together" time="0.229941" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="S6 schema 3 upgrade preserves data and sessions; paused invites, blocks and security history survive restart" time="0.101424" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M3 removal revokes access and releases claimed work with history retained" time="0.215716" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M4 ownership transfer and leaving preserve remaining memberships" time="0.233182" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M5 stale browser tabs cannot write into a different active household" time="0.169844" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M6 task edit permissions, cancellation, priorities and recurrence validation" time="0.190002" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M7 completion creates exactly one recurring successor at the original interval" time="0.211595" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M8 pet notes, archival and restore retain history and enforce house boundaries" time="0.194101" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="M9 v1 migration preserves users, sessions and tasks; leaving is not undone on restart" time="0.108432" classname="test" file="/app/test/multi-home.test.js"/>
+	<testcase name="C8 permanent deletion requires owner, trashed state, matching name and current trash version; removes only related rows" time="0.453952" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C9 failed permanent deletion rolls back journal, tasks and audit together" time="0.250479" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C1 delete moves a pet to recoverable trash, cancels active work and retains audit/records" time="0.370934" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C2 pet profile validates real dates, sex, length and retains optional fields" time="0.244400" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C3 journal creation and editing enforce household, author and owner permissions" time="0.271621" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C4 journal validates numeric weight, dates, notes and appointment kinds" time="0.233509" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C5 appointments resolve/reopen, reset on rescheduling and persist after restart" time="0.255857" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C6 owner assignment uses current membership, assignee-only completion and one audit" time="0.229576" classname="test" file="/app/test/pet-care.test.js"/>
+	<testcase name="C7 v2 database migrates to v3 without losing sessions, archived pets or task history" time="0.156289" classname="test" file="/app/test/pet-care.test.js"/>
+	<testsuite name="HTTP acceptance: shared care, conflicts, privacy, validation and persistence" time="0.556097" disabled="0" errors="0" tests="8" failures="0" skipped="0" hostname="06daad5667f7">
+		<testcase name="R1 authentication and session cookie" time="0.271526" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R2 join house, add real pet and scheduled task" time="0.108735" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R3 simultaneous claims have one winner" time="0.012281" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R4 owner-only completion, release and one audit record" time="0.024879" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R5 house isolation and cross-origin rejection" time="0.009152" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R6 validation, injection treated as data, HTTP security" time="0.025541" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R7 restart retains database and session" time="0.016605" classname="test" file="/app/test/system.test.js"/>
+		<testcase name="R8 logout revokes session" time="0.009490" classname="test" file="/app/test/system.test.js"/>
+	</testsuite>
+	<!-- tests 38 -->
+	<!-- suites 0 -->
+	<!-- pass 38 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 3681.630016 -->
+</testsuites>

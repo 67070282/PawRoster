@@ -1,0 +1,2 @@
+NAME                                     IMAGE                              COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+pawroster-home-delete-validation-app-1   pawroster:home-delete-validation   "docker-entrypoint.s…"   app       7 seconds ago   Up 6 seconds (healthy)   127.0.0.1:3091->3000/tcp
