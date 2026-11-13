@@ -1,0 +1,16 @@
+{
+  "uiPassed": true,
+  "checks": [
+    "journal CRUD",
+    "weight summary",
+    "CSV",
+    "calendar and month boundary",
+    "appointment status",
+    "selected-day task",
+    "assignment",
+    "typed trash/recovery",
+    "member permissions",
+    "390px responsiveness"
+  ],
+  "consoleErrors": []
+}
