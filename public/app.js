@@ -81,6 +81,11 @@ for (const [formId, path] of [['join-home-form', 'homes/join'], ['create-home-fo
 $('rename-home-form').onsubmit = e => { e.preventDefault(); run(e.submitter, () => mutate('homes/rename', Object.fromEntries(new FormData(e.target)), 'บันทึกชื่อบ้านแล้ว')); };
 $('copy-invite').onclick = () => run($('copy-invite'), async () => { try { await navigator.clipboard.writeText(state.user.invite); notice('คัดลอกรหัสเชิญแล้ว'); } catch { notice('คัดลอกอัตโนมัติไม่ได้ สามารถเลือกรหัสที่แสดงแล้วคัดลอกได้'); } });
 $('rotate-invite').onclick = () => confirmAction('เปลี่ยนรหัสเชิญ?', 'รหัสเดิมจะใช้เข้าร่วมบ้านไม่ได้ สมาชิกปัจจุบันยังใช้งานได้ตามเดิม', () => mutate('homes/invite/rotate', {}, 'เปลี่ยนรหัสเชิญแล้ว'));
+$('show-invite').onclick = () => { $('invite').hidden = !$('invite').hidden; $('show-invite').textContent = $('invite').hidden ? 'แสดงรหัสเชิญ' : 'ซ่อนรหัสเชิญ'; $('show-invite').setAttribute('aria-expanded', String(!$('invite').hidden)); };
+$('toggle-invites').onclick = () => {
+  const enabled = !state.user.invite_enabled;
+  confirmAction(enabled ? 'เปิดรับสมาชิกอีกครั้ง?' : 'พักรับสมาชิกใหม่?', enabled ? 'ระบบจะสร้างรหัสใหม่ รหัสก่อนพักจะใช้ไม่ได้ สมาชิกปัจจุบันยังใช้งานได้' : 'รหัสเชิญจะเข้าร่วมบ้านไม่ได้ทั้งบัญชีเดิมและการสมัครใหม่ สมาชิกปัจจุบันยังใช้งานได้', () => mutate('homes/invite/toggle', { enabled }, enabled ? 'เปิดรับสมาชิกด้วยรหัสใหม่แล้ว' : 'พักรับสมาชิกใหม่แล้ว'));
+};
 $('leave-home').onclick = () => confirmAction('ออกจากบ้านนี้?', 'คุณจะเข้าถึงข้อมูลบ้านนี้ไม่ได้จนกว่าจะเข้าร่วมใหม่ งานที่คุณรับและยังไม่เสร็จจะกลับไปรอผู้รับผิดชอบ ประวัติการดูแลจะยังอยู่', async () => { await api('homes/leave', {}); resetFilters(); view = 'board'; await load(); notice('ออกจากบ้านแล้ว'); });
 function openPet(pet) {
   editingPet = pet?.id; $('pet-form').reset(); $('pet-dialog-title').textContent = pet ? 'แก้ไขข้อมูลสัตว์เลี้ยง' : 'เพิ่มสัตว์เลี้ยง';
@@ -192,6 +197,10 @@ function renderHousehold() {
   $('home-role').textContent = owner ? 'คุณเป็นเจ้าของบ้าน' : 'คุณเป็นสมาชิกบ้านนี้';
   $('rename-home-form').hidden = !owner; $('rename-home-form').elements.name.value = state.user.home_name || '';
   $('invite-panel').hidden = !owner; $('member-invite-hint').hidden = owner; $('invite').textContent = state.user.invite || '';
+  $('invite').hidden = true; $('show-invite').textContent = 'แสดงรหัสเชิญ'; $('show-invite').setAttribute('aria-expanded','false');
+  $('invite-status').textContent = state.user.invite_enabled ? 'เปิดรับสมาชิกผ่านรหัสเชิญ' : 'พักรับสมาชิกใหม่';
+  $('toggle-invites').textContent = state.user.invite_enabled ? 'พักรับสมาชิก' : 'เปิดรับสมาชิก';
+  $('show-invite').disabled = $('copy-invite').disabled = !state.user.invite_enabled;
   $('leave-home').disabled = owner; $('leave-hint').textContent = owner ? 'เจ้าของบ้านโอนสิทธิ์ให้สมาชิกอื่นก่อนออกจากบ้านได้' : 'ออกจากบ้านได้โดยไม่กระทบบัญชีหรือบ้านอื่น';
   $('member-count').textContent = `(${state.members.length})`; $('members').replaceChildren();
   for (const m of state.members) {
@@ -199,10 +208,19 @@ function renderHousehold() {
     info.append(el('h4', m.name + (m.id === state.user.id ? ' (คุณ)' : '')), el('p', m.role === 'owner' ? 'เจ้าของบ้าน' : 'สมาชิก'));
     if (owner && m.id !== state.user.id) {
       actions.append(button('โอนสิทธิ์เจ้าของ', () => confirmAction('โอนสิทธิ์เจ้าของบ้าน?', `${m.name} จะเป็นเจ้าของบ้านแทนคุณ คุณจะเปลี่ยนเป็นสมาชิกและยังดูแลในบ้านได้`, () => mutate('homes/transfer', { user_id: m.id }, 'โอนสิทธิ์เจ้าของบ้านแล้ว')), 'text-button'));
-      actions.append(button('นำออกจากบ้าน', () => confirmAction('นำสมาชิกออกจากบ้าน?', `${m.name} จะเข้าถึงบ้านนี้ไม่ได้ งานที่ค้างจะกลับไปรอผู้รับผิดชอบ สมาชิกยังเข้าร่วมใหม่ได้หากมีรหัสเชิญปัจจุบัน`, () => mutate('homes/members/remove', { user_id: m.id }, 'นำสมาชิกออกแล้ว')), 'text-button'));
+      actions.append(button('นำออกและบล็อก', () => confirmAction('นำสมาชิกออกและบล็อก?', `${m.name} จะเข้าถึงบ้านนี้ไม่ได้ และใช้บัญชีนี้เข้าร่วมกลับไม่ได้จนกว่าจะปลดบล็อก งานค้างจะคืนให้คนอื่นรับต่อ ระบบจะเปลี่ยนรหัสเชิญให้ใหม่ทันที`, () => mutate('homes/members/remove', { user_id: m.id }, 'นำสมาชิกออก บล็อกบัญชี และเปลี่ยนรหัสเชิญแล้ว')), 'secondary danger'));
     }
     row.append(info, actions); $('members').append(row);
   }
+  $('house-security').hidden = !owner; $('blocked-members').replaceChildren(); $('security-events').replaceChildren();
+  for (const m of state.blocked_members || []) {
+    const row=el('div',undefined,'member'),info=el('div');info.append(el('h4',m.name),el('p','บล็อกเมื่อ '+date(m.blocked_at)));
+    row.append(info,button('ปลดบล็อก',()=>confirmAction('ปลดบล็อกบัญชีนี้?', `${m.name} จะใช้รหัสเชิญปัจจุบันเข้าร่วมได้อีกครั้ง แต่จะไม่ถูกเพิ่มกลับอัตโนมัติ`,()=>mutate('homes/members/unblock',{user_id:m.user_id},'ปลดบล็อกแล้ว')), 'secondary'));$('blocked-members').append(row);
+  }
+  if (!state.blocked_members?.length) $('blocked-members').append(el('p','ยังไม่มีบัญชีที่ถูกบล็อก','muted'));
+  const labels={home_created:'สร้างบ้าน',home_renamed:'เปลี่ยนชื่อบ้าน',member_joined:'เข้าร่วมบ้าน',member_left:'ออกจากบ้าน',member_removed:'นำออกและบล็อก',member_unblocked:'ปลดบล็อก',owner_transferred:'โอนสิทธิ์เจ้าของให้',invite_rotated:'เปลี่ยนรหัสเชิญ',invites_opened:'เปิดรับสมาชิก',invites_paused:'พักรับสมาชิก'};
+  for(const event of state.security_events || []){const row=el('div',undefined,'event');row.append(el('span',`${event.actor_name} ${labels[event.action] || event.action}${event.target_name?' · '+event.target_name:''}`),el('time',date(event.at)));$('security-events').append(row);}
+  if(!state.security_events?.length)$('security-events').append(el('p','ยังไม่มีการจัดการบ้านที่บันทึกในรุ่นนี้','muted'));
 }
 function renderHistory() {
   $('events').replaceChildren();

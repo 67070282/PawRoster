@@ -56,6 +56,69 @@ test('M2 owners manage invite rotation and names; members cannot expose or rotat
   await b('homes/join', { invite: first.user.invite }, 400); await b('homes/join', { invite: newInvite }, 201);
 });
 
+test('S1 rotated invites reject both existing joins and registration while current members retain access', async t => {
+  const {a,b,c,first,client}=await fixture(t);
+  await a('homes/invite/rotate',{});const current=(await a('dashboard')).user.invite;
+  await b('homes/join',{invite:first.user.invite},400);
+  const visitor=client();await visitor('register',{name:'Visitor',invite:first.user.invite,email:'visitor@example.com',password:'test-password-123'},400);
+  await visitor('register',{name:'Visitor',invite:current,email:'visitor@example.com',password:'test-password-123'},201);
+  await b('homes/join',{invite:current},201);assert.equal((await c('dashboard')).user.home_id,first.user.home_id);
+  const member=await c('dashboard');assert.equal(member.user.invite,undefined);assert.deepEqual(member.security_events,[]);assert.deepEqual(member.blocked_members,[]);
+});
+
+test('S2 removal blocks rejoining, rotates invites and revokes access in every member session without affecting another home', async t => {
+  const {a,b,c,first,client}=await fixture(t),memberId=(await c('dashboard')).user.id,second=client();
+  await second('login',{email:'c@example.com',password:'test-password-123'});
+  const pet=await a('pets',{name:'Cat',species:'cat'},201),task=await c('tasks',{pet_id:pet.id,title:'Care',due:new Date().toISOString()},201);
+  await c(`tasks/${task.id}/claim`,{});const otherBefore=await b('dashboard');
+  await a('homes/members/remove',{user_id:memberId});const saved=await a('dashboard');assert.notEqual(saved.user.invite,first.user.invite);
+  for(const member of [c,second]){const d=await member('dashboard');assert.equal(d.homes.length,0);assert.equal(d.tasks.length,0);await member('homes/switch',{home_id:first.user.home_id},403);await member('homes/join',{invite:saved.user.invite},403);await member('pets',{name:'Stale',species:'cat'},409,{'X-Home-ID':String(first.user.home_id)});}
+  assert.equal(saved.tasks[0].assignee,null);assert.equal(saved.tasks[0].status,'open');assert.equal(saved.blocked_members[0].user_id,memberId);
+  assert.ok(saved.security_events.some(e=>e.action==='member_removed'));assert.deepEqual(await b('dashboard'),otherBefore);
+  await a('homes/members/remove',{user_id:first.user.id},400);
+});
+
+test('S3 only the owner of the matching home can unblock; unblocking does not add membership', async t => {
+  const {a,b,c,client}=await fixture(t),id=(await c('dashboard')).user.id;
+  await c('homes/members/unblock',{user_id:id},403);await a('homes/members/remove',{user_id:id});
+  await b('homes/members/unblock',{user_id:id},404);await a('homes/members/unblock',{user_id:9999},404);
+  await a('homes/members/unblock',{user_id:id});assert.equal((await c('dashboard')).homes.length,0);
+  const d=await a('dashboard');assert.equal(d.blocked_members.length,0);await c('homes/join',{invite:d.user.invite},201);
+  assert.ok((await a('dashboard')).security_events.some(e=>e.action==='member_unblocked'));
+});
+
+test('S4 paused invites stop registration and joins; reopening issues a fresh code and preserves existing members',async t=>{
+  const {a,b,c,first,client}=await fixture(t);
+  await c('homes/invite/toggle',{enabled:false},403);await a('homes/invite/toggle',{enabled:'false'},400);
+  await a('homes/invite/toggle',{enabled:false});const paused=await a('dashboard');assert.equal(paused.user.invite_enabled,0);
+  await b('homes/join',{invite:paused.user.invite},400);const visitor=client();await visitor('register',{name:'Visitor',invite:paused.user.invite,email:'paused@example.com',password:'test-password-123'},400);
+  assert.equal((await c('dashboard')).user.home_id,first.user.home_id);
+  await a('homes/invite/toggle',{enabled:true});const reopened=await a('dashboard');assert.notEqual(reopened.user.invite,paused.user.invite);assert.notEqual(reopened.user.invite,first.user.invite);
+  await b('homes/join',{invite:paused.user.invite},400);await b('homes/join',{invite:reopened.user.invite},201);
+  assert.ok(reopened.security_events.some(e=>e.action==='invites_paused'));assert.ok(reopened.security_events.some(e=>e.action==='invites_opened'));
+  assert.ok(reopened.security_events.every(e=>!JSON.stringify(e).includes(reopened.user.invite)));
+});
+
+test('S5 failed removal rolls back the membership, block, session, released tasks and invite together',async t=>{
+  const {a,c,app}=await fixture(t),id=(await c('dashboard')).user.id;
+  const pet=await a('pets',{name:'Cat',species:'cat'},201),task=await c('tasks',{pet_id:pet.id,title:'Care',due:new Date().toISOString()},201);await c(`tasks/${task.id}/claim`,{});
+  const ownerBefore=await a('dashboard'),memberBefore=await c('dashboard');
+  app.db.exec("CREATE TRIGGER reject_test_removal BEFORE INSERT ON home_events WHEN NEW.action='member_removed' BEGIN SELECT RAISE(ABORT,'Synthetic removal failure'); END");
+  await a('homes/members/remove',{user_id:id},503);assert.deepEqual(await a('dashboard'),ownerBefore);assert.deepEqual(await c('dashboard'),memberBefore);assert.deepEqual(app.db.prepare('PRAGMA foreign_key_check').all(),[]);
+});
+
+test('S6 schema 3 upgrade preserves data and sessions; paused invites, blocks and security history survive restart',t=>{
+  const dir=mkdtempSync(join(tmpdir(),'pawroster-security-migration-')),path=join(dir,'legacy.db');
+  t.after(()=>rmSync(dir,{recursive:true,force:true}));
+  let app=createApp({dbPath:path});
+  app.db.exec("INSERT INTO homes(id,name,invite) VALUES(1,'Home','existing-code');INSERT INTO users VALUES(1,1,'Owner','owner@example.com','salt','hash'),(2,1,'Member','member@example.com','salt','hash');INSERT INTO memberships VALUES(1,1,'owner');INSERT INTO sessions VALUES('hashed-session',1,9999999999999,1);INSERT INTO pets(id,home_id,name,species) VALUES(1,1,'Pet','cat');DROP TABLE home_events;DROP TABLE home_blocks;ALTER TABLE homes DROP COLUMN invite_enabled;PRAGMA user_version=3;");
+  const old=app.db.prepare('SELECT * FROM sessions').all();app.db.close();app=createApp({dbPath:path});
+  assert.equal(app.db.prepare('PRAGMA user_version').get().user_version,4);assert.deepEqual(app.db.prepare('SELECT * FROM sessions').all(),old);assert.equal(app.db.prepare('SELECT invite FROM homes').get().invite,'existing-code');assert.equal(app.db.prepare('SELECT name FROM pets').get().name,'Pet');
+  app.db.exec("UPDATE homes SET invite_enabled=0;INSERT INTO home_blocks VALUES(1,2,1,'2026-11-13T00:00:00.000Z');INSERT INTO home_events(home_id,actor,action,target,at) VALUES(1,1,'member_removed',2,'2026-11-13T00:00:00.000Z');");
+  app.db.close();app=createApp({dbPath:path});
+  try{assert.equal(app.db.prepare('SELECT invite_enabled FROM homes').get().invite_enabled,0);assert.equal(app.db.prepare('SELECT count(*) n FROM home_blocks').get().n,1);assert.equal(app.db.prepare('SELECT action FROM home_events').get().action,'member_removed');assert.deepEqual(app.db.prepare('PRAGMA foreign_key_check').all(),[]);}finally{app.db.close();}
+});
+
 test('M3 removal revokes access and releases claimed work with history retained', async t => {
   const { a, c, first } = await fixture(t);
   const pet = await a('pets', { name: 'Cat', species: 'cat' }, 201);
@@ -153,5 +216,5 @@ test('M9 v1 migration preserves users, sessions and tasks; leaving is not undone
   const state = await request('dashboard'); assert.equal(state.user.role, 'member'); assert.equal(state.tasks[0].note, 'Preserved'); assert.equal(app.db.prepare('SELECT role FROM memberships WHERE user_id=1').get().role, 'owner');
   await request('homes/leave', {}); await new Promise(r => app.server.close(r)); app.db.close();
   app = createApp({ dbPath: path }); url = await start();
-  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 3);
+  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 4);
 });
