@@ -6,6 +6,7 @@ function el(tag, text, className) { const e = document.createElement(tag); if (t
 function date(value) { return new Date(value).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }); }
 function localInput(value) { const d = new Date(value); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
 const activeTask = t => t.status !== 'done' && !t.cancelled_at;
+const futureTask = t => dayKey(t.due) > dayKey(new Date());
 const isOwner = () => state?.user.role === 'owner';
 const recordLabels = { weight: 'น้ำหนัก', vaccine: 'วัคซีน', visit: 'พบสัตวแพทย์', note: 'บันทึกทั่วไป' };
 function dayKey(value) { const d = new Date(value); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
@@ -115,9 +116,19 @@ function openTask(task) {
 $('new-task').onclick = () => openTask();
 $('task-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => {
   const data = Object.fromEntries(new FormData(e.target)); data.pet_id = Number($('pet-select').value); data.due = new Date(data.due).toISOString();
-  await api(editingTask ? `tasks/${editingTask}/edit` : 'tasks', data); $('task-dialog').close(); await load(); notice('บันทึกงานดูแลแล้ว');
+  await api(editingTask ? `tasks/${editingTask}/edit` : 'tasks', data); $('task-dialog').close();
+  $('filter').value = futureTask(data) ? 'upcoming' : 'active';
+  await load(); notice(futureTask(data) ? 'บันทึกงานล่วงหน้าแล้ว' : 'บันทึกงานดูแลแล้ว');
 }); };
-$('complete-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => { await api(`tasks/${completing}/complete`, Object.fromEntries(new FormData(e.target))); $('complete-dialog').close(); await load(); notice('บันทึกการดูแลเรียบร้อยแล้ว'); }); };
+$('complete-form').onsubmit = e => { e.preventDefault(); run(e.submitter, async () => {
+  const result = await api(`tasks/${completing}/complete`, Object.fromEntries(new FormData(e.target)));
+  $('complete-dialog').close(); await load();
+  if (result.next_task) {
+    const future = futureTask(result.next_task);
+    notice(`งานเดิมทำเสร็จแล้วและอยู่ใน “ทำแล้ว” สร้างงานรอบถัดไปกำหนด ${date(result.next_task.due)}${future ? ' แยกไว้ในงานล่วงหน้า' : ' ซึ่งยังอยู่ในงานถึงวันนี้'} แล้ว`);
+    $('notice').append(button('ดูงานรอบถัดไป', () => { $('filter').value = future ? 'upcoming' : 'active'; renderTasks(); }, 'secondary'));
+  } else notice('งานนี้ทำเสร็จแล้ว ย้ายออกจากงานที่ยังไม่เสร็จ ดูประวัติได้ใน “ทำแล้ว”');
+}); };
 async function action(id, type) { try { await mutate(`tasks/${id}/${type}`, {}, type === 'claim' ? 'รับงานแล้ว' : 'คืนงานแล้ว'); } catch (e) { await load().catch(() => {}); throw e; } }
 function renderTasks() {
   if (!state) return;
@@ -125,13 +136,16 @@ function renderTasks() {
   root.replaceChildren();
   let tasks = state.tasks.filter(t => {
     const active = activeTask(t), cancelled = Boolean(t.cancelled_at), late = active && Date.parse(t.due) < Date.now();
-    const matches = filter === 'all' || (filter === 'active' && active) || (filter === 'done' && t.status === 'done' && !cancelled) || (filter === 'cancelled' && cancelled) || (filter === 'overdue' && late) || (filter === 'mine' && active && t.assignee === state.user.id) || (filter === 'today' && active && new Date(t.due).toDateString() === new Date().toDateString());
+    const matches = filter === 'all' || (filter === 'active' && active && !futureTask(t)) || (filter === 'upcoming' && active && futureTask(t)) || (filter === 'done' && t.status === 'done' && !cancelled) || (filter === 'cancelled' && cancelled) || (filter === 'overdue' && late) || (filter === 'mine' && active && t.assignee === state.user.id) || (filter === 'today' && active && new Date(t.due).toDateString() === new Date().toDateString());
     return matches && (petId === 'all' || String(t.pet_id) === petId) && [t.title, t.pet_name, t.assignee_name, t.note].some(v => (v || '').toLocaleLowerCase().includes(q));
   });
   tasks.sort((a, b) => ($('sort').value === 'priority' ? Number(b.priority === 'high') - Number(a.priority === 'high') : 0) || a.due.localeCompare(b.due) || a.id - b.id);
-  $('task-summary').textContent = `${tasks.length} รายการในมุมมองนี้ · ${state.pets.filter(p => !p.archived && !p.deleted_at).length} สัตว์เลี้ยง`;
+  const upcoming = state.tasks.filter(t => activeTask(t) && futureTask(t)).length;
+  $('task-summary').textContent = `${tasks.length} รายการในมุมมองนี้ · ${state.pets.filter(p => !p.archived && !p.deleted_at).length} สัตว์เลี้ยง${filter === 'active' ? ` · งานล่วงหน้า ${upcoming} รายการ` : ''}`;
   if (!tasks.length) {
-    const empty = el('div', state.tasks.length ? 'ไม่พบงานตามตัวกรองนี้ ลองเลือก “งานทั้งหมด” หรือล้างคำค้นหา' : 'ยังไม่มีงานดูแลในบ้านนี้', 'empty');
+    const message = filter === 'active' && !q && petId === 'all' && state.tasks.length ? 'ไม่มีงานที่ยังไม่เสร็จถึงวันนี้ งานที่ทำเสร็จแล้วดูได้ใน “ทำแล้ว”' : state.tasks.length ? 'ไม่พบงานตามตัวกรองนี้ ลองเลือก “งานทั้งหมด” หรือล้างคำค้นหา' : 'ยังไม่มีงานดูแลในบ้านนี้';
+    const empty = el('div', message, 'empty');
+    if (filter === 'active' && upcoming) empty.append(el('p', `มีงานล่วงหน้า ${upcoming} รายการ รวมงานซ้ำรอบถัดไป`), button('ดูงานล่วงหน้า', () => { $('filter').value = 'upcoming'; renderTasks(); }));
     if (!state.pets.some(p => !p.archived && !p.deleted_at)) {
       empty.append(el('p', 'เพิ่มสัตว์เลี้ยงก่อน แล้วจึงสร้างงานดูแลได้'), button('เพิ่มสัตว์เลี้ยง', () => openPet(), 'primary'));
     } else if (!state.tasks.length) empty.append(button('เพิ่มงานดูแล', () => openTask(), 'primary'));
@@ -139,11 +153,13 @@ function renderTasks() {
   }
   for (const t of tasks) {
     const card = el('article', undefined, 'task' + (t.priority === 'high' ? ' high' : '') + (t.cancelled_at ? ' cancelled' : ''));
+    card.dataset.taskId = t.id;
     const info = el('div'), status = el('div'), actions = el('div', undefined, 'actions'), meta = el('div', undefined, 'task-meta');
     const late = activeTask(t) && Date.parse(t.due) < Date.now();
     info.append(el('h3', t.title), el('p', t.pet_name), el('p', date(t.due)));
     if (t.priority === 'high') meta.append(el('span', 'สำคัญ', 'badge'));
     if (t.recurrence !== 'none') meta.append(el('span', t.recurrence === 'daily' ? 'ทุกวัน' : 'ทุกสัปดาห์', 'badge'));
+    if (activeTask(t) && futureTask(t)) meta.append(el('span', 'งานล่วงหน้า', 'badge'));
     info.append(meta);
     const statusKey = t.cancelled_at ? 'cancelled' : t.status === 'done' ? 'done' : late ? 'overdue' : t.status === 'claimed' ? 'claimed' : 'open';
     const statusText = { cancelled:'ยกเลิกแล้ว', done:'ทำเสร็จแล้ว', overdue:'เลยกำหนด', claimed:'กำลังดูแล', open:'รอผู้ดูแล' };
@@ -156,7 +172,11 @@ function renderTasks() {
       if (isOwner()) actions.append(button('มอบหมาย', () => openAssignment(t), 'secondary'));
     }
     if (!t.cancelled_at && t.status === 'claimed' && t.assignee === state.user.id) {
-      actions.append(button('ทำแล้ว', () => { completing = t.id; $('complete-form').reset(); $('complete-title').textContent = t.title; openDialog('complete-dialog'); }, 'primary'));
+      actions.append(button('ทำแล้ว', () => {
+        completing = t.id; $('complete-form').reset(); $('complete-title').textContent = `${t.title} · กำหนด ${date(t.due)}`;
+        $('complete-help').textContent = t.recurrence === 'none' ? 'หลังยืนยัน งานนี้จะย้ายไป “ทำแล้ว” และไม่อยู่ในงานที่ยังไม่เสร็จ' : 'ยืนยันเฉพาะงานรอบนี้ งานเดิมจะย้ายไป “ทำแล้ว” และระบบสร้างงานรอบถัดไปตามวันเดิม งานของวันถัดไปจะแยกอยู่ใน “งานล่วงหน้า”';
+        openDialog('complete-dialog');
+      }, 'primary'));
       actions.append(button('คืนงาน', () => action(t.id, 'release')));
     }
     if (activeTask(t) && (isOwner() || t.created_by === state.user.id)) {
@@ -254,7 +274,7 @@ async function load() {
   $('home-switch').value = state.user.home_id || ''; $('home-switch').disabled = !state.homes.length;
   $('sidebar-members').textContent = `${state.members.length} สมาชิกในบ้านนี้`;
   $('no-home').hidden = Boolean(state.user.home_id); $('home-content').hidden = !state.user.home_id;
-  $('pending-count').textContent = String(state.tasks.filter(activeTask).length).padStart(2, '0');
+  $('pending-count').textContent = String(state.tasks.filter(t => activeTask(t) && !futureTask(t)).length).padStart(2, '0');
   $('overdue-count').textContent = String(state.tasks.filter(t => activeTask(t) && Date.parse(t.due) < Date.now()).length).padStart(2, '0');
   $('done-count').textContent = String(state.tasks.filter(t => t.status === 'done' && !t.cancelled_at).length).padStart(2, '0');
   const oldPetFilter = $('pet-filter').value;

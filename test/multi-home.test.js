@@ -170,12 +170,17 @@ test('M7 completion creates exactly one recurring successor at the original inte
   const { a } = await fixture(t);
   const pet = await a('pets', { name: 'Cat', species: 'cat' }, 201), due = '2026-11-12T10:00:00.000Z';
   const task = await a('tasks', { pet_id: pet.id, title: 'Feed', due, priority: 'high', recurrence: 'daily' }, 201);
-  await a(`tasks/${task.id}/claim`, {}); await a(`tasks/${task.id}/complete`, { note: 'Done' }); await a(`tasks/${task.id}/complete`, {}, 409);
+  await a(`tasks/${task.id}/claim`, {}); const completed = await a(`tasks/${task.id}/complete`, { note: 'Done' }); await a(`tasks/${task.id}/complete`, {}, 409);
   let saved = await a('dashboard'); assert.equal(saved.tasks.length, 2);
   let next = saved.tasks.find(t => t.id !== task.id); assert.equal(next.due, '2026-11-13T10:00:00.000Z'); assert.equal(next.priority, 'high'); assert.equal(next.status, 'open'); assert.equal(next.assignee, null);
+  assert.equal(completed.completed_task_id, task.id); assert.deepEqual(completed.next_task, { id: next.id, due: next.due });
   await a(`tasks/${next.id}/edit`, { title: 'Weekly', due: next.due, recurrence: 'weekly' });
-  await a(`tasks/${next.id}/claim`, {}); await a(`tasks/${next.id}/complete`, {});
+  await a(`tasks/${next.id}/claim`, {}); const weekly = await a(`tasks/${next.id}/complete`, {});
+  assert.equal(weekly.completed_task_id, next.id); assert.equal(weekly.next_task.due, '2026-11-20T10:00:00.000Z');
   saved = await a('dashboard'); assert.ok(saved.tasks.some(t => t.due === '2026-11-20T10:00:00.000Z'));
+  const once = await a('tasks', { pet_id: pet.id, title: 'One-off', due }, 201);
+  await a(`tasks/${once.id}/claim`, {}); const oneOff = await a(`tasks/${once.id}/complete`, {});
+  assert.equal(oneOff.completed_task_id, once.id); assert.equal(oneOff.next_task, null);
 });
 
 test('M8 pet notes, archival and restore retain history and enforce house boundaries', async t => {

@@ -384,3 +384,5 @@ input:focus,textarea:focus,select:focus { outline-color:var(--ink); }
 .home-delete-panel p { margin:12px 0; }
 .home-delete-panel button { margin-top:12px; }
 #delete-home-form { margin-top:24px; }
+
+#notice .secondary { margin:12px 0 0 12px; white-space:normal; }
