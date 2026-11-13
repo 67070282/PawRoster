@@ -325,9 +325,9 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 |---|---|
 | Web, API และฐานข้อมูล | ผ่านการตรวจสอบ HTTP และส่วนติดต่อผู้ใช้ |
 | HTTP acceptance tests รุ่น 2.1 | ผ่าน 24 กรณี: R1–R8, M1–M9 และ C1–C7 โดย Node.js รายงานรวม 25 รายการเมื่อรวม Parent test ดู evidence/v2.1 |
-| Docker Compose รุ่น 2.0 | ผ่าน Build/Health, HTTP smoke หลายบ้าน, งานซ้ำ, Backup/Integrity และ Force-recreate โดยข้อมูลยังอยู่ ดู evidence/v2 |
+| Docker Compose รุ่น 2.1 | ผ่าน Build/Health, สมุดบันทึก นัดหมาย ถังขยะ/กู้คืน, Backup/Integrity และ Force-recreate ดู evidence/v2.1 |
 | การจัดเก็บข้อมูล | ผ่านการสำรองและกู้คืน รวมถึงตรวจสอบข้อมูลหลังสร้างคอนเทนเนอร์ใหม่ |
-| Course Container รุ่น 2.0 | เข้า SSH พอร์ต 2222 แล้ว Clone/Build/Test ภายใน `tuchsanai/devtools:2569_1` ผ่าน รวม Health Revision และ Persistence ดู [หลักฐาน](evidence/course-v2-ssh/README.md) |
+| Course Container รุ่น 2.1 | Clone commit จาก GitHub ผ่าน SSH แล้วทดสอบใน `tuchsanai/devtools:2569_1` ผ่าน 24 กรณี พร้อม Health Revision และ Persistence ดู [หลักฐาน](evidence/v2.1/README.md) |
 | Jenkins รุ่น 1.0 | มีผล Build/Publish/Deploy/Health/Smoke ของรุ่นที่ระบุด้านล่าง ผลเดิมไม่ใช่ผลยืนยันรุ่น 2.0 |
 | การศึกษากับผู้ใช้ | อยู่ระหว่างเตรียมเก็บข้อมูลสัมภาษณ์และทดลองใช้งานจริง |
 
