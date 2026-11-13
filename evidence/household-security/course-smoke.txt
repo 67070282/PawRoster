@@ -1,0 +1,6 @@
+PASS deployed HTTP flow: baseline care, multi-home isolation, recurring successor, journal, appointment completion and pet trash/recovery
+PASS: SQLite online backup, restored integrity and task states match
+{"users":2,"homes":3,"memberships":4,"pets":3,"tasks":4,"events":9,"pet_records":2,"home_blocks":0,"home_events":4}
+PASS persistence verification: sessions, memberships, tasks, journal, appointments, restored pets and audit retained; member removal and logout revoked access
+{"users":2,"homes":3,"memberships":3,"pets":3,"tasks":4,"events":9,"pet_records":2,"home_blocks":1,"home_events":6}
+
