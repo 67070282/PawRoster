@@ -397,6 +397,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
       const match = /^\/api\/tasks\/([1-9]\d*)\/(claim|complete|release|edit|cancel|assign)$/.exec(path);
       if (req.method === 'POST' && match) {
         const b = await body(req), id = Number(match[1]), action = match[2];
+        let nextTask = null;
         transaction(() => {
           const t = db.prepare('SELECT t.* FROM tasks t JOIN pets p ON p.id=t.pet_id WHERE t.id=? AND p.home_id=? AND p.deleted_at IS NULL').get(id, u.home_id);
           if (!t) fail(404, 'ไม่พบงาน');
@@ -431,12 +432,13 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
                 const nextDue = new Date(Date.parse(t.due) + (t.recurrence === 'daily' ? 1 : 7) * 86400000).toISOString();
                 const next = db.prepare('INSERT INTO tasks(pet_id,title,due,created_by,priority,recurrence) VALUES (?,?,?,?,?,?)').run(t.pet_id, t.title, nextDue, t.created_by || u.id, t.priority, t.recurrence);
                 audit(next.lastInsertRowid, u.id, 'created');
+                nextTask = { id: Number(next.lastInsertRowid), due: nextDue };
               }
             }
           }
           db.prepare('INSERT INTO events(task_id,actor,action,at) VALUES (?,?,?,?)').run(id, u.id, action, at);
         });
-        return send(200, { ok: true });
+        return send(200, action === 'complete' ? { ok: true, completed_task_id: id, next_task: nextTask } : { ok: true });
       }
       fail(404, 'ไม่พบรายการ');
     } catch (e) {

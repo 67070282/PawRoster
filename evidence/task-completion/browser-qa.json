@@ -1,0 +1,14 @@
+{
+  "version": "2.3.0",
+  "checks": [
+    "daily successor separated after refresh",
+    "original stored as done",
+    "done view retains original",
+    "one-off completion has no successor",
+    "weekly successor separated",
+    "future creation opens upcoming",
+    "local-day boundary",
+    "320/390/1365px without overflow"
+  ],
+  "pageErrors": []
+}

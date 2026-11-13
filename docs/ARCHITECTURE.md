@@ -181,7 +181,7 @@ Jenkins deploy ไป project สำหรับ CI แยกจากแอป�
 | POST | /api/tasks/:id/cancel | ผู้สร้าง/owner → ยกเลิกงานที่ยังไม่เสร็จและคงประวัติ |
 | POST | /api/tasks/:id/claim | สมาชิกบ้าน → open เป็น claimed โดยมีผู้รับเพียงหนึ่งคน |
 | POST | /api/tasks/:id/release | ผู้รับงาน → claimed เป็น open |
-| POST | /api/tasks/:id/complete | ผู้รับงาน + note? → done; สร้างงานซ้ำครั้งถัดไปใน Transaction เดียว |
+| POST | /api/tasks/:id/complete | ผู้รับงาน + note? → done; สร้างงานซ้ำใน Transaction เดียว; ตอบ completed_task_id และ next_task (id/due หรือ null) ให้ UI แยกรอบเดิมกับรอบใหม่ |
 | POST | /api/tasks/:id/assign | owner + user_id ของสมาชิกปัจจุบัน → มอบหมายงาน open |
 | POST | /api/records | pet_id,kind,title,recorded_at,weight_kg?,due_at?,notes? → สร้างสมุดบันทึก |
 | POST | /api/records/:id/edit | ผู้สร้าง/owner → แก้บันทึก; เปลี่ยนนัดรีเซ็ต resolved |

@@ -1,0 +1,2 @@
+NAME                                    IMAGE                             COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+pawroster-completion-validation-app-1   pawroster:completion-validation   "docker-entrypoint.s…"   app       6 seconds ago   Up 6 seconds (healthy)   127.0.0.1:3092->3000/tcp
