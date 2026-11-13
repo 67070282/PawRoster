@@ -26,6 +26,25 @@ function taskFields(b) {
   if (!['normal', 'high'].includes(priority) || !['none', 'daily', 'weekly'].includes(recurrence)) fail(400, 'ลำดับความสำคัญหรือการทำซ้ำไม่ถูกต้อง');
   return { title, due, priority, recurrence };
 }
+function isoTime(value, label) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString() !== value) fail(400, `${label}ไม่ถูกต้อง`);
+  return value;
+}
+function petFields(b) {
+  const birth_date = optional(b, 'birth_date', 10), sex = b.sex ?? 'unknown';
+  if (birth_date && (!/^\d{4}-\d{2}-\d{2}$/.test(birth_date) || !Number.isFinite(Date.parse(birth_date + 'T00:00:00.000Z')) || new Date(birth_date + 'T00:00:00.000Z').toISOString().slice(0, 10) !== birth_date || birth_date > new Date().toISOString().slice(0, 10))) fail(400, 'วันเกิดไม่ถูกต้องหรืออยู่ในอนาคต');
+  if (!['unknown', 'male', 'female'].includes(sex)) fail(400, 'ข้อมูลเพศไม่ถูกต้อง');
+  return [field(b, 'name', 60), field(b, 'species', 30), optional(b, 'notes', 500), optional(b, 'breed', 60), birth_date, sex];
+}
+function recordFields(b) {
+  const kind = field(b, 'kind', 20), title = field(b, 'title', 100), recorded_at = isoTime(b.recorded_at, 'วันที่บันทึก');
+  if (!['weight', 'vaccine', 'visit', 'note'].includes(kind)) fail(400, 'ประเภทบันทึกไม่ถูกต้อง');
+  const weight_kg = kind === 'weight' ? b.weight_kg : null;
+  if (kind === 'weight' && (typeof weight_kg !== 'number' || !Number.isFinite(weight_kg) || weight_kg <= 0 || weight_kg > 2000)) fail(400, 'น้ำหนักต้องมากกว่า 0 และไม่เกิน 2000 กิโลกรัม');
+  const due_at = b.due_at ? isoTime(b.due_at, 'วันนัดหมาย') : null;
+  if (due_at && !['vaccine', 'visit'].includes(kind)) fail(400, 'นัดหมายใช้กับวัคซีนหรือพบสัตวแพทย์เท่านั้น');
+  return [kind, title, recorded_at, weight_kg, due_at, optional(b, 'notes', 1000)];
+}
 
 export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db', secureCookie = process.env.COOKIE_SECURE === 'true' } = {}) {
   if (dbPath !== ':memory:') mkdirSync(dirname(resolve(dbPath)), { recursive: true });
@@ -38,9 +57,9 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
     CREATE TABLE IF NOT EXISTS tasks(id INTEGER PRIMARY KEY, pet_id INTEGER NOT NULL REFERENCES pets(id), title TEXT NOT NULL, due TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'open' CHECK(status IN ('open','claimed','done')), assignee INTEGER REFERENCES users(id), completed_at TEXT, note TEXT NOT NULL DEFAULT '');
     CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY, task_id INTEGER NOT NULL REFERENCES tasks(id), actor INTEGER NOT NULL REFERENCES users(id), action TEXT NOT NULL, at TEXT NOT NULL);
     `);
-  // One atomic migration. Legacy home_id remains only for compatibility with old backups.
+  // Versioned atomic migrations. Legacy home_id remains for compatibility with old backups.
   const version = db.prepare('PRAGMA user_version').get().user_version;
-  if (version > 2) { db.close(); throw new Error('Database schema is newer than this application'); }
+  if (version > 3) { db.close(); throw new Error('Database schema is newer than this application'); }
   if (version < 2) {
     db.exec('BEGIN IMMEDIATE');
     try {
@@ -58,6 +77,19 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         CREATE INDEX pets_home ON pets(home_id);
         CREATE INDEX tasks_pet ON tasks(pet_id);
         PRAGMA user_version=2; COMMIT;`);
+    } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
+  }
+  if (version < 3) {
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      db.exec(`ALTER TABLE pets ADD COLUMN deleted_at TEXT;
+        ALTER TABLE pets ADD COLUMN breed TEXT NOT NULL DEFAULT '';
+        ALTER TABLE pets ADD COLUMN birth_date TEXT NOT NULL DEFAULT '';
+        ALTER TABLE pets ADD COLUMN sex TEXT NOT NULL DEFAULT 'unknown';
+        ALTER TABLE events ADD COLUMN detail TEXT NOT NULL DEFAULT '';
+        CREATE TABLE pet_records(id INTEGER PRIMARY KEY,pet_id INTEGER NOT NULL REFERENCES pets(id),created_by INTEGER NOT NULL REFERENCES users(id),kind TEXT NOT NULL CHECK(kind IN ('weight','vaccine','visit','note')),title TEXT NOT NULL,recorded_at TEXT NOT NULL,weight_kg REAL,due_at TEXT,notes TEXT NOT NULL DEFAULT '',resolved_at TEXT,updated_at TEXT NOT NULL);
+        CREATE INDEX pet_records_pet ON pet_records(pet_id,recorded_at);
+        PRAGMA user_version=3; COMMIT;`);
     } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
   }
   const attempts = new Map();
@@ -91,7 +123,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
     return user;
   }
   const homesFor = id => db.prepare('SELECT h.id,h.name,m.role,(SELECT COUNT(*) FROM memberships mm WHERE mm.home_id=h.id) member_count FROM memberships m JOIN homes h ON h.id=m.home_id WHERE m.user_id=? ORDER BY h.id').all(id);
-  const audit = (task, actor, action) => db.prepare('INSERT INTO events(task_id,actor,action,at) VALUES (?,?,?,?)').run(task, actor, action, new Date().toISOString());
+  const audit = (task, actor, action, detail = '') => db.prepare('INSERT INTO events(task_id,actor,action,at,detail) VALUES (?,?,?,?,?)').run(task, actor, action, new Date().toISOString(), detail);
   const ownerOnly = u => { if (u.role !== 'owner') fail(403, 'เฉพาะเจ้าของบ้านเท่านั้นที่จัดการส่วนนี้ได้'); };
   const activate = (req, id) => db.prepare('UPDATE sessions SET active_home_id=? WHERE token=?').run(id, hash(rawSession(req)));
   function releaseMember(userId, homeId, actor) {
@@ -130,7 +162,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         if (origin.host !== req.headers.host) fail(403, 'ไม่อนุญาตคำขอจากเว็บไซต์อื่น');
       }
       if (req.method === 'GET' && path === '/health') {
-        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.0.0', revision: process.env.APP_REVISION || 'development' });
+        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.1.0', revision: process.env.APP_REVISION || 'development' });
       }
       if (req.method === 'GET' && ['/', '/app.js', '/style.css', '/pet-care.svg', '/cat.svg', '/dog.svg', '/paw.svg', '/fonts/Epilogue.ttf', '/fonts/NotoSansThai.ttf'].includes(path)) {
         const file = path === '/' ? 'index.html' : path.slice(1);
@@ -198,11 +230,12 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
       // The UI carries the displayed home on every write, protecting stale tabs after switching.
       if (req.method !== 'GET' && req.headers['x-home-id'] && String(u.home_id) !== req.headers['x-home-id']) fail(409, 'บ้านที่ใช้งานเปลี่ยนแล้ว กรุณาอัปเดตข้อมูลก่อนทำรายการ');
       if (req.method === 'GET' && path === '/api/dashboard') {
-        const pets = db.prepare('SELECT id,name,species,notes,archived FROM pets WHERE home_id=? ORDER BY archived,id DESC').all(u.home_id);
-        const tasks = db.prepare(`SELECT t.*,p.name pet_name,a.name assignee_name FROM tasks t JOIN pets p ON p.id=t.pet_id LEFT JOIN users a ON a.id=t.assignee WHERE p.home_id=? ORDER BY t.due,t.id`).all(u.home_id);
+        const pets = db.prepare('SELECT id,name,species,notes,archived,deleted_at,breed,birth_date,sex FROM pets WHERE home_id=? ORDER BY archived,id DESC').all(u.home_id);
+        const tasks = db.prepare(`SELECT t.*,p.name pet_name,p.deleted_at pet_deleted_at,a.name assignee_name FROM tasks t JOIN pets p ON p.id=t.pet_id LEFT JOIN users a ON a.id=t.assignee WHERE p.home_id=? ORDER BY t.due,t.id`).all(u.home_id);
         const events = db.prepare(`SELECT e.*,u.name actor_name,t.title,p.name pet_name FROM events e JOIN users u ON u.id=e.actor JOIN tasks t ON t.id=e.task_id JOIN pets p ON p.id=t.pet_id WHERE p.home_id=? ORDER BY e.id DESC LIMIT 50`).all(u.home_id);
         const members = db.prepare('SELECT u.id,u.name,m.role FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.home_id=? ORDER BY m.role DESC,u.id').all(u.home_id);
-        return send(200, { user: u, homes: homesFor(u.id), members, pets, tasks, events });
+        const records = db.prepare('SELECT r.*,p.name pet_name,p.deleted_at pet_deleted_at,a.name author_name FROM pet_records r JOIN pets p ON p.id=r.pet_id JOIN users a ON a.id=r.created_by WHERE p.home_id=? ORDER BY r.recorded_at DESC,r.id DESC').all(u.home_id);
+        return send(200, { user: u, homes: homesFor(u.id), members, pets, tasks, events, records });
       }
       if (!u.home_id) fail(409, 'เลือกสร้างบ้านหรือเข้าร่วมบ้านก่อนเริ่มใช้งาน');
       if (req.method === 'POST' && path === '/api/homes/rename') {
@@ -225,16 +258,31 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         return send(200, { ok: true });
       }
       if (req.method === 'POST' && path === '/api/pets') {
-        const b = await body(req), name = field(b, 'name', 60), species = field(b, 'species', 30);
-        const result = db.prepare('INSERT INTO pets(home_id,name,species,notes) VALUES (?,?,?,?)').run(u.home_id, name, species, optional(b, 'notes', 500));
+        const b = await body(req), fields = petFields(b);
+        const result = db.prepare('INSERT INTO pets(home_id,name,species,notes,breed,birth_date,sex) VALUES (?,?,?,?,?,?,?)').run(u.home_id, ...fields);
         return send(201, { id: Number(result.lastInsertRowid) });
       }
-      const petMatch = /^\/api\/pets\/([1-9]\d*)\/(edit|archive)$/.exec(path);
+      const petMatch = /^\/api\/pets\/([1-9]\d*)\/(edit|archive|delete|restore)$/.exec(path);
       if (req.method === 'POST' && petMatch) {
         const b = await body(req), id = Number(petMatch[1]);
         transaction(() => {
-          if (!db.prepare('SELECT id FROM pets WHERE id=? AND home_id=?').get(id, u.home_id)) fail(404, 'ไม่พบสัตว์เลี้ยง');
-          if (petMatch[2] === 'edit') db.prepare('UPDATE pets SET name=?,species=?,notes=? WHERE id=?').run(field(b, 'name', 60), field(b, 'species', 30), optional(b, 'notes', 500), id);
+          const pet = db.prepare('SELECT * FROM pets WHERE id=? AND home_id=?').get(id, u.home_id);
+          if (!pet) fail(404, 'ไม่พบสัตว์เลี้ยง');
+          if (petMatch[2] === 'restore') {
+            ownerOnly(u); if (!pet.deleted_at) fail(409, 'สัตว์เลี้ยงนี้ไม่ได้อยู่ในถังขยะ');
+            db.prepare('UPDATE pets SET deleted_at=NULL,archived=0 WHERE id=?').run(id); return;
+          }
+          if (pet.deleted_at) fail(409, 'สัตว์เลี้ยงอยู่ในถังขยะ กู้คืนก่อนแก้ไข');
+          if (petMatch[2] === 'delete') {
+            ownerOnly(u);
+            if (b.confirm_name !== pet.name) fail(400, 'พิมพ์ชื่อสัตว์เลี้ยงให้ตรงเพื่อยืนยันการลบ');
+            const at = new Date().toISOString();
+            for (const t of db.prepare("SELECT id FROM tasks WHERE pet_id=? AND status!='done' AND cancelled_at IS NULL").all(id)) {
+              db.prepare('UPDATE tasks SET cancelled_at=? WHERE id=?').run(at, t.id); audit(t.id, u.id, 'pet_delete', pet.name);
+            }
+            db.prepare('UPDATE pets SET deleted_at=?,archived=1 WHERE id=?').run(at, id); return;
+          }
+          if (petMatch[2] === 'edit') db.prepare('UPDATE pets SET name=?,species=?,notes=?,breed=?,birth_date=?,sex=? WHERE id=?').run(...petFields(b), id);
           else {
             ownerOnly(u);
             if (db.prepare("SELECT 1 FROM tasks WHERE pet_id=? AND status!='done' AND cancelled_at IS NULL").get(id)) fail(409, 'ยังมีงานดูแลที่ไม่เสร็จ กรุณาจัดการงานก่อนเก็บประวัติสัตว์เลี้ยง');
@@ -243,9 +291,34 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
           }
         }); return send(200, { ok: true });
       }
+      if (req.method === 'POST' && path === '/api/records') {
+        const b = await body(req), fields = recordFields(b);
+        if (!Number.isInteger(b.pet_id) || !db.prepare('SELECT id FROM pets WHERE id=? AND home_id=? AND deleted_at IS NULL').get(b.pet_id, u.home_id)) fail(404, 'ไม่พบสัตว์เลี้ยง');
+        const r = db.prepare('INSERT INTO pet_records(pet_id,created_by,kind,title,recorded_at,weight_kg,due_at,notes,updated_at) VALUES (?,?,?,?,?,?,?,?,?)').run(b.pet_id, u.id, ...fields, new Date().toISOString());
+        return send(201, { id: Number(r.lastInsertRowid) });
+      }
+      const recordMatch = /^\/api\/records\/([1-9]\d*)\/(edit|delete|resolve)$/.exec(path);
+      if (req.method === 'POST' && recordMatch) {
+        const b = await body(req), id = Number(recordMatch[1]);
+        transaction(() => {
+          const r = db.prepare('SELECT r.*,p.deleted_at FROM pet_records r JOIN pets p ON p.id=r.pet_id WHERE r.id=? AND p.home_id=?').get(id, u.home_id);
+          if (!r) fail(404, 'ไม่พบบันทึก');
+          if (r.deleted_at) fail(409, 'กู้คืนสัตว์เลี้ยงก่อนแก้ไขบันทึก');
+          if (r.created_by !== u.id && u.role !== 'owner') fail(403, 'เฉพาะผู้บันทึกหรือเจ้าของบ้านที่จัดการได้');
+          const at = new Date().toISOString();
+          if (recordMatch[2] === 'delete') db.prepare('DELETE FROM pet_records WHERE id=?').run(id);
+          else if (recordMatch[2] === 'resolve') {
+            if (!r.due_at || typeof b.resolved !== 'boolean') fail(400, 'เลือกสถานะของรายการที่มีนัดหมาย');
+            db.prepare('UPDATE pet_records SET resolved_at=?,updated_at=? WHERE id=?').run(b.resolved ? at : null, at, id);
+          } else {
+            const fields = recordFields(b);
+            db.prepare('UPDATE pet_records SET kind=?,title=?,recorded_at=?,weight_kg=?,due_at=?,notes=?,resolved_at=?,updated_at=? WHERE id=?').run(...fields, fields[4] === r.due_at ? r.resolved_at : null, at, id);
+          }
+        }); return send(200, { ok: true });
+      }
       if (req.method === 'POST' && path === '/api/tasks') {
         const b = await body(req), { title, due, priority, recurrence } = taskFields(b);
-        if (!Number.isInteger(b.pet_id) || !db.prepare('SELECT id FROM pets WHERE id=? AND home_id=? AND archived=0').get(b.pet_id, u.home_id)) fail(404, 'ไม่พบสัตว์เลี้ยงที่ใช้งานอยู่');
+        if (!Number.isInteger(b.pet_id) || !db.prepare('SELECT id FROM pets WHERE id=? AND home_id=? AND archived=0 AND deleted_at IS NULL').get(b.pet_id, u.home_id)) fail(404, 'ไม่พบสัตว์เลี้ยงที่ใช้งานอยู่');
         const id = transaction(() => {
           const r = db.prepare('INSERT INTO tasks(pet_id,title,due,created_by,priority,recurrence) VALUES (?,?,?,?,?,?)').run(b.pet_id, title, due, u.id, priority, recurrence);
           db.prepare('INSERT INTO events(task_id,actor,action,at) VALUES (?,?,?,?)').run(r.lastInsertRowid, u.id, 'created', new Date().toISOString());
@@ -253,15 +326,21 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         });
         return send(201, { id });
       }
-      const match = /^\/api\/tasks\/([1-9]\d*)\/(claim|complete|release|edit|cancel)$/.exec(path);
+      const match = /^\/api\/tasks\/([1-9]\d*)\/(claim|complete|release|edit|cancel|assign)$/.exec(path);
       if (req.method === 'POST' && match) {
         const b = await body(req), id = Number(match[1]), action = match[2];
         transaction(() => {
-          const t = db.prepare('SELECT t.* FROM tasks t JOIN pets p ON p.id=t.pet_id WHERE t.id=? AND p.home_id=?').get(id, u.home_id);
+          const t = db.prepare('SELECT t.* FROM tasks t JOIN pets p ON p.id=t.pet_id WHERE t.id=? AND p.home_id=? AND p.deleted_at IS NULL').get(id, u.home_id);
           if (!t) fail(404, 'ไม่พบงาน');
           if (t.cancelled_at) fail(409, 'งานนี้ถูกยกเลิกแล้ว');
           const at = new Date().toISOString();
-          if (action === 'edit' || action === 'cancel') {
+          if (action === 'assign') {
+            ownerOnly(u); if (t.status !== 'open') fail(409, 'มอบหมายได้เฉพาะงานที่ยังไม่มีผู้รับผิดชอบ');
+            const member = Number.isInteger(b.user_id) && db.prepare('SELECT u.name FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.home_id=? AND m.user_id=?').get(u.home_id, b.user_id);
+            if (!member) fail(400, 'เลือกสมาชิกในบ้านนี้');
+            db.prepare("UPDATE tasks SET status='claimed',assignee=? WHERE id=?").run(b.user_id, id);
+            audit(id, u.id, 'assign', member.name); return;
+          } else if (action === 'edit' || action === 'cancel') {
             if (u.role !== 'owner' && t.created_by !== u.id) fail(403, 'เฉพาะผู้สร้างงานหรือเจ้าของบ้านที่แก้ไขหรือยกเลิกได้');
             if (t.status === 'done') fail(409, 'งานที่เสร็จแล้วเก็บไว้เป็นประวัติ');
             if (action === 'cancel') db.prepare('UPDATE tasks SET cancelled_at=? WHERE id=?').run(at, id);

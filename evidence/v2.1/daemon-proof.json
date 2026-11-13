@@ -1,0 +1,9 @@
+{
+  "outer_image": "tuchsanai/devtools:2569_1",
+  "privileged": true,
+  "host_socket_mounted": false,
+  "separate_daemons": true,
+  "inner_dockerd_running": true,
+  "inner_socket": "local Unix socket",
+  "app_checked": false
+}

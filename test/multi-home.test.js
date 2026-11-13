@@ -153,5 +153,5 @@ test('M9 v1 migration preserves users, sessions and tasks; leaving is not undone
   const state = await request('dashboard'); assert.equal(state.user.role, 'member'); assert.equal(state.tasks[0].note, 'Preserved'); assert.equal(app.db.prepare('SELECT role FROM memberships WHERE user_id=1').get().role, 'owner');
   await request('homes/leave', {}); await new Promise(r => app.server.close(r)); app.db.close();
   app = createApp({ dbPath: path }); url = await start();
-  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 2);
+  assert.equal((await request('dashboard')).homes.length, 0); assert.equal(app.db.prepare('PRAGMA user_version').get().user_version, 3);
 });

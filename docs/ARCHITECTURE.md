@@ -30,11 +30,12 @@ HTTP ใช้ใน localhost/course lab; หากเปิดภายนอ�
 - users: email unique, password hash scrypt + random salt; home_id เดิมเก็บไว้เพื่อรองรับฐานข้อมูลเก่า ไม่ใช้เป็นแหล่งสิทธิ์
 - memberships: คู่ home_id/user_id และ role owner/member เป็นแหล่งสิทธิ์การเข้าถึงบ้าน
 - sessions: เก็บ SHA-256 ของ token สุ่ม 192 bits หมดอายุ 24 ชั่วโมง; active_home_id แยกตาม Session; logout ลบจริง
-- pets: home_id, name, species, notes, archived
+- pets: home_id, name, species, notes, archived, deleted_at, breed, birth_date, sex
+- pet_records: pet_id, created_by, kind, title, recorded_at, weight_kg, due_at, notes, resolved_at, updated_at
 - tasks: pet_id, title, UTC due, open/claimed/done, assignee, completed_at, note, created_by, priority, recurrence, cancelled_at
-- events: task_id, actor, action, UTC timestamp
+- events: task_id, actor, action, UTC timestamp และ detail สำหรับผู้รับมอบหมาย
 
-Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem รุ่น schema=2 อัปเกรดจากรุ่น 1 ใน Transaction เดียว โดยเก็บข้อมูลและ Session เดิม ผู้ใช้คนแรกของแต่ละบ้านเดิมเป็นเจ้าของบ้าน สมาชิกคนอื่นเป็น member การเปิดครั้งถัดไปจะไม่สร้าง membership ที่ออกจากบ้านแล้วกลับมาใหม่ มี Migration regression test M9
+Foreign key เปิดทุก connection; WAL กับ busy_timeout สำหรับงานอ่าน/เขียนขนาดเล็ก `BEGIN IMMEDIATE` ครอบ state validation, update และ audit เพื่อให้รายการเดียวกันไม่ถูกทำซ้ำ ใช้ instance เดียวกับ local volume ไม่รองรับ replica/shared network filesystem รุ่น schema=3 เพิ่มสมุดบันทึก ถังขยะ และข้อมูลสัตว์เลี้ยง โดยอัปเกรดแต่ละเวอร์ชันใน Transaction แยกกัน; schema 2 อัปเกรดจากรุ่น 1 ใน Transaction เดียว โดยเก็บข้อมูลและ Session เดิม ผู้ใช้คนแรกของแต่ละบ้านเดิมเป็นเจ้าของบ้าน สมาชิกคนอื่นเป็น member การเปิดครั้งถัดไปจะไม่สร้าง membership ที่ออกจากบ้านแล้วกลับมาใหม่ มี Migration regression test M9
 
 ## HTTP API
 
@@ -81,3 +82,17 @@ UI ส่ง `X-Home-ID` บนคำขอแก้ไข Server เปรี�
 ## เส้นทาง Demo
 
 Browser กดรับงาน → POST JSON + cookie → sessions lookup → home_id authorization → BEGIN IMMEDIATE → ตรวจ open → update claimed/assignee + insert event → COMMIT → JSON → Browser โหลด dashboard → แสดงผู้รับผิดชอบ เมื่อคนที่สองกดรับงานเก่าจะได้ 409 ไม่มี event เพิ่ม
+
+## API เพิ่มเติมรุ่น 2.1
+
+| Method | Path | สิทธิ์และผล |
+|---|---|---|
+| POST | /api/pets/:id/delete | owner + confirm_name ตรงชื่อ → ย้ายถังขยะ ยกเลิกงานค้างพร้อม audit |
+| POST | /api/pets/:id/restore | owner → นำกลับมาดูแล ไม่เปิดงานที่ยกเลิก |
+| POST | /api/records | สมาชิกในบ้าน → สร้างบันทึกของสัตว์ที่ยังไม่อยู่ถังขยะ |
+| POST | /api/records/:id/edit | ผู้บันทึกหรือ owner → แก้รายละเอียดและรีเซ็ตสถานะเมื่อเปลี่ยนนัด |
+| POST | /api/records/:id/delete | ผู้บันทึกหรือ owner → ลบบันทึกถาวร |
+| POST | /api/records/:id/resolve | ผู้บันทึกหรือ owner → resolved boolean สำหรับรายการที่มี due_at |
+| POST | /api/tasks/:id/assign | owner → สมาชิกปัจจุบันของบ้าน รับงาน open พร้อม audit ชื่อผู้รับ |
+
+Dashboard ส่ง records เฉพาะบ้านปัจจุบัน ปฏิทินรวม tasks.due กับ pet_records.due_at ใน Browser ตามเวลาท้องถิ่น โดยไม่มี Scheduler/Push การส่งออก CSV ใช้ข้อมูลตามตัวกรองใน Browser และเติม apostrophe หน้าข้อความที่เริ่มเหมือนสูตร Spreadsheet

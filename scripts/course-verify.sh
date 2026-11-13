@@ -5,7 +5,7 @@ ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 cd "$ROOT"
 . "$ROOT/scripts/assert-course-environment.sh"
 mkdir -p evidence/runtime
-export COMPOSE_PROJECT_NAME=pawroster-course
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-pawroster-course}"
 export VCS_REF="$(git rev-parse HEAD)"
 docker version > evidence/runtime/course-engine.txt
 docker compose version >> evidence/runtime/course-engine.txt
