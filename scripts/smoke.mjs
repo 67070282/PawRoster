@@ -38,8 +38,15 @@ if (phase === 'seed') {
   await api(`/api/tasks/${task.id}/claim`, {}, 404);
   const memberCookie = cookie; cookie = ownerCookie;
   await api('/api/homes/switch', { home_id: firstHome });
-  writeFileSync(stateFile, JSON.stringify({ cookie, task: task.id, memberCookie, memberId: member.user.id, secondHome: secondHome.id, recurring: recurring.id, firstHome }), { mode: 0o600 });
-  console.log('PASS deployed HTTP flow: baseline care, duplicate rejection, multi-home creation, existing-account join, isolation and recurring successor');
+  const weight = await api('/api/records', { pet_id: pet.id, kind: 'weight', title: 'Synthetic weight', recorded_at: new Date().toISOString(), weight_kg: 4.25 }, 201);
+  const appointment = await api('/api/records', { pet_id: pet.id, kind: 'visit', title: 'Synthetic appointment', recorded_at: new Date().toISOString(), due_at: new Date(Date.now()+86400000).toISOString() }, 201);
+  await api(`/api/records/${appointment.id}/resolve`, { resolved: true });
+  const disposable = await api('/api/pets', { name: 'Synthetic trash pet', species: 'cat' }, 201);
+  const cancelledTask = await api('/api/tasks', { pet_id: disposable.id, title: 'Trash cancellation', due: new Date().toISOString() }, 201);
+  await api(`/api/pets/${disposable.id}/delete`, { confirm_name: 'Synthetic trash pet' });
+  await api(`/api/pets/${disposable.id}/restore`, {});
+  writeFileSync(stateFile, JSON.stringify({ cookie, task: task.id, memberCookie, memberId: member.user.id, secondHome: secondHome.id, recurring: recurring.id, firstHome, weight: weight.id, appointment: appointment.id, restoredPet: disposable.id, cancelledTask: cancelledTask.id }), { mode: 0o600 });
+  console.log('PASS deployed HTTP flow: baseline care, multi-home isolation, recurring successor, journal, appointment completion and pet trash/recovery');
 } else if (phase === 'verify') {
   const state = JSON.parse(readFileSync(stateFile, 'utf8')); cookie = state.cookie;
   const dashboard = await api('/api/dashboard');
@@ -47,6 +54,10 @@ if (phase === 'seed') {
   assert.equal(task.status, 'done'); assert.equal(task.note, 'Course container synthetic smoke');
   assert.equal(dashboard.events.filter(e => e.task_id === task.id && e.action === 'complete').length, 1);
   assert.equal(dashboard.homes.length, 2);
+  assert.equal(dashboard.records.find(r=>r.id===state.weight).weight_kg,4.25);
+  assert.ok(dashboard.records.find(r=>r.id===state.appointment).resolved_at);
+  assert.equal(dashboard.pets.find(p=>p.id===state.restoredPet).deleted_at,null);
+  assert.ok(dashboard.tasks.find(t=>t.id===state.cancelledTask).cancelled_at);
   cookie = state.memberCookie;
   const member = await api('/api/dashboard'); assert.equal(member.user.home_id, state.secondHome);
   assert.equal(member.homes.length, 2); assert.equal(member.user.role, 'member');
@@ -57,5 +68,5 @@ if (phase === 'seed') {
   cookie = state.cookie; await api('/api/homes/switch', { home_id: state.firstHome });
   await api('/api/logout', {}); await api('/api/dashboard', undefined, 401);
   unlinkSync(stateFile);
-  console.log('PASS persistence verification: session, task, note, memberships, selected home, recurring successor and audit retained; member removal and logout revoked access');
+  console.log('PASS persistence verification: sessions, memberships, tasks, journal, appointments, restored pets and audit retained; member removal and logout revoked access');
 } else throw new Error('Usage: node scripts/smoke.mjs seed|verify');
