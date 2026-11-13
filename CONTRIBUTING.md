@@ -1,6 +1,6 @@
-# การร่วมพัฒนา PawRoster
+# การร่วมพัฒนา PawRoaster
 
-> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](docs/CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](evidence/home-deletion/README.md)
+> ระบบใช้ schema 5 และรองรับลบบ้านโดยเจ้าของ โดยคงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](docs/CARE-FEATURES.md) และ [ผลตรวจระบบ](evidence/home-deletion/README.md)
 
 
 ใช้ issue ที่ระบุ Requirement/Acceptance Criteria และแยก branch เช่น `feature/calendar-filter`, `fix/session-validation` หรือ `docs/architecture-details` ก่อนเปิด Pull Request รายการตรวจปัจจุบันครอบคลุม R1–R8, M1–M9, C1–C9, S1–S6 และ N1–N3 ตาม [TRACEABILITY](docs/TRACEABILITY.md)
@@ -14,7 +14,7 @@ docker compose config --quiet
 node scripts/secret-scan.mjs
 ```
 
-แอปรุ่น 2.2 มี 32 กรณี โดย TAP รวม Parent เป็น 33 รายการ การแก้ persistence, container, network หรือ business rules ตรวจกรณีที่เกี่ยวข้องและ Course Container ด้วย project/port/volume ทดสอบแยก ตาม [OPERATIONS](docs/OPERATIONS.md) การแก้เฉพาะเอกสารตรวจลิงก์ ภาพ แผนภาพ และความตรงกับ source โดยไม่แก้ผลทดสอบเก่าให้เป็นผลรุ่นใหม่
+ชุดทดสอบปัจจุบันมี 37 กรณี โดย TAP รวม Parent เป็น 38 รายการ การแก้ persistence, container, network หรือ business rules ตรวจกรณีที่เกี่ยวข้องและ Course Container ด้วย project/port/volume ทดสอบแยก ตาม [OPERATIONS](docs/OPERATIONS.md) การแก้เฉพาะเอกสารตรวจลิงก์ ภาพ แผนภาพ และความตรงกับ source โดยไม่แก้ผลทดสอบเก่าให้เป็นผลรุ่นใหม่
 
 ## ข้อมูลใน Pull Request
 

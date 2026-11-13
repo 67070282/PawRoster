@@ -1,105 +1,57 @@
-# การประเมินระบบและผลทดสอบ PawRoster
+# การประเมินระบบและผลทดสอบ PawRoaster
 
-## ผลตรวจปัจจุบัน รุ่น 2.3.0 / schema 5
+วันที่รายงาน 13 พฤศจิกายน 2569
 
-Source ฟีเจอร์ที่ตรวจ: `f63e1964790fd3fc453a59bd42996e68bec56d16` ใช้ข้อมูลสังเคราะห์ แยกฐานข้อมูลทดสอบจากข้อมูลใช้งานจริง Acceptance tests ผ่าน **37 กรณี (38 TAP records รวม parent), fail 0** บน Windows และ Linux ภายใน image อาจารย์ เพิ่ม H1–H5 สำหรับลบบ้าน การรักษาบัญชีและบ้านอื่น การยืนยัน/สิทธิ์ การ rollback และ migration 4→5 ผล Browser QA และ Course Docker-in-Docker อยู่ใน [หลักฐานรุ่น 2.3](../evidence/home-deletion/README.md)
+## วัตถุประสงค์และวิธีประเมิน
 
-| Requirement | ผลและหลักฐาน |
+การประเมินตรวจความถูกต้องของฟังก์ชัน สิทธิ์ การเก็บข้อมูล และการส่งมอบซ้ำ ใช้บัญชี บ้าน สัตว์เลี้ยง งานและนัดหมายสังเคราะห์ในฐานข้อมูลทดสอบแยกจากข้อมูลใช้งาน ไม่ใช่ผลสัมภาษณ์หรือทดลองผู้ใช้จริง และไม่สรุปผลสุขภาพสัตว์เป็นตัวเลข
+
+ใช้ HTTP acceptance tests เรียก API จริง Browser QA โต้ตอบกับหน้าจอ และ Course Docker-in-Docker ตรวจ Build/Health/HTTP flow/Backup/Persistence พร้อม Jenkins ตรวจ pipeline ตั้งแต่ source ถึงบริการ
+
+## ระบบและ source ที่ตรวจ
+
+| รายการ | ข้อมูล |
 |---|---|
-| ลบบ้านที่มีเจ้าของและสมาชิกย้ายออกทั้งหมด | H1 / UI: ทั้งสองบัญชียังเข้าบ้านปลายทางและเห็นข้อมูลเดิมได้ |
-| คงบัญชีเมื่อไม่มีบ้านเหลือ | H3 / UI: session ใช้ได้ เปิดสร้าง/เข้าร่วมบ้านได้ และ login ใหม่ได้ |
-| เฉพาะ owner และต้องยืนยันบ้าน | H2 / UI: member ถูกปฏิเสธ ชื่อ/บ้าน/รหัสค้างถูกปฏิเสธ ไม่มีการเขียนข้อมูล |
-| ลบอย่างครบถ้วนและ rollback | H1/H4: ลบข้อมูลเฉพาะบ้านเป้าหมาย foreign keys ถูกต้อง และจำลองล้มเหลวแล้วข้อมูลทุกตารางคงเดิม |
-| อัปเกรดข้อมูลเดิม | H5 และ migration fixtures รุ่น 1/2/3: schema 5 คงบัญชี credential session และสมาชิกภาพ |
-| ฟีเจอร์เดิม | R1–R8, M1–M9, C1–C9, S1–S6 ผ่านในชุด 2.3 เดียวกัน |
+| Runtime | Node.js 24.14.0, SQLite, package 2.3.0 / schema 5 |
+| Source ฟีเจอร์/API/Course | `f63e1964790fd3fc453a59bd42996e68bec56d16` |
+| Source ที่ main #8 ตรวจ | `233ead1851c5224be59cf5254d50474a29ec9414` โค้ด runtime/tests ตรง source ฟีเจอร์ |
+| Windows | Node.js และฐานข้อมูลชั่วคราว |
+| Linux | Inner Docker ภายใน `tuchsanai/devtools:2569_1` |
+| Browser | Edge/Playwright แยก context ของ owner/member/อีกบ้าน |
 
-## ผลย้อนหลังและรายละเอียดวิธีตรวจรุ่น 2.2
+## HTTP acceptance tests
 
-ข้อมูลด้านล่างเป็นผลจริงของรอบ 2.2 ตาม source/build ที่ระบุ ไม่ใช่หลักฐานว่า Jenkins build เดิมตรวจ source 2.3 แล้ว การทำงาน pipeline ยังใช้ Jenkinsfile ชุดเดิม และผลใหม่อ้างตาม build/source ใน evidence เท่านั้น
-
-
-รุ่น 2.2.0 · วันที่รายงาน 13 พฤศจิกายน 2569
-
-## วัตถุประสงค์และวิธีทดสอบ
-
-การประเมินมุ่งตรวจว่าฟีเจอร์ที่ระบุในโครงงานทำงานได้จริง ข้อมูลแยกตามสิทธิ์และคงอยู่หลังเริ่มบริการใหม่ รวมถึง build และ deploy ใน image ของอาจารย์ได้ ใช้บัญชี บ้าน สัตว์เลี้ยง งาน และนัดหมายสังเคราะห์ในฐานข้อมูลทดสอบแยก ไม่ใช้ข้อมูลของครัวเรือนจริงเป็นตัวอย่างผลการศึกษา
-
-วิธีทดสอบประกอบด้วย HTTP acceptance tests ที่เรียก API จริง, Browser QA ที่โต้ตอบกับหน้าเว็บจริง และการตรวจระบบที่ deploy ใน Docker-in-Docker พร้อม backup/persistence การทดสอบเหล่านี้เป็นการประเมินระบบทางเทคนิค ไม่ใช่การวัดผลสุขภาพหรือผลกระทบเชิงสถิติ
-
-## สภาพแวดล้อมและรุ่นที่ตรวจ
-
-| รายการ | รายละเอียด |
-|---|---|
-| รุ่นแอป | 2.2.0, schema 4 |
-| Source ที่ตรวจ Course Container | `4d319e8b0ed645a7e71698da423b277f68c893c6` |
-| รอบติดตั้งในหลักฐานเริ่มต้นรุ่น 2.2 | `00ad184cc7208a3738de3df90bb836a6917c1291` โค้ด runtime ตรงกับ source ที่ตรวจ; ส่วนต่างเป็นหลักฐานและ merge commit |
-| Windows | Node.js 24.14.0, SQLite และฐานข้อมูลชั่วคราวสำหรับ tests |
-| Linux | SSH เข้าสู่ `tuchsanai/devtools:2569_1` และใช้ inner Docker daemon รัน `node:24.14.0-alpine` |
-| โปรเจคทดสอบแยก | `pawroster-security-validation`, port 3087 และ volume แยกจากแอปใช้งาน |
-| Browser | Edge/Playwright แยก context ของ owner/member/อีกบ้าน ใช้ข้อมูลสังเคราะห์ |
-
-## ผล HTTP acceptance tests
-
-| กลุ่ม | จำนวนกรณี | สิ่งที่ตรวจ | Windows | Linux ใน image อาจารย์ |
+| กลุ่ม | กรณี | ขอบเขต | Windows | Linux ใน image อาจารย์ |
 |---|---:|---|---|---|
-| R1–R8 | 8 | สมัคร/login, session, ข้อมูลร่วมในบ้าน, รับงานพร้อมกัน, transition, isolation, validation, restart และ logout | ผ่าน | ผ่าน |
-| M1–M9 | 9 | หลายบ้านและหลาย session, รหัสเชิญ, นำสมาชิกออก, โอนสิทธิ์, stale tabs, แก้/ยกเลิก/งานซ้ำ, เก็บประวัติ และ migration | ผ่าน | ผ่าน |
-| C1–C9 | 9 | ถังขยะ/กู้คืน/ลบถาวร, ข้อมูลสัตว์, สมุดบันทึกและสิทธิ์, validation, นัดหมาย, assignment, migration และ rollback | ผ่าน | ผ่าน |
-| S1–S6 | 6 | รหัสเก่าใช้ไม่ได้ทั้ง register/join, ตัดสิทธิ์ทุก session ของบ้าน, บล็อก/ปลดบล็อก, พักรับสมาชิก, rollback และ migration 3→4/persistence | ผ่าน | ผ่าน |
-| **รวม** | **32** | **ไม่พบกรณีล้มเหลว** | **ผ่าน 32/32** | **ผ่าน 32/32** |
+| R1–R8 | 8 | บัญชี session งานร่วม concurrency isolation validation persistence logout | ผ่าน | ผ่าน |
+| M1–M9 | 9 | หลายบ้าน สิทธิ์ การสลับบ้าน งานซ้ำ และ migration | ผ่าน | ผ่าน |
+| C1–C9 | 9 | ข้อมูลสัตว์ สมุดบันทึก นัดหมาย มอบหมาย ถังขยะ กู้คืน ลบถาวร และ rollback | ผ่าน | ผ่าน |
+| S1–S6 | 6 | รหัสเชิญ พักรับสมาชิก นำออก/บล็อก ปลดบล็อก ตัดสิทธิ์ และ migration | ผ่าน | ผ่าน |
+| H1–H5 | 5 | ลบบ้าน คงบัญชี/บ้านอื่น ยืนยันสิทธิ์และบ้าน rollback และ schema 4→5 | ผ่าน | ผ่าน |
+| รวม | **37** | **38 TAP records รวม parent, fail 0** | **ผ่าน** | **ผ่าน** |
 
-Node TAP รายงาน `tests 33, pass 33, fail 0` เพราะนับ parent test ที่ครอบ R1–R8 เพิ่มหนึ่งรายการ จึงแยกจำนวนกรณีใช้งาน 32 กรณีออกจากจำนวนรายการใน TAP
+ผลเต็ม: [Windows](../evidence/home-deletion/windows-tests.txt) / [Linux TAP](../evidence/home-deletion/course-tests.tap)
 
-หลักฐานต้นฉบับ: [Windows TAP](../evidence/household-security/windows-tests.tap), [Course TAP](../evidence/household-security/course-tests.tap) และชุดทดสอบใน [system.test.js](../test/system.test.js), [multi-home.test.js](../test/multi-home.test.js), [pet-care.test.js](../test/pet-care.test.js)
+## Browser QA และภาพหน้าจอ
 
-## ผลทดสอบผ่านหน้าเว็บ
+ตรวจ flow งาน บันทึก ปฏิทิน สัตว์เลี้ยง และสมาชิก ลบบ้านเฉพาะ owner ตรวจยกเลิก ชื่อยืนยันผิด dialog ค้าง และสถานะไม่มีบ้าน การลบบ้านสาธิตที่มีสองบัญชียังคงบ้านปลายทางและข้อมูลของทั้งสองคนไว้ ตรวจความกว้าง 320/390/1365px ไม่มี horizontal overflow และไม่พบ page errors ในรอบลบบ้าน
 
-| สถานการณ์ | ผลที่สังเกตได้ | ผล |
-|---|---|---|
-| เพิ่ม/แก้/ลบสมุดบันทึก | ข้อมูลและรายการบนจอเปลี่ยนตามการบันทึก น้ำหนักล่าสุดและส่วนต่างถูกต้อง | ผ่าน |
-| ส่งออก CSV | ส่งออกข้อมูลที่กรองและทำให้ข้อความคล้ายสูตรเป็นข้อความ | ผ่าน |
-| ปฏิทินและนัดหมาย | เลื่อนเดือน เลือกวัน กรองและเปลี่ยนสถานะนัดได้ วันนี้/วันมีนัด/วันที่เลือกแยกกัน | ผ่าน |
-| งานตามวันที่เลือกและมอบหมาย | วันของงานตรงวันที่เลือก สมาชิกที่ได้รับมอบหมายปิดงานได้ | ผ่าน |
-| ถังขยะ/กู้คืน/ลบถาวร | ยืนยันชื่อผิดถูกปฏิเสธ ยกเลิกแล้วยังมีข้อมูล ลบถาวรลบเฉพาะข้อมูลตัวเป้าหมาย | ผ่าน |
-| เปลี่ยนรหัสและพักรับสมาชิก | รหัสเก่าเข้าร่วมไม่ได้ พักรับสมาชิกแล้ว join ถูกปฏิเสธ เปิดใหม่ออกรหัสใหม่ | ผ่าน |
-| นำออก/บล็อก/ปลดบล็อก | ตัดสิทธิ์บ้าน คืนงาน และบล็อกการกลับเข้า ปลดบล็อกไม่เพิ่มสมาชิกกลับเอง | ผ่าน |
-| สิทธิ์เจ้าของบ้าน | สมาชิกไม่เห็นรหัส รายการบล็อก และประวัติการจัดการ หรือปุ่มจัดการสิทธิ์ | ผ่าน |
-| หน้าจอและคีย์บอร์ด | 6 หน้าหลักไม่ล้นที่ 320/390/680/1365px; ปฏิทินเพิ่ม 1024/1440px; focus และปุ่มลูกศรทำงาน | ผ่าน |
+[ผล Browser QA](../evidence/home-deletion/ui-result.json) / [ภาพหน้าจอ](SCREENSHOTS.md) ผลการอ่านสีและ keyboard ของรอบก่อนระบุ source แยกใน evidence เดิม ไม่ใช่การรับรอง WCAG ครบทุกข้อ
 
-ค่าความต่างสีข้อความต่ำสุดในชุดตรวจธีมปัจจุบันเท่ากับ 4.93:1 ไม่พบ JavaScript page errors การตรวจนี้ไม่ใช่การรับรอง WCAG ครบทุกข้อ หลักฐาน: [Calendar/theme QA](../evidence/calendar-highlights/), [Security UI QA](../evidence/household-security/ui-summary.json), [Permanent delete QA](../evidence/permanent-delete/ui-summary.json)
+## Course Container และการรักษาข้อมูล
 
-## ผล Docker และการคงอยู่ของข้อมูล
+Course verification ผ่าน syntax, Build, revision health, HTTP smoke, online backup/integrity และ force-recreate persistence ใน project/volume ทดสอบแยก หลังจบรอบหยุด service ทดสอบโดยคง volume ไว้ [ผล](../evidence/home-deletion/course-smoke.txt)
 
-สคริปต์ `scripts/course-verify.sh` ทำงานผ่าน SSH ใน image อาจารย์ด้วยโปรเจคและฐานข้อมูลแยก ผลที่บันทึกไว้มีดังนี้:
+ก่อนอัปเกรด schema 5 สำรองฐานข้อมูลแอปใช้งานและ preview ไว้เป็นส่วนตัว ทดลอง migration กับสำเนา และตรวจหลังอัปเกรดว่าข้อมูลทุกตารางตรงเดิม ยกเว้น legacy users.home_id ที่นำออกตามการออกแบบ การลบบ้านเพื่อทดสอบใช้ข้อมูลสังเคราะห์เท่านั้น ไม่ลบบ้านใช้งานจริง
 
-| ขั้นตอน | เกณฑ์ตรวจ | ผล |
-|---|---|---|
-| สภาพแวดล้อม | มี local dockerd ภายใน container และใช้ local Unix socket | ผ่าน |
-| Syntax และ acceptance | ตรวจโค้ดและรันชุดทดสอบครบ | ผ่าน |
-| Build/Health | Build image และ health revision ตรงกับ commit | ผ่าน |
-| Deployed HTTP smoke | งาน หลายบ้าน งานซ้ำ สมุดบันทึก นัดหมาย ถังขยะและกู้คืนทำงานผ่านบริการที่เปิดจริง | ผ่าน |
-| Online backup | SQLite integrity เป็น ok และข้อมูลจากไฟล์สำรองตรงต้นฉบับ | ผ่าน |
-| Force-recreate | session, membership, tasks, journal และประวัติคงอยู่ | ผ่าน |
-| เพิกถอนสิทธิ์ | นำสมาชิกออกแล้วเข้าบ้านเดิมไม่ได้; logout แล้ว session ใช้ไม่ได้ | ผ่าน |
+## Jenkins CI/CD
 
-[Course smoke](../evidence/household-security/course-smoke.txt) บันทึกข้อมูลสังเคราะห์ก่อน/หลังนำสมาชิกออก: ผู้ใช้ 2 บัญชี บ้าน 3 หลัง สัตว์ 3 ตัว งาน 4 รายการ บันทึก 2 รายการ สมาชิกภาพลดจาก 4 เป็น 3 รายการ ส่วน block เพิ่มจาก 0 เป็น 1 และ home event จาก 4 เป็น 6 ตามการนำออกและเปลี่ยนรหัส ไม่มีการนับข้อมูลชุดนี้เป็นสถิติครัวเรือนจริง
+main build #8 สำเร็จครบ Checkout, Verify, Build image, Publish image, Deploy และ Verify deployed service ส่วน review #4/#5 สำเร็จและข้าม Deploy ตามเงื่อนไข feature branch Verify ประกอบด้วย secret scan, syntax, HTTP tests และ Compose validate ผล build/source และ health ต้องอ่านเป็นชุดเดียวกัน
 
-## CI/CD และการทำซ้ำ
+[หลักฐาน main #8](../evidence/complete-project/README.md) มี JUnit, stage status, image digest, health และ deployed smoke ที่ revision ตรง `233ead1` ส่วน [review #4](../evidence/home-deletion/jenkins-review-4/build.json) ตรวจ source ฟีเจอร์ การจำลอง Verify ล้มเหลวอยู่ใน [หลักฐานย้อนหลัง](../evidence/submission-2.2/README.md) โดยอ้างเฉพาะ source/build ที่ระบุ
 
-ตรวจ Jenkins ใหม่ใน image อาจารย์วันที่ 13 พฤศจิกายน 2569 โดย main และ review ใช้โค้ดแอปรุ่น 2.2 เดียวกัน:
+Pipeline deploy ไป `pawroster-ci` ภายใน image อาจารย์ แยกจากบริการใช้งานและ preview การอัปเกรดบริการใช้งานหลังอนุมัติ merge เป็นขั้นตอนแยก ไม่ใช่การสร้าง image อาจารย์ใหม่ทุก build
 
-| รอบตรวจ | Source | ผลและสิ่งที่ยืนยัน |
-|---|---|---|
-| main #1 | `00ad184` | SUCCESS: Checkout → secret scan/syntax/tests → Build → Publish → Deploy → health/smoke ผ่าน |
-| review #1 | `aebd543` | SUCCESS: Verify/Build/Publish ผ่าน และข้าม Deploy ตามเงื่อนไข feature branch |
-| review #2 — failure probe | `aebd543` | FAILURE ตามที่ออกแบบ: เพิ่ม test ที่ล้มเหลวใน workspace ทิ้งได้ แล้วข้าม Build/Publish/Deploy ทั้งหมด |
+## ข้อจำกัดของผลประเมิน
 
-หลัง failure probe รัน review #3 แบบปกติและได้ SUCCESS อีกครั้ง JUnit ของรอบปกติบันทึก 32 กรณี ส่วน probe มี 33 กรณีและล้มเหลว 1 กรณีตามที่ตั้งใจ หลักฐานอยู่ใน `jenkins/review-pass-latest`
-
-Health ของ main แสดง version 2.2.0 และ revision ตรงกับ commit ที่ checkout บันทึก JUnit, stage, image digest และ smoke อยู่ใน [หลักฐาน CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) หมายเลข build รอบนี้เป็นของ Jenkins instance ที่เริ่มในกล่องตรวจปัจจุบัน หลักฐาน Jenkins รุ่นก่อนเก็บไว้เป็นประวัติแยกกัน
-
-รันทดสอบภายในโฟลเดอร์โครงงานด้วย `npm run check` และ `npm test` หรือรัน `sh scripts/course-verify.sh` ภายใน image อาจารย์หลังเลือก Compose project/port/volume สำหรับทดสอบที่แยกจากข้อมูลใช้งาน การเปิดโครงงานสำหรับตรวจงานอยู่บนสุดของ [README](../README.md)
-
-## สรุปผลและข้อจำกัด
-
-ระบบผ่านเกณฑ์ทางเทคนิคของกรณีที่ทดสอบ รวมเส้นทางสำเร็จ กรณีผิดพลาด สิทธิ์ และ persistence หลักฐานรองรับความถูกต้องของสถานะและการส่งมอบที่ตรวจ ไม่ได้ยืนยันว่ามีการดูแลสัตว์จริงทุกครั้งที่กดเสร็จ ไม่ได้วัดผลสุขภาพ อัตราลดงานตกหล่น หรือความพึงพอใจของกลุ่มประชากร ระบบหนึ่ง instance, local SQLite, ไม่มี push/MFA/email verification และการบล็อกผูกบัญชี รายละเอียดใน [SECURITY.md](SECURITY.md)
+ผลตรวจยืนยันพฤติกรรมตามกรณีที่ระบุ ไม่ใช่ load test, penetration test หรือผลภาคสนาม ไม่มีข้อมูลลดงานตกหล่นหรือเพิ่มคุณภาพชีวิตสัตว์เชิงสถิติ ระบบเหมาะกับหนึ่ง instance และฐานข้อมูล local volume การแจ้งเตือน push/email, MFA, email verification, password reset และการลบบัญชียังอยู่นอกขอบเขต

@@ -1,6 +1,6 @@
-# เปิด PawRoster ภายใน Docker ของรายวิชาผ่าน SSH
+# เปิด PawRoaster ภายใน Docker ของรายวิชาผ่าน SSH
 
-> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](../evidence/home-deletion/README.md)
+> ระบบใช้ schema 5 และรองรับลบบ้านโดยเจ้าของ โดยคงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจระบบ](../evidence/home-deletion/README.md)
 
 
 คู่มือนี้ใช้สภาพแวดล้อม `tuchsanai/devtools:2569_1` และรันคำสั่งโครงงานหลังเชื่อมต่อ SSH เข้าไปในกล่อง ตามรูปแบบที่ผู้สอนกำหนด
@@ -16,9 +16,9 @@
         └── care-data — Volume ฐานข้อมูล SQLite ภายใน daemon นี้
 ```
 
-Image อาจารย์เป็นสภาพแวดล้อมชั้นนอกที่ใช้ Build และรันคอนเทนเนอร์โครงงานชั้นใน จึงคง `FROM node:24.14.0-alpine` ใน Dockerfile ของแอปไว้ การ Build และ Deploy ใช้ไฟล์ Dockerfile และ Compose ของ PawRoster ภายใน daemon ชั้นใน
+Image อาจารย์เป็นสภาพแวดล้อมชั้นนอกที่ใช้ Build และรันคอนเทนเนอร์โครงงานชั้นใน จึงคง `FROM node:24.14.0-alpine` ใน Dockerfile ของแอปไว้ การ Build และ Deploy ใช้ไฟล์ Dockerfile และ Compose ของ PawRoaster ภายใน daemon ชั้นใน
 
-ตรวจสองชั้นจาก PowerShell บนเครื่องหลัก จากโฟลเดอร์ PawRoster:
+ตรวจสองชั้นจาก PowerShell บนเครื่องหลัก จากโฟลเดอร์ PawRoaster:
 
 ```powershell
 ./scripts/check-course-container.ps1 -RequireApp
@@ -100,9 +100,9 @@ docker compose up -d --wait
 
 ผลตรวจสองชั้นและ Environment guard จาก Commit ที่ Pull จริง: [Docker-in-Docker validation](../evidence/dind-validation/README.md)
 
-ผลตรวจรุ่นปัจจุบัน 2.2: [Course Container และ acceptance tests](../evidence/household-security/README.md), [CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) และ [รายงานผลทดสอบ](RESEARCH.md)
+ผลตรวจระบบ: [Course Container และ acceptance tests](../evidence/home-deletion/README.md), [Jenkins main #8](../evidence/complete-project/main-8/build.json) และ [รายงานผลทดสอบ](RESEARCH.md)
 
-## อัปเกรดเป็น 2.3 และการลบบ้าน
+## อัปเกรดฐานข้อมูลและการลบบ้าน
 
 สำรอง DB ผ่าน `scripts/backup.mjs` ก่อนเปลี่ยน image เก็บไฟล์สำรองนอก Git และนอก public evidence จากนั้นใช้ขั้นตอน build/compose เดิมกับ named volume เดิม แอปจะย้าย schema 4→5 อัตโนมัติ ตรวจ `/health` ว่า version เป็น `2.3.0` และ revision ตรง commit ที่ deploy พร้อมตรวจ `PRAGMA user_version` เป็น 5, `integrity_check` เป็น ok และ `foreign_key_check` ไม่มีรายการ
 

@@ -1,6 +1,6 @@
-# คู่มือปฏิบัติการ PawRoster 2.3
+# คู่มือปฏิบัติการ PawRoaster
 
-> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](../evidence/home-deletion/README.md)
+> ระบบใช้ schema 5 และรองรับลบบ้านโดยเจ้าของ โดยคงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจระบบ](../evidence/home-deletion/README.md)
 
 
 ## Local lifecycle
@@ -17,7 +17,7 @@ docker compose down
 
 ## Jenkins
 
-วิธีที่ทดสอบใช้ Jenkins Pipeline from SCM สอง job (`pawroster-main` และ `pawroster-review`) ชี้ `main` และ `feature/delete-household` ตามลำดับสำหรับชุดตรวจรุ่น 2.3 เปลี่ยน SCM branch ของ review job เป็น feature branch ของงานที่จะตรวจเมื่อพัฒนาต่อ ไม่ตั้ง review เป็น main เพราะเงื่อนไข Deploy ดูที่ source branch ใน Course Container ที่ได้รับอนุมัติ รัน `sh jenkins/start-course-jenkins.sh` จาก root repo เพื่อ build controller, local registry และสร้าง job แบบมี authentication
+วิธีที่ทดสอบใช้ Jenkins Pipeline from SCM สอง job (`pawroster-main` และ `pawroster-review`) ชี้ `main` และ `feature/delete-household` ตามลำดับสำหรับชุดตรวจฟังก์ชันลบบ้าน เปลี่ยน SCM branch ของ review job เป็น feature branch ของงานที่จะตรวจเมื่อพัฒนาต่อ ไม่ตั้ง review เป็น main เพราะเงื่อนไข Deploy ดูที่ source branch ใน Course Container ที่ได้รับอนุมัติ รัน `sh jenkins/start-course-jenkins.sh` จาก root repo เพื่อ build controller, local registry และสร้าง job แบบมี authentication
 
 ผู้ใช้คือ `pawroster-admin` รหัสสุ่มอยู่ที่ `/workspace/pawroster-jenkins-admin.secret` ภายในกล่อง ไม่อยู่ใน Git Controller home อยู่ `/workspace/pawroster-jenkins-home` ทั้ง inner host และ controller เพื่อให้ bind mount workspace ใช้งานได้จริง เปิดผ่าน SSH tunnel เช่น `ssh -p 2222 -L 8088:127.0.0.1:8080 root@localhost` แล้วเข้า `http://localhost:8088` ห้ามเปิด Jenkins ออก public โดยไม่จัดการสิทธิ์และTLS
 
@@ -103,7 +103,7 @@ DB_PATH=./care-backup.db PORT=3090 node src/server.js
 
 Repository หลักคือ [67070282/PawRoster](https://github.com/67070282/PawRoster) ใช้ branch/PR และเก็บผลตรวจพร้อม commit ไม่รวม .env, DB, token หรือไฟล์สำรองใน tracked files รายการหลักฐานของรุ่นส่งอยู่ใน [SUBMISSION-AUDIT.md](SUBMISSION-AUDIT.md)
 
-## อัปเกรดเป็น 2.3 และการลบบ้าน
+## อัปเกรดฐานข้อมูลและการลบบ้าน
 
 สำรอง DB ผ่าน `scripts/backup.mjs` ก่อนเปลี่ยน image เก็บไฟล์สำรองนอก Git และนอก public evidence จากนั้นใช้ขั้นตอน build/compose เดิมกับ named volume เดิม แอปจะย้าย schema 4→5 อัตโนมัติ ตรวจ `/health` ว่า version เป็น `2.3.0` และ revision ตรง commit ที่ deploy พร้อมตรวจ `PRAGMA user_version` เป็น 5, `integrity_check` เป็น ok และ `foreign_key_check` ไม่มีรายการ
 

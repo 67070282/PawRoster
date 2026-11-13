@@ -1,0 +1,2 @@
+PASS deployed HTTP flow: baseline care, multi-home isolation, recurring successor, journal, appointment completion and pet trash/recovery
+PASS persistence verification: sessions, memberships, tasks, journal, appointments, restored pets and audit retained; member removal and logout revoked access

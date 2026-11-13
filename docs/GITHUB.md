@@ -1,6 +1,6 @@
 # Repository และประวัติการส่งมอบ
 
-> รุ่นปัจจุบัน 2.3.0 / schema 5 เพิ่มลบบ้านโดยเจ้าของ คงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจรุ่น 2.3](../evidence/home-deletion/README.md)
+> ระบบใช้ schema 5 และรองรับลบบ้านโดยเจ้าของ โดยคงบัญชีและบ้านอื่นไว้ ดู [วิธีใช้งาน](CARE-FEATURES.md) และ [ผลตรวจระบบ](../evidence/home-deletion/README.md)
 
 
 Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public · default branch `main`
@@ -15,7 +15,7 @@ Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Publi
 | ปรับข้อความและการอ่านหน้าจอ | [#6](https://github.com/67070282/PawRoster/pull/6) |
 | ลบสัตว์เลี้ยงถาวร | [#7](https://github.com/67070282/PawRoster/pull/7) |
 | ธีมสว่างและปฏิทินเน้นวันนี้/นัดหมาย | [#8](https://github.com/67070282/PawRoster/pull/8) |
-| รุ่น 2.2 จัดการสมาชิกและรหัสเชิญ | [#9](https://github.com/67070282/PawRoster/pull/9) |
+| จัดการสมาชิกและรหัสเชิญ | [#9](https://github.com/67070282/PawRoster/pull/9) |
 
 รอบติดตั้งที่บันทึกในหลักฐานเริ่มต้นรุ่น 2.2 ใช้ `00ad184cc7208a3738de3df90bb836a6917c1291` ผล acceptance/Course Container ตรวจ source `4d319e8b0ed645a7e71698da423b277f68c893c6` โดยโค้ด runtime ตรงกัน รายละเอียดใน [RESEARCH.md](RESEARCH.md)
 
@@ -30,4 +30,6 @@ Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Publi
 
 การใช้ AI เป็นเครื่องมือพัฒนาระบุใน README ประวัติการทบทวนและเปลี่ยนแปลงใช้ข้อมูลจริงใน GitHub
 
-รุ่น 2.3 ใช้ branch `feature/delete-household` เพิ่ม API/UI ลบบ้าน พร้อม migration และ H1–H5 รวมถึงอัปเดตภาพและเอกสารทั้งหมด [Source ฟีเจอร์](https://github.com/67070282/PawRoster/commit/f63e1964790fd3fc453a59bd42996e68bec56d16)
+ฟังก์ชันลบบ้านใช้ branch `feature/delete-household` เพิ่ม API/UI ลบบ้าน พร้อม migration และ H1–H5 รวมถึงอัปเดตภาพและเอกสารทั้งหมด [Source ฟีเจอร์](https://github.com/67070282/PawRoster/commit/f63e1964790fd3fc453a59bd42996e68bec56d16)
+
+ฟังก์ชันลบบ้านและเอกสารรวมผ่าน [PR #14](https://github.com/67070282/PawRoster/pull/14) Source ที่ Jenkins main #8 ตรวจคือ `233ead1851c5224be59cf5254d50474a29ec9414` ดู [หลักฐาน](../evidence/complete-project/README.md)
