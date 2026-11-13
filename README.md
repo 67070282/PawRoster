@@ -266,15 +266,15 @@ Production image ไม่รวมโฟลเดอร์ชุดทดสอ
 
 **ตารางดูแล — สถานะงาน ผู้รับผิดชอบ และงานที่ต้องทำ**
 
-![ตารางดูแล PawRoaster พร้อมสถานะและผู้รับผิดชอบ](docs/screenshots/v2.3/dashboard.jpg)
+![ตารางดูแล PawRoaster พร้อมสถานะและผู้รับผิดชอบ](docs/screenshots/current/dashboard.jpg)
 
 **ปฏิทิน — วันนี้ วันที่มีนัด และรายละเอียดวันที่เลือก**
 
-![ปฏิทิน PawRoaster แสดงวันนี้และนัดหมาย](docs/screenshots/v2.3/calendar.jpg)
+![ปฏิทิน PawRoaster แสดงวันนี้และนัดหมาย](docs/screenshots/current/calendar.jpg)
 
 **สมุดบันทึก — น้ำหนักล่าสุดและประวัติของสัตว์เลี้ยง**
 
-![สมุดบันทึกน้ำหนัก PawRoaster](docs/screenshots/v2.3/journal.jpg)
+![สมุดบันทึกน้ำหนัก PawRoaster](docs/screenshots/current/journal.jpg)
 
 ดูครบทุกหน้ารวม **สัตว์เลี้ยง บ้านและสมาชิก ประวัติ และมือถือ** ใน [ภาพหน้าจอและคำอธิบาย](docs/SCREENSHOTS.md) ผลทดสอบรุ่นปัจจุบันอยู่ใน [รายงานการประเมินระบบ](docs/RESEARCH.md) ภาพและ evidence รุ่นก่อนเก็บไว้เป็นประวัติตามเวอร์ชัน
 
@@ -363,7 +363,7 @@ docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(a
 | Web/UI | Flow งาน สมุดบันทึก ปฏิทิน ถังขยะและการจัดการสมาชิกผ่าน |
 | Course Docker-in-Docker | Syntax, build, revision health และ deployed HTTP smoke ผ่าน |
 | ข้อมูล | Online backup/integrity และ force-recreate persistence ผ่าน |
-| Jenkins CI/CD | main #8 ผ่าน Verify, Build, Publish, Deploy และ Verify deployed service; revision ตรง commit |
+| Jenkins CI/CD | main #10 ผ่าน Verify, Build, Publish, Deploy และ Verify deployed service; revision ตรง commit |
 | Jenkins CI/CD หลักฐานย้อนหลัง 2.2 | main #1 และ review #1 ผ่าน; review #2 ยืนยัน failure gate ใน workspace ทดสอบ |
 | ลบบ้านและ migration | H1–H5 ผ่าน: เจ้าของยืนยันชื่อบ้าน บัญชี/บ้านอื่นคงอยู่ rollback ได้เมื่อการลบล้มเหลว และ schema 5 ใช้งานได้ |
 | ความปลอดภัยของบ้าน | รหัสเก่าใช้ไม่ได้ บล็อก/ปลดบล็อก พักรับสมาชิก และการตัดสิทธิ์ผ่าน |

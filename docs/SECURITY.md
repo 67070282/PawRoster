@@ -19,7 +19,7 @@
 
 ## หน้าจอจัดการบ้านปัจจุบัน
 
-![บ้านและสมาชิก PawRoaster พร้อมปุ่มนำออกและบล็อก](screenshots/v2.3/household.jpg)
+![บ้านและสมาชิก PawRoaster พร้อมปุ่มนำออกและบล็อก](screenshots/current/household.jpg)
 
 ภาพใช้ข้อมูลสาธิตและซ่อนรหัสเชิญ ดู [ภาพหน้าจอทั้งหมด](SCREENSHOTS.md)
 

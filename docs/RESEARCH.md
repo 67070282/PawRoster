@@ -13,8 +13,8 @@
 | รายการ | ข้อมูล |
 |---|---|
 | Runtime | Node.js 24.14.0, SQLite, package 2.3.0 / schema 5 |
-| Source ฟีเจอร์/API/Course | `f63e1964790fd3fc453a59bd42996e68bec56d16` |
-| Source ที่ main #8 ตรวจ | `233ead1851c5224be59cf5254d50474a29ec9414` โค้ด runtime/tests ตรง source ฟีเจอร์ |
+| Source ฟีเจอร์/API/Course | `8bd56c2b787345a549bfe9cb15e717e3b014580f` |
+| Source ที่ main #10 ตรวจ | `4e8e5c03a19630930a84cfa8274ce040af6e06a4` โค้ด runtime/tests ตรง source ฟีเจอร์ |
 | Windows | Node.js และฐานข้อมูลชั่วคราว |
 | Linux | Inner Docker ภายใน `tuchsanai/devtools:2569_1` |
 | Browser | Edge/Playwright แยก context ของ owner/member/อีกบ้าน |
@@ -30,7 +30,7 @@
 | H1–H5 | 5 | ลบบ้าน คงบัญชี/บ้านอื่น ยืนยันสิทธิ์และบ้าน rollback และ schema 4→5 | ผ่าน | ผ่าน |
 | รวม | **37** | **38 TAP records รวม parent, fail 0** | **ผ่าน** | **ผ่าน** |
 
-ผลเต็ม: [Windows](../evidence/home-deletion/windows-tests.txt) / [Linux TAP](../evidence/home-deletion/course-tests.tap)
+ผลเต็ม: [Windows](../evidence/task-completion/windows-tests.tap) / [Linux TAP](../evidence/task-completion/course-tests.tap)
 
 ## Browser QA และภาพหน้าจอ
 
@@ -46,9 +46,9 @@ Course verification ผ่าน syntax, Build, revision health, HTTP smoke, onl
 
 ## Jenkins CI/CD
 
-main build #8 สำเร็จครบ Checkout, Verify, Build image, Publish image, Deploy และ Verify deployed service ส่วน review #4/#5 สำเร็จและข้าม Deploy ตามเงื่อนไข feature branch Verify ประกอบด้วย secret scan, syntax, HTTP tests และ Compose validate ผล build/source และ health ต้องอ่านเป็นชุดเดียวกัน
+main build #10 สำเร็จครบ Checkout, Verify, Build image, Publish image, Deploy และ Verify deployed service ส่วน review #6 สำเร็จและข้าม Deploy ตามเงื่อนไข feature branch Verify ประกอบด้วย secret scan, syntax, HTTP tests และ Compose validate ผล build/source และ health ต้องอ่านเป็นชุดเดียวกัน
 
-[หลักฐาน main #8](../evidence/complete-project/README.md) มี JUnit, stage status, image digest, health และ deployed smoke ที่ revision ตรง `233ead1` ส่วน [review #4](../evidence/home-deletion/jenkins-review-4/build.json) ตรวจ source ฟีเจอร์ การจำลอง Verify ล้มเหลวอยู่ใน [หลักฐานย้อนหลัง](../evidence/submission-2.2/README.md) โดยอ้างเฉพาะ source/build ที่ระบุ
+[หลักฐาน main #10](../evidence/task-completion/main-10/README.md) มี JUnit, stage status, image digest, health และ deployed smoke ที่ revision ตรง `4e8e5c0` ส่วน [review #4](../evidence/home-deletion/jenkins-review-4/build.json) เป็นหลักฐานจากรอบฟีเจอร์ลบบ้านก่อนหน้า การจำลอง Verify ล้มเหลวอยู่ใน [หลักฐานย้อนหลัง](../evidence/submission-2.2/README.md) โดยอ้างเฉพาะ source/build ที่ระบุ
 
 Pipeline deploy ไป `pawroster-ci` ภายใน image อาจารย์ แยกจากบริการใช้งานและ preview การอัปเกรดบริการใช้งานหลังอนุมัติ merge เป็นขั้นตอนแยก ไม่ใช่การสร้าง image อาจารย์ใหม่ทุก build
 

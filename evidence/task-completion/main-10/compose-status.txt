@@ -1,0 +1,2 @@
+NAME                 IMAGE                                        COMMAND                  SERVICE   CREATED         STATUS                   PORTS
+pawroster-ci-app-1   localhost:5000/pawroster:pawroster-main-10   "docker-entrypoint.s…"   app       9 seconds ago   Up 8 seconds (healthy)   127.0.0.1:3180->3000/tcp

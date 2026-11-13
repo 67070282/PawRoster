@@ -12,7 +12,7 @@
 | หลายบ้านและสมาชิก | สลับบ้าน role บล็อก/ปลดบล็อก หมุนรหัสและลบบ้าน | M/S/H ผ่าน บัญชีและบ้านอื่นยังอยู่ |
 | สมุดบันทึกและปฏิทิน | ประวัติ น้ำหนัก นัดหมาย และการกรองข้อมูล | C และ Browser QA ผ่าน |
 | Docker/Compose | Build, healthy, named volume และ recreate | [Course smoke](../evidence/home-deletion/course-smoke.txt) |
-| Jenkins | main #8 ครบ Verify/Build/Publish/Deploy/Verify service | [หลักฐาน](../evidence/complete-project/README.md) |
+| Jenkins | main #10 ครบ Verify/Build/Publish/Deploy/Verify service | [หลักฐาน](../evidence/task-completion/main-10/README.md) |
 | Source/revision | บริการตรง commit ที่ตรวจ | health และ commit ของ build เดียวกัน |
 | สำรอง/อัปเกรด | Online backup, integrity, persistence, migration | ตรวจสำเนาและข้อมูลหลัง upgrade; backup เก็บส่วนตัว |
 | Git/GitHub | Branch/commit/PR และไม่มี DB/secret ใน source | [GITHUB](GITHUB.md), secret scan |
