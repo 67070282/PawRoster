@@ -1,26 +1,26 @@
-# GitHub repository และสถานะการเผยแพร่
+# Repository และประวัติการส่งมอบ
 
-ชื่อ repository ที่เตรียม: **PawRoster** บัญชีที่ยืนยันผ่านตัวเชื่อม GitHub: **67070282**
+Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Public · default branch `main`
 
-Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · **Public** · default branch `main`
+## การจัดการเวอร์ชัน
 
-เปลี่ยนจาก Private เป็น Public ตามคำขอเจ้าของเพื่อแชร์ให้เพื่อนดู ทุกคนอ่านและดาวน์โหลดโค้ด เอกสาร และรายชื่อ/รหัสนักศึกษาได้ การแก้ไขโดยตรงยังต้องมีสิทธิ์ collaborator
+โค้ด เอกสาร ชุดทดสอบ Docker และ Jenkinsfile อยู่ใน repository เดียว ใช้ feature branch และ Pull Request เพื่อรวบรวมการเปลี่ยนแปลงก่อนรวมเข้า main ประวัติที่ตรวจได้อยู่ใน commit และ PR ไม่รวมข้อมูลฐานข้อมูล รหัสผ่าน token หรือไฟล์สำรองใน source control
 
-สร้าง repository ผ่านหน้าเว็บ GitHub ในบัญชีที่ผู้ใช้เข้าสู่ระบบ แล้วเผยแพร่ไฟล์ผ่านตัวเชื่อม GitHub โค้ดเป็น baseline ที่ Codex ช่วยเตรียม ไม่ fork โค้ดหรือประวัติของเพื่อน และไม่อ้างว่าเป็นผลงานร่วมที่สมาชิกทำเสร็จแล้ว ห้ามส่ง token หรือรหัสผ่านผ่านแชต
+| รุ่น/ขอบเขต | Pull Request |
+|---|---|
+| สมุดบันทึก ปฏิทิน และถังขยะ | [#5](https://github.com/67070282/PawRoster/pull/5) |
+| ปรับข้อความและการอ่านหน้าจอ | [#6](https://github.com/67070282/PawRoster/pull/6) |
+| ลบสัตว์เลี้ยงถาวร | [#7](https://github.com/67070282/PawRoster/pull/7) |
+| ธีมสว่างและปฏิทินเน้นวันนี้/นัดหมาย | [#8](https://github.com/67070282/PawRoster/pull/8) |
+| รุ่น 2.2 จัดการสมาชิกและรหัสเชิญ | [#9](https://github.com/67070282/PawRoster/pull/9) |
 
-ประวัติใน GitHub เป็นประวัติหลักสำหรับพัฒนาต่อ ส่วน Git bundle ที่เคยส่งให้เป็น local snapshot ก่อนเผยแพร่และมี commit SHA ต่างกัน ให้ clone repository GitHub ใหม่ก่อนทำงานร่วมกัน ไม่ push local snapshot ทับ main
+รุ่น 2.2 ติดตั้งจาก `00ad184cc7208a3738de3df90bb836a6917c1291` ผล acceptance/Course Container ตรวจ source `4d319e8b0ed645a7e71698da423b277f68c893c6` โดยโค้ด runtime ตรงกัน รายละเอียดใน [RESEARCH.md](RESEARCH.md)
 
-## ขั้นตอนสำหรับทีมหลังเผยแพร่
+## การตรวจซ้ำ
 
-1. เชิญ GitHub username จริงของสมาชิกทั้ง 4 คน ไม่ใช้รหัสนักศึกษาเดาว่าเป็น username
-2. ตั้ง issue แยกตาม requirement และเลือกผู้รับผิดชอบจริง
-3. ใช้ branch + PR และ review ก่อน merge main
-4. เชื่อม Jenkins Multibranch Pipeline กับ URL repo และ credentials ที่ถูกต้องตาม OPERATIONS.md
-5. เก็บ build URL, commit SHA และผล post-deploy health check
-6. Tag รุ่นส่งและตรวจ commit เดียวกันใน Course Container
+1. Clone repository ตาม [README](../README.md)
+2. ตรวจ `git rev-parse HEAD` และชื่อ branch
+3. Build/Test/Deploy ใน Course Container และตรวจ health revision
+4. อ่านผลใน evidence directory พร้อมวันที่และ commit ไม่ใช้ผลรุ่นเก่าแทนรุ่นใหม่
 
-ถ้าเป็น private repository ให้เชิญอาจารย์/TA ด้วยบัญชีที่ถูกต้องหรือทำตามช่องทางส่งงานที่ผู้สอนกำหนด ถ้าเลือก public ชื่อและรหัสนักศึกษาใน README/Proposal จะเปิดให้ทุกคนอ่านได้
-
-## ตัวอย่างที่ใช้ศึกษาแนวทาง
-
-[PawFeed ของอีกกลุ่ม](https://github.com/67070119/PawFeed) ใช้เป็นตัวอย่างการจัด source, docs, tests และหลักฐานใน repository ไม่ได้คัดลอก implementation หรือประวัติ commit ของกลุ่มนั้น และไม่ใช้จำนวน test/commit ของกลุ่มอื่นเป็นคำกล่าวอ้างของ PawRoster
+การใช้ AI เป็นเครื่องมือพัฒนาระบุใน README ประวัติการทบทวนและเปลี่ยนแปลงใช้ข้อมูลจริงใน GitHub

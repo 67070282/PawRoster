@@ -1,0 +1,58 @@
+{
+  "_class": "org.jenkinsci.plugins.workflow.job.WorkflowRun",
+  "artifacts": [
+    {
+      "fileName": "commit.txt",
+      "relativePath": "evidence/runtime/commit.txt"
+    },
+    {
+      "fileName": "image-digest.txt",
+      "relativePath": "evidence/runtime/image-digest.txt"
+    },
+    {
+      "fileName": "source-branch.txt",
+      "relativePath": "evidence/runtime/source-branch.txt"
+    },
+    {
+      "fileName": "tests.xml",
+      "relativePath": "evidence/runtime/tests.xml"
+    },
+    {
+      "fileName": "tracked-files.nul",
+      "relativePath": "evidence/runtime/tracked-files.nul"
+    }
+  ],
+  "building": false,
+  "duration": 55618,
+  "number": 1,
+  "result": "SUCCESS",
+  "timestamp": 1794555451315,
+  "url": "http://127.0.0.1:8080/job/pawroster-review/1/",
+  "stageEvidence": {
+    "Checkout": {
+      "entered": true,
+      "skipped": false
+    },
+    "Verify": {
+      "entered": true,
+      "skipped": false
+    },
+    "Build image": {
+      "entered": true,
+      "skipped": false
+    },
+    "Publish image": {
+      "entered": true,
+      "skipped": false
+    },
+    "Deploy": {
+      "entered": true,
+      "skipped": true
+    },
+    "Verify deployed service": {
+      "entered": true,
+      "skipped": true
+    }
+  },
+  "job": "pawroster-review"
+}

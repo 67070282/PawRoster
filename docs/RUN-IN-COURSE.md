@@ -93,3 +93,5 @@ docker compose up -d --wait
 ผลตรวจจริงของรุ่น 2.0 ผ่านเส้นทางนี้อยู่ใน [หลักฐาน Course Container ผ่าน SSH](../evidence/course-v2-ssh/README.md) ส่วนการสมัครและทดลองใช้งานดู [คู่มือเปิดโครงงาน](../README.md#try-the-app)
 
 ผลตรวจสองชั้นและ Environment guard จาก Commit ที่ Pull จริง: [Docker-in-Docker validation](../evidence/dind-validation/README.md)
+
+ผลตรวจรุ่นปัจจุบัน 2.2: [Course Container และ acceptance tests](../evidence/household-security/README.md), [CI/CD รุ่นส่ง](../evidence/submission-2.2/README.md) และ [รายงานผลทดสอบ](RESEARCH.md)

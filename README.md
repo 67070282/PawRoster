@@ -248,7 +248,7 @@ Production image ไม่รวมโฟลเดอร์ชุดทดสอ
 
 ## ภาพรวมโครงงาน
 
-**รุ่น 2.1 — สมุดบันทึกและปฏิทิน:** เพิ่มประวัติน้ำหนัก วัคซีน นัดหมาย ปฏิทินงาน การมอบหมายสมาชิก และถังขยะสัตว์เลี้ยงที่กู้คืนได้ โดยยังรองรับหลายบ้านและงานซ้ำ ดู [ฟีเจอร์และวิธีใช้งาน](docs/CARE-FEATURES.md)
+**รุ่น 2.2 — สมุดบันทึก ปฏิทิน และการจัดการสมาชิก:** เพิ่มประวัติน้ำหนัก วัคซีน นัดหมาย ปฏิทินงาน การมอบหมายสมาชิก และถังขยะสัตว์เลี้ยงที่กู้คืนได้ โดยยังรองรับหลายบ้านและงานซ้ำ ดู [ฟีเจอร์และวิธีใช้งาน](docs/CARE-FEATURES.md)
 
 โครงงานนี้จัดทำภายใต้หัวข้อ **PetTech × DevTools** โดยใช้ JavaScript, Node.js 24 และ SQLite พร้อมกระบวนการพัฒนาและทดสอบผ่าน Git, Docker Compose และ Jenkins
 
@@ -311,7 +311,7 @@ Production image ไม่รวมโฟลเดอร์ชุดทดสอ
 | นายรัชชานนท์ กิตติสัตยาวัจน์ | 67070273 |
 | นายศรันย์ สุภาเพียร | 67070282 |
 
-ข้อมูล Section หมายเลขกลุ่ม และรายละเอียดหน้าที่รับผิดชอบอยู่ระหว่างการจัดทำ โดยรวบรวมไว้ใน [เอกสารโครงงาน](docs/PROJECT.md)
+รายละเอียดโครงงานอยู่ใน [รายงานโครงงาน](docs/PROJECT.md)
 
 ## การทดสอบและผลการตรวจสอบ
 
@@ -325,27 +325,22 @@ docker compose ps
 docker compose exec -T app node -e "fetch('http://127.0.0.1:3000/health').then(async r=>{if(!r.ok)process.exit(1);console.log(await r.text())})"
 ```
 
-| รายการ | ผลการตรวจสอบที่บันทึกไว้ |
+| รายการ | ผลรุ่น 2.2 |
 |---|---|
-| Web, API และฐานข้อมูล | ผ่านการตรวจสอบ HTTP และส่วนติดต่อผู้ใช้ |
-| HTTP acceptance tests รุ่น 2.1 | ผ่าน 24 กรณี: R1–R8, M1–M9 และ C1–C7 โดย Node.js รายงานรวม 25 รายการเมื่อรวม Parent test ดู evidence/v2.1 |
-| Docker Compose รุ่น 2.1 | ผ่าน Build/Health, สมุดบันทึก นัดหมาย ถังขยะ/กู้คืน, Backup/Integrity และ Force-recreate ดู evidence/v2.1 |
-| การจัดเก็บข้อมูล | ผ่านการสำรองและกู้คืน รวมถึงตรวจสอบข้อมูลหลังสร้างคอนเทนเนอร์ใหม่ |
-| Course Container รุ่น 2.1 | Clone commit จาก GitHub ผ่าน SSH แล้วทดสอบใน `tuchsanai/devtools:2569_1` ผ่าน 24 กรณี พร้อม Health Revision และ Persistence ดู [หลักฐาน](evidence/v2.1/README.md) |
-| Jenkins รุ่น 1.0 | มีผล Build/Publish/Deploy/Health/Smoke ของรุ่นที่ระบุด้านล่าง ผลเดิมไม่ใช่ผลยืนยันรุ่น 2.0 |
-| การศึกษากับผู้ใช้ | อยู่ระหว่างเตรียมเก็บข้อมูลสัมภาษณ์และทดลองใช้งานจริง |
+| Acceptance tests | ผ่าน 32 กรณี (33 TAP records รวม Parent), fail 0 ทั้ง Windows และ Linux ใน image อาจารย์ |
+| Web/UI | Flow งาน สมุดบันทึก ปฏิทิน ถังขยะและการจัดการสมาชิกผ่าน |
+| Course Docker-in-Docker | Syntax, build, revision health และ deployed HTTP smoke ผ่าน |
+| ข้อมูล | Online backup/integrity และ force-recreate persistence ผ่าน |
+| Jenkins CI/CD รุ่น 2.2 | main #1 และ review #1 ผ่าน; review #2 ยืนยัน failure gate ใน workspace ทดสอบ |
+| ความปลอดภัยของบ้าน | รหัสเก่าใช้ไม่ได้ บล็อก/ปลดบล็อก พักรับสมาชิก และการตัดสิทธิ์ผ่าน |
 
-ผลการตรวจรุ่น 2.1 อยู่ใน [evidence/v2.1](evidence/v2.1/README.md) และรุ่น 2.0 อยู่ใน [evidence/v2](evidence/v2/README.md) หลักฐานต่อไปนี้บันทึกจากรุ่นก่อนการอัปเกรด:
+รายละเอียดวิธีทดสอบ ผลจริง และขอบเขตหลักฐานอยู่ใน [รายงานการประเมินระบบ](docs/RESEARCH.md) และ [รายการตรวจส่ง](docs/SUBMISSION-AUDIT.md) หลักฐาน source รุ่น 2.2 อยู่ใน [evidence/household-security](evidence/household-security/README.md) ส่วน evidence รุ่นก่อนใช้อ้างอิงเฉพาะวันที่และ commit ที่ระบุ
 
-หลักฐานประกอบ: [ผลการตรวจสอบระบบ](evidence/VERIFICATION.md), [ผลทดสอบ Linux](evidence/linux-tests.tap), [Course Container](evidence/course/README.md), [การตรวจสอบหลังรวมโค้ด](evidence/course-main/README.md) และ [Jenkins](evidence/jenkins/README.md)
-
-[Pull Request #1](https://github.com/67070282/PawRoster/pull/1) รวมเข้าสู่ `main` แล้ว โดยมีการตรวจสอบ Jenkins ทั้ง Review branch และกรณีทดสอบล้มเหลวเพื่อยืนยันการหยุด Pipeline ก่อนขั้นตอนถัดไป ผลยืนยันเพิ่มเติมจาก Main build #5 ผ่านกระบวนการครบที่ Commit [`80914ea`](https://github.com/67070282/PawRoster/commit/80914ea38d6527fc8a95bf7160a39b73413746a3) โดย Health endpoint แสดง Revision ตรงกับโค้ดที่นำขึ้นใช้งาน ผลดังกล่าวเป็นผลของรุ่นที่ระบุ
-
-## ขอบเขตและแผนการประเมิน
+## ขอบเขตการประเมิน
 
 รุ่นปัจจุบันรองรับหลายบ้านต่อบัญชีและงานซ้ำแบบสร้างรายการถัดไปหลังทำรายการปัจจุบันเสร็จ โดยนับจากกำหนดเดิมทุก 24 ชั่วโมงหรือ 7 วัน ยังไม่ครอบคลุมการแจ้งเตือนอีเมลหรือ Push notification การลบบัญชี และคำแนะนำด้านการรักษาสัตว์เลี้ยง รหัสเชิญไม่มีวันหมดอายุอัตโนมัติ แต่เจ้าของบ้านเปลี่ยนรหัสได้ ระบบไม่มีการใช้ LLM ในการทำงานของแอปพลิเคชัน
 
-การประเมินประโยชน์ต่อผู้ใช้จะอาศัยข้อมูลสัมภาษณ์และการทดลองใช้งานจริงตาม [แผนการศึกษา](docs/RESEARCH.md) ปัจจุบันยังไม่มีผลการศึกษาสำหรับสรุปการลดงานที่ตกหล่นหรือผลด้านสุขภาพของสัตว์เลี้ยง โดยติดตามงานส่วนนี้ใน [Issue #2](https://github.com/67070282/PawRoster/issues/2) และรายละเอียดทีมใน [Issue #3](https://github.com/67070282/PawRoster/issues/3)
+การประเมินโครงงานใช้ข้อมูลสังเคราะห์เพื่อยืนยันความถูกต้องของระบบและการส่งมอบซ้ำ ไม่สรุปผลด้านสุขภาพสัตว์หรือการลดงานตกหล่นเป็นตัวเลข ดู [รายงานผลทดสอบ](docs/RESEARCH.md)
 
 ## โครงสร้าง Repository
 
@@ -368,12 +363,12 @@ PawRoster/
 ## เอกสารประกอบโครงงาน
 
 - [สมุดบันทึก ปฏิทิน และการลบ/กู้คืนสัตว์เลี้ยง](docs/CARE-FEATURES.md)
-- [ข้อเสนอโครงงานและ Acceptance Criteria](docs/PROJECT.md)
+- [รายงานโครงงานและ Acceptance Criteria](docs/PROJECT.md)
 - [สถาปัตยกรรมระบบและ API](docs/ARCHITECTURE.md)
 - [การติดตั้ง Jenkins, Course Container และการสำรองข้อมูล](docs/OPERATIONS.md)
 - [ตาราง Traceability เชื่อมโยงข้อกำหนดกับหลักฐาน](docs/TRACEABILITY.md)
 - [การตรวจสอบความสอดคล้องกับเกณฑ์โครงงาน](docs/SUBMISSION-AUDIT.md)
-- [แผนสัมภาษณ์และทดลองใช้งาน](docs/RESEARCH.md)
+- [รายงานการประเมินระบบและผลทดสอบ](docs/RESEARCH.md)
 - [กระบวนการทำงานบน GitHub](docs/GITHUB.md)
 - [แนวทางการร่วมพัฒนา](CONTRIBUTING.md)
 - [แผนการนำเสนอและสาธิตระบบ](docs/PRESENTATION.md)
