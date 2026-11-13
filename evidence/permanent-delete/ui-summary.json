@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "syntheticData": true,
+  "checks": [
+    "trash policy",
+    "purge shown only in trash",
+    "cancel keeps data",
+    "wrong name blocks deletion",
+    "typed confirmation",
+    "320/390/1365px dialog",
+    "associated tasks journal appointments and audit removed",
+    "other pet preserved",
+    "reload persistence"
+  ],
+  "pageErrors": []
+}

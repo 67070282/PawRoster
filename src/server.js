@@ -262,12 +262,23 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         const result = db.prepare('INSERT INTO pets(home_id,name,species,notes,breed,birth_date,sex) VALUES (?,?,?,?,?,?,?)').run(u.home_id, ...fields);
         return send(201, { id: Number(result.lastInsertRowid) });
       }
-      const petMatch = /^\/api\/pets\/([1-9]\d*)\/(edit|archive|delete|restore)$/.exec(path);
+      const petMatch = /^\/api\/pets\/([1-9]\d*)\/(edit|archive|delete|restore|purge)$/.exec(path);
       if (req.method === 'POST' && petMatch) {
         const b = await body(req), id = Number(petMatch[1]);
         transaction(() => {
           const pet = db.prepare('SELECT * FROM pets WHERE id=? AND home_id=?').get(id, u.home_id);
           if (!pet) fail(404, 'ไม่พบสัตว์เลี้ยง');
+          if (petMatch[2] === 'purge') {
+            ownerOnly(u);
+            if (!pet.deleted_at) fail(409, 'ย้ายสัตว์เลี้ยงไปถังขยะก่อนลบถาวร');
+            if (b.confirm_name !== pet.name) fail(400, 'พิมพ์ชื่อสัตว์เลี้ยงให้ตรงเพื่อยืนยันการลบถาวร');
+            if (b.deleted_at !== pet.deleted_at) fail(409, 'สถานะถังขยะเปลี่ยนแล้ว กรุณาเปิดรายการใหม่ก่อนลบถาวร');
+            db.prepare('DELETE FROM events WHERE task_id IN (SELECT id FROM tasks WHERE pet_id=?)').run(id);
+            db.prepare('DELETE FROM tasks WHERE pet_id=?').run(id);
+            db.prepare('DELETE FROM pet_records WHERE pet_id=?').run(id);
+            db.prepare('DELETE FROM pets WHERE id=?').run(id);
+            return;
+          }
           if (petMatch[2] === 'restore') {
             ownerOnly(u); if (!pet.deleted_at) fail(409, 'สัตว์เลี้ยงนี้ไม่ได้อยู่ในถังขยะ');
             db.prepare('UPDATE pets SET deleted_at=NULL,archived=0 WHERE id=?').run(id); return;
