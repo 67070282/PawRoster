@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "viewport": "1365x900",
+  "checks": [
+    {
+      "slide": 1,
+      "overflow": false
+    },
+    {
+      "slide": 2,
+      "overflow": false
+    },
+    {
+      "slide": 3,
+      "overflow": false
+    },
+    {
+      "slide": 4,
+      "overflow": false
+    },
+    {
+      "slide": 5,
+      "overflow": false
+    },
+    {
+      "slide": 6,
+      "overflow": false
+    },
+    {
+      "slide": 7,
+      "overflow": false
+    },
+    {
+      "slide": 8,
+      "overflow": false
+    },
+    {
+      "slide": 9,
+      "overflow": false
+    },
+    {
+      "slide": 10,
+      "overflow": false
+    }
+  ]
+}
