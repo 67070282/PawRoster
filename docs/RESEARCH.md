@@ -14,7 +14,7 @@
 |---|---|
 | รุ่นแอป | 2.2.0, schema 4 |
 | Source ที่ตรวจ Course Container | `4d319e8b0ed645a7e71698da423b277f68c893c6` |
-| รุ่นที่รวมและติดตั้ง | `00ad184cc7208a3738de3df90bb836a6917c1291` โค้ด runtime ตรงกับ source ที่ตรวจ; ส่วนต่างเป็นหลักฐานและ merge commit |
+| รอบติดตั้งในหลักฐานเริ่มต้นรุ่น 2.2 | `00ad184cc7208a3738de3df90bb836a6917c1291` โค้ด runtime ตรงกับ source ที่ตรวจ; ส่วนต่างเป็นหลักฐานและ merge commit |
 | Windows | Node.js 24.14.0, SQLite และฐานข้อมูลชั่วคราวสำหรับ tests |
 | Linux | SSH เข้าสู่ `tuchsanai/devtools:2569_1` และใช้ inner Docker daemon รัน `node:24.14.0-alpine` |
 | โปรเจคทดสอบแยก | `pawroster-security-validation`, port 3087 และ volume แยกจากแอปใช้งาน |

@@ -14,7 +14,9 @@ Repository: [67070282/PawRoster](https://github.com/67070282/PawRoster) · Publi
 | ธีมสว่างและปฏิทินเน้นวันนี้/นัดหมาย | [#8](https://github.com/67070282/PawRoster/pull/8) |
 | รุ่น 2.2 จัดการสมาชิกและรหัสเชิญ | [#9](https://github.com/67070282/PawRoster/pull/9) |
 
-รุ่น 2.2 ติดตั้งจาก `00ad184cc7208a3738de3df90bb836a6917c1291` ผล acceptance/Course Container ตรวจ source `4d319e8b0ed645a7e71698da423b277f68c893c6` โดยโค้ด runtime ตรงกัน รายละเอียดใน [RESEARCH.md](RESEARCH.md)
+รอบติดตั้งที่บันทึกในหลักฐานเริ่มต้นรุ่น 2.2 ใช้ `00ad184cc7208a3738de3df90bb836a6917c1291` ผล acceptance/Course Container ตรวจ source `4d319e8b0ed645a7e71698da423b277f68c893c6` โดยโค้ด runtime ตรงกัน รายละเอียดใน [RESEARCH.md](RESEARCH.md)
+
+เอกสาร ภาพหน้าจอ และการล้างลิงก์ไฟล์นำเสนอที่ลบแล้วอัปเดตผ่าน [PR #10](https://github.com/67070282/PawRoster/pull/10), [PR #11](https://github.com/67070282/PawRoster/pull/11) และ [PR #12](https://github.com/67070282/PawRoster/pull/12)
 
 ## การตรวจซ้ำ
 

@@ -13,7 +13,7 @@
         └── care-data — Volume ฐานข้อมูล SQLite ภายใน daemon นี้
 ```
 
-Image อาจารย์เป็นสภาพแวดล้อมชั้นนอกที่ใช้ Build และรันคอนเทนเนอร์โครงงานชั้นใน จึงคง `FROM node:24.14.0-alpine` ใน Dockerfile ของแอปไว้ ตัวอย่าง PawFeed ใช้รูปแบบเดียวกัน โดย Dockerfile ของแอปใช้ Node image ส่วนสคริปต์ Course Container สร้างชั้นนอกจาก image อาจารย์ ดู [สคริปต์ PawFeed](https://github.com/67070119/PawFeed/blob/main/scripts/course-container-test.sh) และ [Dockerfile](https://github.com/67070119/PawFeed/blob/main/backend/Dockerfile)
+Image อาจารย์เป็นสภาพแวดล้อมชั้นนอกที่ใช้ Build และรันคอนเทนเนอร์โครงงานชั้นใน จึงคง `FROM node:24.14.0-alpine` ใน Dockerfile ของแอปไว้ การ Build และ Deploy ใช้ไฟล์ Dockerfile และ Compose ของ PawRoster ภายใน daemon ชั้นใน
 
 ตรวจสองชั้นจาก PowerShell บนเครื่องหลัก จากโฟลเดอร์ PawRoster:
 
@@ -71,6 +71,9 @@ docker compose ps
 จากโฟลเดอร์โครงงานภายใน SSH:
 
 ```sh
+export COMPOSE_PROJECT_NAME=pawroster-verification
+export APP_PORT=3087
+export IMAGE_TAG=verification
 sh scripts/course-verify.sh
 ```
 

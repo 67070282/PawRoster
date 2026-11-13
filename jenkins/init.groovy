@@ -17,7 +17,7 @@ policy.setAllowAnonymousRead(false)
 j.setAuthorizationStrategy(policy)
 j.setLabelString('docker')
 j.setNumExecutors(1)
-['main', 'course-readiness'].each { branch ->
+['main', 'feature/household-security'].each { branch ->
   def name = branch == 'main' ? 'pawroster-main' : 'pawroster-review'
   def job = j.getItem(name) ?: j.createProject(WorkflowJob, name)
   def scm = new GitSCM([new UserRemoteConfig('https://github.com/67070282/PawRoster.git', null, null, null)], [new BranchSpec('*/' + branch)], false, [], null, null, [])

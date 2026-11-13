@@ -8,7 +8,7 @@
 | วิธีทดสอบและผลจริง | [RESEARCH.md](RESEARCH.md) |
 | Requirements ไปยังผลตรวจ | [TRACEABILITY.md](TRACEABILITY.md) |
 | รายการตรวจชุดส่ง | [SUBMISSION-AUDIT.md](SUBMISSION-AUDIT.md) |
-| สถาปัตยกรรม/API/ฐานข้อมูล | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| สถาปัตยกรรม เทคโนโลยี/ประโยชน์ API และฐานข้อมูล | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | การดูแลระบบและ CI/CD | [OPERATIONS.md](OPERATIONS.md) |
 | ความปลอดภัยและสมาชิก | [SECURITY.md](SECURITY.md) |
 | สมุดบันทึก/ปฏิทิน/สัตว์เลี้ยง | [CARE-FEATURES.md](CARE-FEATURES.md) / [UI-READABILITY.md](UI-READABILITY.md) |
