@@ -114,7 +114,13 @@ function renderTasks() {
   });
   tasks.sort((a, b) => ($('sort').value === 'priority' ? Number(b.priority === 'high') - Number(a.priority === 'high') : 0) || a.due.localeCompare(b.due) || a.id - b.id);
   $('task-summary').textContent = `${tasks.length} รายการในมุมมองนี้ · ${state.pets.filter(p => !p.archived && !p.deleted_at).length} สัตว์เลี้ยง`;
-  if (!tasks.length) root.append(el('div', state.tasks.length ? 'ไม่พบงานในมุมมองนี้ ลองเปลี่ยนตัวกรองหรือคำค้นหา' : 'ยังไม่มีงานดูแล เริ่มจากเพิ่มสัตว์เลี้ยง แล้วสร้างงานแรกของบ้าน', 'empty'));
+  if (!tasks.length) {
+    const empty = el('div', state.tasks.length ? 'ไม่พบงานตามตัวกรองนี้ ลองเลือก “งานทั้งหมด” หรือล้างคำค้นหา' : 'ยังไม่มีงานดูแลในบ้านนี้', 'empty');
+    if (!state.pets.some(p => !p.archived && !p.deleted_at)) {
+      empty.append(el('p', 'เพิ่มสัตว์เลี้ยงก่อน แล้วจึงสร้างงานดูแลได้'), button('เพิ่มสัตว์เลี้ยง', () => openPet(), 'primary'));
+    } else if (!state.tasks.length) empty.append(button('เพิ่มงานดูแล', () => openTask(), 'primary'));
+    root.append(empty);
+  }
   for (const t of tasks) {
     const card = el('article', undefined, 'task' + (t.priority === 'high' ? ' high' : '') + (t.cancelled_at ? ' cancelled' : ''));
     const info = el('div'), status = el('div'), actions = el('div', undefined, 'actions'), meta = el('div', undefined, 'task-meta');
@@ -123,7 +129,9 @@ function renderTasks() {
     if (t.priority === 'high') meta.append(el('span', 'สำคัญ', 'badge'));
     if (t.recurrence !== 'none') meta.append(el('span', t.recurrence === 'daily' ? 'ทุกวัน' : 'ทุกสัปดาห์', 'badge'));
     info.append(meta);
-    status.append(el('span', t.cancelled_at ? 'ยกเลิกแล้ว' : t.status === 'done' ? 'ทำแล้ว' : late ? 'เลยกำหนด' : t.status === 'claimed' ? 'มีผู้รับผิดชอบ' : 'รอคนรับงาน', 'badge' + (late || t.status === 'claimed' ? ' emphasis' : '')));
+    const statusKey = t.cancelled_at ? 'cancelled' : t.status === 'done' ? 'done' : late ? 'overdue' : t.status === 'claimed' ? 'claimed' : 'open';
+    const statusText = { cancelled:'ยกเลิกแล้ว', done:'ทำเสร็จแล้ว', overdue:'เลยกำหนด', claimed:'กำลังดูแล', open:'รอผู้ดูแล' };
+    status.append(el('span', statusText[statusKey], 'badge status-' + statusKey));
     status.append(el('p', t.assignee_name || 'ยังไม่มีผู้รับผิดชอบ'));
     if (t.completed_at) status.append(el('p', 'เสร็จ ' + date(t.completed_at)));
     if (t.note) info.append(el('p', 'บันทึก: ' + t.note));
@@ -146,7 +154,7 @@ function renderTasks() {
 }
 function renderPets() {
   $('pets').replaceChildren();
-  $('pet-permission').textContent = isOwner() ? 'คุณเป็นเจ้าของบ้าน: แก้ไข เก็บประวัติ ลบเข้าถังขยะ และกู้คืนสัตว์เลี้ยงได้' : 'คุณเป็นสมาชิก: เพิ่มและแก้ไขข้อมูลได้ ส่วนการลบ เก็บประวัติ และกู้คืนให้เจ้าของบ้านเป็นผู้จัดการ';
+  $('pet-permission').textContent = isOwner() ? 'คุณเป็นเจ้าของบ้าน: แก้ไขข้อมูล ย้ายไปถังขยะ และกู้คืนสัตว์เลี้ยงได้' : 'คุณเป็นสมาชิก: เพิ่มและแก้ไขข้อมูลได้ หากต้องการลบหรือกู้คืนสัตว์เลี้ยง ให้เจ้าของบ้านจัดการ';
   const status = $('pet-status').value;
   const pets = state.pets.filter(p => status === 'deleted' ? p.deleted_at : !p.deleted_at && (status === 'all' || (status === 'archived' ? p.archived : !p.archived)));
   if (!pets.length) $('pets').append(el('div', status === 'deleted' ? 'ถังขยะว่าง สัตว์เลี้ยงที่ลบจะอยู่ที่นี่และเจ้าของบ้านกู้คืนได้' : 'ไม่มีสัตว์เลี้ยงในมุมมองนี้ เพิ่มข้อมูลใหม่หรือเปลี่ยนตัวกรองได้', 'empty'));
@@ -271,7 +279,8 @@ function visibleRecords() {
 }
 function renderJournal() {
   if (!state) return; const root = $('records'); root.replaceChildren(); const records = visibleRecords();
-  if (!records.length) root.append(el('div', 'ยังไม่มีบันทึกในมุมมองนี้ เพิ่มบันทึกแรกหรือเปลี่ยนตัวกรองได้', 'empty'));
+  $('journal-summary').textContent = `แสดง ${records.length} บันทึก · เลือกสัตว์เลี้ยงเพื่อดูน้ำหนักล่าสุดและประวัติ`;
+  if (!records.length) root.append(el('div', 'ยังไม่มีบันทึกตามตัวกรองนี้ เลือก “เพิ่มบันทึก” เพื่อเริ่มจดข้อมูล หรือลองเปลี่ยนตัวกรอง', 'empty'));
   for (const r of records) {
     const card = el('article', undefined, 'record-card'), header = el('div', undefined, 'record-heading'), meta = el('div');
     meta.append(el('span', recordLabels[r.kind], 'badge'), el('h3', r.title), el('p', r.pet_name + ' · ' + date(r.recorded_at), 'muted'));
@@ -335,7 +344,7 @@ function renderCalendar() {
   if (!dayItems.length) $('calendar-agenda').append(el('p','ไม่มีงานหรือนัดหมายในวันที่เลือก','empty'));
   for (const item of dayItems) {
     const row=el('article',undefined,'agenda-item'), info=el('div'); info.append(el('span',item.type==='task'?'งานดูแล':'นัดหมาย','badge'),el('h3',item.title),el('p',`${item.pet_name} · ${date(item.at)}${item.done?' · เสร็จแล้ว':''}`,'muted'));
-    row.append(info,button('เปิดรายการ',()=>{ if(item.type==='task'){ $('search').value=item.title; $('filter').value='all'; $('pet-filter').value=String(item.pet_id); renderTasks(); showView('board'); } else { $('journal-pet').value=item.pet_id; $('journal-kind').value='all'; $('journal-search').value=''; renderJournal(); showView('journal'); } })); $('calendar-agenda').append(row);
+    row.append(info,button(item.type==='task'?'ดูงานดูแล':'ดูบันทึกนัดหมาย',()=>{ if(item.type==='task'){ $('search').value=item.title; $('filter').value='all'; $('pet-filter').value=String(item.pet_id); renderTasks(); showView('board'); } else { $('journal-pet').value=item.pet_id; $('journal-kind').value='all'; $('journal-search').value=''; renderJournal(); showView('journal'); } })); $('calendar-agenda').append(row);
   }
 }
 $('calendar-prev').onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);calendarDay=dayKey(calendarMonth);renderCalendar();};

@@ -1,0 +1,174 @@
+{
+  "syntheticData": true,
+  "checks": [
+    {
+      "width": 1365,
+      "view": "board",
+      "count": 41,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 1365,
+      "view": "calendar",
+      "count": 87,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 1365,
+      "view": "journal",
+      "count": 50,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 1365,
+      "view": "pets",
+      "count": 34,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 1365,
+      "view": "household",
+      "count": 41,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 1365,
+      "view": "history",
+      "count": 28,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "board",
+      "count": 34,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "calendar",
+      "count": 82,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "journal",
+      "count": 46,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "pets",
+      "count": 30,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "household",
+      "count": 37,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 680,
+      "view": "history",
+      "count": 24,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "board",
+      "count": 34,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "calendar",
+      "count": 82,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "journal",
+      "count": 46,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "pets",
+      "count": 30,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "household",
+      "count": 37,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 390,
+      "view": "history",
+      "count": 24,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "board",
+      "count": 34,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "calendar",
+      "count": 82,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "journal",
+      "count": 46,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "pets",
+      "count": 30,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "household",
+      "count": 37,
+      "minimumContrast": 4.76,
+      "failures": []
+    },
+    {
+      "width": 320,
+      "view": "history",
+      "count": 24,
+      "minimumContrast": 4.76,
+      "failures": []
+    }
+  ],
+  "keyboardFocus": true
+}
