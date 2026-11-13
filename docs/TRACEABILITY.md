@@ -6,17 +6,17 @@
 
 | Requirement หรือคำกล่าวอ้าง | ผู้ใช้หรือสถานการณ์ | Acceptance Criteria | ส่วนที่นำไปใช้ | วิธีตรวจและหลักฐาน | สถานะและข้อจำกัด |
 |---|---|---|---|---|---|
-| R1 สมัครและเข้าใช้ระบบ | สมาชิกบ้าน | หลังสมัคร/login ได้ session, ไม่ login ได้ 401, รหัสผิดไม่ผ่าน, cookie HttpOnly/SameSite | server.js register/login/auth, users/sessions | test/system.test.js R1; evidence/course และผล Jenkins | ตรวจผ่าน runtime baseline; ไม่มี password reset |
+| R1 สมัครและเข้าใช้ระบบ | สมาชิกบ้าน | หลังสมัคร/login ได้ session, ไม่ login ได้ 401, รหัสผิดไม่ผ่าน, cookie HttpOnly/SameSite | server.js register/login/auth, users/sessions | test/system.test.js R1; evidence/household-security และ evidence/submission-2.2 | ผ่านในชุดรุ่น 2.2; ไม่มี password reset |
 | R2 สร้างและแชร์ข้อมูลบ้าน | สมาชิกสองคนในบ้านเดียวกัน | รหัส invite ถูกต้องจึงเข้าบ้าน; pet/task สร้างแล้วสมาชิกอีกคนอ่านรายการเดียวกัน | homes/pets/tasks, dashboard API + public/app.js | HTTP R2 และ Browser QA ใน RESEARCH.md | รองรับหลายบ้านตาม M1/M2; ไม่มี invite expiry อัตโนมัติ |
 | R3 รับงานได้คนเดียว | สมาชิกสองคนกดพร้อมกัน | HTTP status ต้องเป็น 200 หนึ่งคำขอและ 409 อีกคำขอ; มี claim audit ครั้งเดียว | BEGIN IMMEDIATE + state validation | HTTP R3 ที่ assert สถานะจริง; Jenkins tests.xml | ตรวจตามโค้ดรุ่นใหม่; ไม่กันการสร้างสองรายการที่ความหมายเหมือนกัน |
-| R4 ปิดหรือคืนงานตามสิทธิ์ | ผู้รับงานและสมาชิกอื่น | ผู้รับงานเปลี่ยนได้, คนอื่นได้ 403, ปิดซ้ำ 409, note/audit ตรง | task transitions + events transaction | HTTP R4, deployed smoke | ตรวจผ่าน baseline; สถานะ done เปิดกลับไม่ได้ |
+| R4 ปิดหรือคืนงานตามสิทธิ์ | ผู้รับงานและสมาชิกอื่น | ผู้รับงานเปลี่ยนได้, คนอื่นได้ 403, ปิดซ้ำ 409, note/audit ตรง | task transitions + events transaction | HTTP R4, deployed smoke | ผ่านในชุดรุ่น 2.2; สถานะ done เปิดกลับไม่ได้ |
 | R5 แยกข้อมูลแต่ละบ้าน | บัญชีบ้านอื่นเดา ID | ไม่เห็นข้อมูล และแก้ไขผ่าน ID ไม่ได้; Browser cross-origin mutation ได้ 403 | home_id authorization, Origin validation | HTTP R5 + failure-case demo | สิทธิ์ตาม membership และ owner/member ดู M2–M5 |
 | R6 จัดการ input และป้องกัน injection | ผู้ใช้ส่งข้อมูลผิด | ว่าง/JSONเสีย/วันเวลาไม่ถูกต้อง/เกิน16KB ถูกปฏิเสธ; SQL text ไม่กลายเป็นคำสั่ง | parameterized SQL, body limit, field validation, CSP | HTTP R6; secret-scan แยกตรวจ tracked files | ตรวจผ่าน; secret scan เป็น pattern baseline ไม่ครอบคลุม secret ทุกชนิด |
-| R7 ข้อมูลคงอยู่ | service/container restart | งาน note และ audit เดิมยังอยู่; session เดิมใช้ได้ก่อนหมดอายุ | SQLite named volume | HTTP R7, scripts/course-verify.sh + course-smoke.txt | ตรวจผ่าน baseline; หนึ่ง instance, local volume |
+| R7 ข้อมูลคงอยู่ | service/container restart | งาน note และ audit เดิมยังอยู่; session เดิมใช้ได้ก่อนหมดอายุ | SQLite named volume | HTTP R7, scripts/course-verify.sh + course-smoke.txt | ผ่านในชุดรุ่น 2.2; หนึ่ง instance, local volume |
 | R8 ออกจากระบบ | สมาชิกออกจากระบบ | cookie/session เก่าไม่เข้าถึง dashboard | logout + session deletion | HTTP R8, deployed smoke verify | ตรวจผ่าน |
 | N1 เริ่มระบบซ้ำได้ | ผู้ตรวจ checkout โค้ด | Build/healthy และ revision ตรง source | Dockerfile, compose.yaml, /health | evidence/household-security/course-smoke.txt | ผ่าน source 4d319e8; หนึ่ง instance |
 | N2 ส่งมอบด้วย Jenkins | main/feature และ failure gate | Verify ก่อน Publish/Deploy; main เท่านั้น Deploy; health/smoke ผ่าน | Jenkinsfile + jenkins/ | docs/RESEARCH.md และหลักฐาน Jenkins ที่ระบุ commit | อ่านผลแยกตามรุ่นและวันที่ |
-| N3 สำรองและกู้คืน | ผู้ดูแลระบบ | backup integrity_check=ok; จำนวนและสถานะงานตรงต้นฉบับ | backup.mjs + verify-storage.mjs | course-smoke.txt และ ops-check.txt | ตรวจผ่าน baseline; ต้องเก็บ backup ส่วนตัว |
+| N3 สำรองและกู้คืน | ผู้ดูแลระบบ | backup integrity_check=ok; จำนวนและสถานะงานตรงต้นฉบับ | backup.mjs + verify-storage.mjs | evidence/household-security/course-smoke.txt | ผ่านในชุดรุ่น 2.2; ต้องเก็บ backup ส่วนตัว |
 | G1 Git workflow | ผู้พัฒนาส่งการแก้ไข | branch/commit/PR ที่ review ได้และเชื่อม requirement; ไม่มี secret ใน tracked files | GitHub + CONTRIBUTING + templates | PR ของการตรวจรอบนี้ และ Git log | ตรวจประวัติ commit และ PR ตามรายการจริง |
 
 ## ส่วนเพิ่มเติมในรุ่น 2.0

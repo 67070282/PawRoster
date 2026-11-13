@@ -8,11 +8,15 @@ if [ ! -f "$SECRET" ]; then umask 077; head -c 32 /dev/urandom | base64 > "$SECR
 docker build -t pawroster-jenkins ./jenkins
 if ! docker container inspect pawroster-registry >/dev/null 2>&1; then
   docker run -d --name pawroster-registry -p 127.0.0.1:5000:5000 -v pawroster-registry-data:/var/lib/registry registry:2
+else
+  docker start pawroster-registry >/dev/null
 fi
 if ! docker container inspect pawroster-jenkins >/dev/null 2>&1; then
   docker run -d --name pawroster-jenkins --user root -p 8080:8080 \
     -e JENKINS_HOME="$HOME_DIR" -v "$HOME_DIR:$HOME_DIR" \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v "$SECRET:/run/secrets/pawroster_admin:ro" pawroster-jenkins
+else
+  docker start pawroster-jenkins >/dev/null
 fi
 printf 'Jenkins started with authentication; username pawroster-admin. Password is in %s inside the course container.\n' "$SECRET"

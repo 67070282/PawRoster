@@ -62,6 +62,9 @@ docker compose ps
 **ตรวจระบบทั้งชุดภายใน SSH:**
 
 ```sh
+export COMPOSE_PROJECT_NAME=pawroster-verification
+export APP_PORT=3087
+export IMAGE_TAG=verification
 sh scripts/course-verify.sh
 ```
 
@@ -239,6 +242,9 @@ docker compose exec -T app npm run check
 รันชุดทดสอบครบจากโฟลเดอร์โครงงานภายใน SSH ของกล่องอาจารย์:
 
 ```sh
+export COMPOSE_PROJECT_NAME=pawroster-verification
+export APP_PORT=3087
+export IMAGE_TAG=verification
 sh scripts/course-verify.sh
 ```
 
@@ -302,19 +308,29 @@ Production image ไม่รวมโฟลเดอร์ชุดทดสอ
 
 ลำดับการใช้งานหลัก: **สร้างบ้าน → เชิญสมาชิก → เพิ่มสัตว์เลี้ยง → สร้างงาน → รับงาน → บันทึกการดูแล → ตรวจสอบประวัติ**
 
-## เทคโนโลยีที่ใช้
+## สถาปัตยกรรมและเทคโนโลยี
 
-| ส่วนประกอบ | เทคโนโลยี |
+PawRoster เป็นเว็บแอปแบบ **Monolith**: app container เดียวให้บริการ HTML/CSS/JavaScript และ Node.js HTTP API ใช้ SQLite แบบ embedded เก็บไฟล์บน named volume ส่วน Jenkins และ registry เป็นชั้น CI/CD แยกจากบริการใช้งาน
+
+```mermaid
+flowchart LR
+  B["Browser: HTML / CSS / JavaScript"] -->|"HTTP JSON ผ่าน SSH tunnel"| A["App container: Node.js API"]
+  A --> D["SQLite embedded → named volume"]
+  G["GitHub"] --> J["Jenkins"] --> R["Local registry"] --> C["CI app: main deploy + health/smoke"]
+```
+
+| ส่วน | เทคโนโลยีและประโยชน์ |
 |---|---|
-| Frontend | HTML, CSS และ JavaScript |
-| Backend | Node.js 24 และ HTTP API |
-| ฐานข้อมูล | SQLite ผ่าน `node:sqlite` |
-| การจัดการเวอร์ชัน | Git และ GitHub |
-| สภาพแวดล้อมใช้งาน | Docker และ Docker Compose |
-| CI/CD | Jenkins |
-| การทดสอบ | Node.js Test Runner, HTTP acceptance tests และ Smoke tests |
+| หน้าเว็บ | HTML5, responsive CSS, Vanilla JavaScript และ Fetch API — แสดงข้อมูลจริงและโต้ตอบโดยไม่เพิ่ม frontend framework |
+| Backend | Node.js 24.14.0 + node:http — ตรวจ session สิทธิ์บ้าน validation และกติกางาน |
+| ข้อมูล | SQLite + node:sqlite, Foreign keys, parameterized SQL และ Transaction — เก็บข้อมูลสัมพันธ์และป้องกันรายการรับงานซ้ำ |
+| ความปลอดภัย | scrypt, session cookie, owner/member, Origin/CSP และ invite/block controls — จำกัดการเข้าถึงตามบ้าน |
+| Container | Docker, node:24.14.0-alpine, Compose, volume และ healthcheck — Build/รันซ้ำและเก็บข้อมูลต่อหลัง recreate |
+| สภาพแวดล้อมเรียน | image อาจารย์ + Docker-in-Docker + SSH tunnel — ตรวจระบบภายในกล่องรายวิชา |
+| ส่งมอบ | Git/GitHub, Jenkinsfile, Jenkins และ local registry — ตรวจโค้ด Build/Publish/Deploy และยืนยัน revision |
+| ทดสอบ | node:test/assert, JUnit, HTTP smoke และ Edge/Playwright QA — ตรวจ API, UI, สิทธิ์และ persistence |
 
-ระบบไม่ใช้ npm dependencies สำหรับ Runtime
+คำอธิบายแต่ละเทคโนโลยีและประโยชน์ แผนภาพ Docker สองชั้น ตารางฐานข้อมูล 10 ตาราง กลไกความปลอดภัย Pipeline และ API catalog อยู่ใน [สถาปัตยกรรมฉบับเต็ม](docs/ARCHITECTURE.md)
 
 ## สมาชิกผู้จัดทำ
 

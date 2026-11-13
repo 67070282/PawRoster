@@ -1,3 +1,5 @@
+> ประวัติการตรวจตามวันที่และ commit ในเอกสารนี้ หลักฐานรุ่นปัจจุบันดู [แผนที่หลักฐาน](../README.md)
+
 # Course Container verification
 
 ตรวจจริงวันที่ 27 ตุลาคม 2026 หลังผู้ใช้อนุมัติเริ่ม Course Container แบบ privileged

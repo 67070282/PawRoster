@@ -1,3 +1,5 @@
+> ประวัติการตรวจตามวันที่และ commit ในเอกสารนี้ หลักฐานรุ่นปัจจุบันดู [แผนที่หลักฐาน](../README.md)
+
 # Verification from a GitHub checkout
 
 Source: https://github.com/67070282/PawRoster

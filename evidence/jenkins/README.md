@@ -1,3 +1,5 @@
+> ประวัติการตรวจตามวันที่และ commit ในเอกสารนี้ หลักฐานรุ่นปัจจุบันดู [แผนที่หลักฐาน](../README.md)
+
 # Jenkins execution evidence
 
 รันจริงวันที่30ตุลาคม2026 ใน Jenkins controller ภายใน Docker daemon ของ `tuchsanai/devtools:2569_1` ไม่มีการใช้ผล shell script แทน Jenkins job

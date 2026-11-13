@@ -18,6 +18,7 @@
 | Jenkins feature/failure gate | feature ข้าม deploy; test ล้มเหลวหยุดส่งมอบ | review #1/#3 SUCCESS / #2 expected FAILURE |
 | Security | สิทธิ์แยกบ้าน รหัสเก่าใช้ไม่ได้ บล็อก/ปลดบล็อกและพักรับสมาชิก | S1–S6, SECURITY.md |
 | เอกสารเปิดโครงงาน | วิธีหลักใน image อาจารย์และทางเลือก Docker บนเครื่องหลัก | README.md อยู่บนสุดของ repository |
+| เอกสาร/Bootstrap ปัจจุบัน | ตรวจ branch, auth และการเริ่ม Jenkins แยก พร้อม backup export | [current-files-qa](../evidence/current-files-qa/README.md) |
 | การเปิดเผยเครื่องมือ | ระบุการใช้ OpenAI Codex ตามจริง | README.md |
 
 รายงานผลละเอียด: [RESEARCH.md](RESEARCH.md) หลักฐาน CI/CD ล่าสุด: [evidence/submission-2.2](../evidence/submission-2.2/README.md)

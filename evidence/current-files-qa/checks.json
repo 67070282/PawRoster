@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "freshController": true,
+  "branches": {
+    "pawroster-main": [
+      "*/main"
+    ],
+    "pawroster-review": [
+      "*/feature/household-security"
+    ]
+  },
+  "anonymousAccessBlocked": true,
+  "dockerSocketMounted": false,
+  "note": "Isolated Jenkins controller initialized using updated image; no app data mounted or builds triggered",
+  "bootstrapScriptSyntax": true,
+  "bootstrapRepeatedWithExistingServices": true,
+  "namedVolumeBackupExportIntegrity": true,
+  "testedFilesSHA256LFNormalized": {
+    "jenkins/init.groovy": "576a10490ff04c7ac9f96bf364a1488e5e5931c823a8485b6c9e84341e0bfdd1",
+    "jenkins/start-course-jenkins.sh": "3366d26973ebff77df0288d1fc94caa6aa0013abea9e1942c9766429be6ea769"
+  }
+}

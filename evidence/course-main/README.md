@@ -1,3 +1,5 @@
+> ประวัติการตรวจตามวันที่และ commit ในเอกสารนี้ หลักฐานรุ่นปัจจุบันดู [แผนที่หลักฐาน](../README.md)
+
 # Formal course verification of the deployed main code
 
 วันที่30ตุลาคม2026 ตรวจ commit `86866281b6df405f61c2d81097b2c74b4e1cb3be` จาก main ซึ่งตรงกับ Jenkins main builds #3/#4
