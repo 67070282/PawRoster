@@ -59,7 +59,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
     `);
   // Versioned atomic migrations. Legacy home_id remains for compatibility with old backups.
   const version = db.prepare('PRAGMA user_version').get().user_version;
-  if (version > 3) { db.close(); throw new Error('Database schema is newer than this application'); }
+  if (version > 4) { db.close(); throw new Error('Database schema is newer than this application'); }
   if (version < 2) {
     db.exec('BEGIN IMMEDIATE');
     try {
@@ -92,6 +92,16 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         PRAGMA user_version=3; COMMIT;`);
     } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
   }
+  if (version < 4) {
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      db.exec(`ALTER TABLE homes ADD COLUMN invite_enabled INTEGER NOT NULL DEFAULT 1;
+        CREATE TABLE home_blocks(home_id INTEGER NOT NULL REFERENCES homes(id),user_id INTEGER NOT NULL REFERENCES users(id),blocked_by INTEGER NOT NULL REFERENCES users(id),blocked_at TEXT NOT NULL,PRIMARY KEY(home_id,user_id));
+        CREATE TABLE home_events(id INTEGER PRIMARY KEY,home_id INTEGER NOT NULL REFERENCES homes(id),actor INTEGER NOT NULL REFERENCES users(id),action TEXT NOT NULL,target INTEGER REFERENCES users(id),at TEXT NOT NULL);
+        CREATE INDEX home_events_home ON home_events(home_id,id);
+        PRAGMA user_version=4; COMMIT;`);
+    } catch (e) { db.exec('ROLLBACK'); db.close(); throw e; }
+  }
   const attempts = new Map();
   function throttle(req) {
     const key = req.socket.remoteAddress;
@@ -114,7 +124,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
   }
   function rawSession(req) { return /(?:^|;\s*)session=([a-f0-9]+)/.exec(req.headers.cookie || '')?.[1] || ''; }
   function auth(req) {
-    const user = db.prepare(`SELECT u.id,u.name,u.email,m.home_id,m.role,h.name home_name,h.invite
+    const user = db.prepare(`SELECT u.id,u.name,u.email,m.home_id,m.role,h.name home_name,h.invite,h.invite_enabled
       FROM sessions s JOIN users u ON u.id=s.user_id
       LEFT JOIN memberships m ON m.user_id=u.id AND m.home_id=COALESCE(s.active_home_id,(SELECT home_id FROM memberships WHERE user_id=u.id ORDER BY home_id LIMIT 1))
       LEFT JOIN homes h ON h.id=m.home_id WHERE s.token=? AND s.expires>?`).get(hash(rawSession(req)), Date.now());
@@ -124,6 +134,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
   }
   const homesFor = id => db.prepare('SELECT h.id,h.name,m.role,(SELECT COUNT(*) FROM memberships mm WHERE mm.home_id=h.id) member_count FROM memberships m JOIN homes h ON h.id=m.home_id WHERE m.user_id=? ORDER BY h.id').all(id);
   const audit = (task, actor, action, detail = '') => db.prepare('INSERT INTO events(task_id,actor,action,at,detail) VALUES (?,?,?,?,?)').run(task, actor, action, new Date().toISOString(), detail);
+  const homeAudit = (home, actor, action, target = null) => db.prepare('INSERT INTO home_events(home_id,actor,action,target,at) VALUES (?,?,?,?,?)').run(home, actor, action, target, new Date().toISOString());
   const ownerOnly = u => { if (u.role !== 'owner') fail(403, 'เฉพาะเจ้าของบ้านเท่านั้นที่จัดการส่วนนี้ได้'); };
   const activate = (req, id) => db.prepare('UPDATE sessions SET active_home_id=? WHERE token=?').run(id, hash(rawSession(req)));
   function releaseMember(userId, homeId, actor) {
@@ -162,7 +173,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         if (origin.host !== req.headers.host) fail(403, 'ไม่อนุญาตคำขอจากเว็บไซต์อื่น');
       }
       if (req.method === 'GET' && path === '/health') {
-        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.1.0', revision: process.env.APP_REVISION || 'development' });
+        db.prepare('SELECT 1').get(); return send(200, { status: 'ok', version: '2.2.0', revision: process.env.APP_REVISION || 'development' });
       }
       if (req.method === 'GET' && ['/', '/app.js', '/style.css', '/pet-care.svg', '/cat.svg', '/dog.svg', '/paw.svg', '/fonts/Epilogue.ttf', '/fonts/NotoSansThai.ttf'].includes(path)) {
         const file = path === '/' ? 'index.html' : path.slice(1);
@@ -179,10 +190,11 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         if (db.prepare('SELECT id FROM users WHERE email=?').get(email)) fail(409, 'ไม่สามารถสมัครด้วยอีเมลนี้ได้');
         const id = transaction(() => {
           let home;
-          if (b.invite) { home = db.prepare('SELECT id FROM homes WHERE invite=?').get(field(b, 'invite', 48)); if (!home) fail(400, 'รหัสเข้าร่วมบ้านไม่ถูกต้อง'); }
+          if (b.invite) { home = db.prepare('SELECT id FROM homes WHERE invite=? AND invite_enabled=1').get(field(b, 'invite', 48)); if (!home) fail(400, 'รหัสเข้าร่วมบ้านไม่ถูกต้อง ถูกเปลี่ยน หรือบ้านพักรับสมาชิก'); }
           else { home = { id: Number(db.prepare('INSERT INTO homes(name,invite) VALUES (?,?)').run(field(b, 'home', 60), randomBytes(12).toString('hex')).lastInsertRowid) }; }
           const userId = Number(db.prepare('INSERT INTO users(home_id,name,email,salt,password) VALUES (?,?,?,?,?)').run(home.id, name, email, salt, digest).lastInsertRowid);
           db.prepare('INSERT INTO memberships VALUES (?,?,?)').run(home.id, userId, b.invite ? 'member' : 'owner');
+          homeAudit(home.id, userId, b.invite ? 'member_joined' : 'home_created');
           return userId;
         });
         session(res, id); return send(201, { id });
@@ -208,6 +220,7 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         const id = transaction(() => {
           const home = db.prepare('INSERT INTO homes(name,invite) VALUES (?,?)').run(field(b, 'name', 60), randomBytes(12).toString('hex'));
           db.prepare('INSERT INTO memberships VALUES (?,?,?)').run(home.lastInsertRowid, u.id, 'owner');
+          homeAudit(home.lastInsertRowid, u.id, 'home_created');
           activate(req, home.lastInsertRowid); return Number(home.lastInsertRowid);
         });
         return send(201, { id });
@@ -215,10 +228,11 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
       if (req.method === 'POST' && path === '/api/homes/join') {
         throttle(req); const b = await body(req);
         const id = transaction(() => {
-          const home = db.prepare('SELECT id FROM homes WHERE invite=?').get(field(b, 'invite', 48));
-          if (!home) fail(400, 'รหัสเข้าร่วมบ้านไม่ถูกต้องหรือถูกเปลี่ยนแล้ว');
+          const home = db.prepare('SELECT id FROM homes WHERE invite=? AND invite_enabled=1').get(field(b, 'invite', 48));
+          if (!home) fail(400, 'รหัสเข้าร่วมบ้านไม่ถูกต้อง ถูกเปลี่ยน หรือบ้านพักรับสมาชิก');
+          if (db.prepare('SELECT 1 FROM home_blocks WHERE home_id=? AND user_id=?').get(home.id,u.id)) fail(403, 'บัญชีนี้ถูกบล็อกจากบ้าน กรุณาติดต่อเจ้าของบ้าน');
           if (db.prepare('SELECT 1 FROM memberships WHERE home_id=? AND user_id=?').get(home.id, u.id)) fail(409, 'คุณเป็นสมาชิกบ้านนี้แล้ว เลือกบ้านจากรายการเพื่อสลับได้เลย');
-          db.prepare("INSERT INTO memberships VALUES (?,?,'member')").run(home.id, u.id); activate(req, home.id); return home.id;
+          db.prepare("INSERT INTO memberships VALUES (?,?,'member')").run(home.id, u.id); homeAudit(home.id,u.id,'member_joined'); activate(req, home.id); return home.id;
         });
         return send(201, { id });
       }
@@ -235,25 +249,40 @@ export function createApp({ dbPath = process.env.DB_PATH || './data/pawroster.db
         const events = db.prepare(`SELECT e.*,u.name actor_name,t.title,p.name pet_name FROM events e JOIN users u ON u.id=e.actor JOIN tasks t ON t.id=e.task_id JOIN pets p ON p.id=t.pet_id WHERE p.home_id=? ORDER BY e.id DESC LIMIT 50`).all(u.home_id);
         const members = db.prepare('SELECT u.id,u.name,m.role FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.home_id=? ORDER BY m.role DESC,u.id').all(u.home_id);
         const records = db.prepare('SELECT r.*,p.name pet_name,p.deleted_at pet_deleted_at,a.name author_name FROM pet_records r JOIN pets p ON p.id=r.pet_id JOIN users a ON a.id=r.created_by WHERE p.home_id=? ORDER BY r.recorded_at DESC,r.id DESC').all(u.home_id);
-        return send(200, { user: u, homes: homesFor(u.id), members, pets, tasks, events, records });
+        const blocked_members = u.role === 'owner' ? db.prepare('SELECT b.user_id,u.name,b.blocked_at FROM home_blocks b JOIN users u ON u.id=b.user_id WHERE b.home_id=? ORDER BY b.blocked_at DESC').all(u.home_id) : [];
+        const security_events = u.role === 'owner' ? db.prepare('SELECT e.id,e.action,e.at,a.name actor_name,t.name target_name FROM home_events e JOIN users a ON a.id=e.actor LEFT JOIN users t ON t.id=e.target WHERE e.home_id=? ORDER BY e.id DESC LIMIT 30').all(u.home_id) : [];
+        return send(200, { user: u, homes: homesFor(u.id), members, pets, tasks, events, records, blocked_members, security_events });
       }
       if (!u.home_id) fail(409, 'เลือกสร้างบ้านหรือเข้าร่วมบ้านก่อนเริ่มใช้งาน');
       if (req.method === 'POST' && path === '/api/homes/rename') {
-        ownerOnly(u); const b = await body(req); db.prepare('UPDATE homes SET name=? WHERE id=?').run(field(b, 'name', 60), u.home_id); return send(200, { ok: true });
+        ownerOnly(u); const b = await body(req); transaction(()=>{ db.prepare('UPDATE homes SET name=? WHERE id=?').run(field(b, 'name', 60), u.home_id); homeAudit(u.home_id,u.id,'home_renamed'); }); return send(200, { ok: true });
       }
       if (req.method === 'POST' && path === '/api/homes/invite/rotate') {
-        ownerOnly(u); await body(req); db.prepare('UPDATE homes SET invite=? WHERE id=?').run(randomBytes(12).toString('hex'), u.home_id); return send(200, { ok: true });
+        ownerOnly(u); await body(req); transaction(()=>{ db.prepare('UPDATE homes SET invite=? WHERE id=?').run(randomBytes(12).toString('hex'), u.home_id); homeAudit(u.home_id,u.id,'invite_rotated'); }); return send(200, { ok: true });
+      }
+      if (req.method === 'POST' && path === '/api/homes/invite/toggle') {
+        ownerOnly(u); const b=await body(req); if(typeof b.enabled !== 'boolean') fail(400,'สถานะการรับสมาชิกไม่ถูกต้อง');
+        transaction(()=>{db.prepare('UPDATE homes SET invite_enabled=?,invite=? WHERE id=?').run(Number(b.enabled),randomBytes(12).toString('hex'),u.home_id);homeAudit(u.home_id,u.id,b.enabled?'invites_opened':'invites_paused');});return send(200,{ok:true});
+      }
+      if (req.method === 'POST' && path === '/api/homes/members/unblock') {
+        ownerOnly(u);const b=await body(req);
+        transaction(()=>{if(!Number.isInteger(b.user_id)||!db.prepare('SELECT 1 FROM home_blocks WHERE home_id=? AND user_id=?').get(u.home_id,b.user_id))fail(404,'ไม่พบบัญชีในรายการบล็อกของบ้านนี้');db.prepare('DELETE FROM home_blocks WHERE home_id=? AND user_id=?').run(u.home_id,b.user_id);homeAudit(u.home_id,u.id,'member_unblocked',b.user_id);});return send(200,{ok:true});
       }
       if (req.method === 'POST' && path === '/api/homes/leave') {
         await body(req); if (u.role === 'owner') fail(409, 'โอนสิทธิ์เจ้าของบ้านให้สมาชิกอื่นก่อนออกจากบ้าน');
-        transaction(() => releaseMember(u.id, u.home_id, u.id)); return send(200, { ok: true });
+        transaction(() => {releaseMember(u.id, u.home_id, u.id);homeAudit(u.home_id,u.id,'member_left');}); return send(200, { ok: true });
       }
       if (req.method === 'POST' && ['/api/homes/members/remove', '/api/homes/transfer'].includes(path)) {
         ownerOnly(u); const b = await body(req);
         transaction(() => {
           if (!Number.isInteger(b.user_id) || b.user_id === u.id || !db.prepare('SELECT 1 FROM memberships WHERE home_id=? AND user_id=?').get(u.home_id, b.user_id)) fail(400, 'เลือกสมาชิกคนอื่นในบ้าน');
-          if (path.endsWith('/remove')) releaseMember(b.user_id, u.home_id, u.id);
-          else { db.prepare("UPDATE memberships SET role='member' WHERE home_id=? AND user_id=?").run(u.home_id, u.id); db.prepare("UPDATE memberships SET role='owner' WHERE home_id=? AND user_id=?").run(u.home_id, b.user_id); }
+          if (path.endsWith('/remove')) {
+            db.prepare('INSERT INTO home_blocks(home_id,user_id,blocked_by,blocked_at) VALUES (?,?,?,?)').run(u.home_id,b.user_id,u.id,new Date().toISOString());
+            releaseMember(b.user_id, u.home_id, u.id);
+            db.prepare('UPDATE homes SET invite=? WHERE id=?').run(randomBytes(12).toString('hex'),u.home_id);
+            homeAudit(u.home_id,u.id,'member_removed',b.user_id);homeAudit(u.home_id,u.id,'invite_rotated');
+          }
+          else { db.prepare("UPDATE memberships SET role='member' WHERE home_id=? AND user_id=?").run(u.home_id, u.id); db.prepare("UPDATE memberships SET role='owner' WHERE home_id=? AND user_id=?").run(u.home_id, b.user_id); homeAudit(u.home_id,u.id,'owner_transferred',b.user_id); }
         });
         return send(200, { ok: true });
       }

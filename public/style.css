@@ -372,3 +372,10 @@ input:focus,textarea:focus,select:focus { outline-color:var(--ink); }
   .calendar-cell.today.has-appointment { padding-top:2px; }
   .hero-art { width:78px; }
 }
+
+#house-security { display:grid; gap:24px; margin-top:24px; }
+#blocked-members { margin-top:16px; }
+#invite-status { margin:12px 0 16px; }
+#invite-panel .actions { margin-top:16px; }
+.member .actions { max-width:230px; }
+@media(max-width:720px) { .member .actions { max-width:none; width:100%; justify-content:flex-start; } }

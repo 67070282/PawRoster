@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "syntheticData": true,
+  "checks": [
+    "masked invite",
+    "rotation invalidates old code",
+    "pause prevents joining",
+    "reopen creates fresh code",
+    "member cannot manage privileges",
+    "cancel removal",
+    "remove blocks rejoin and rotates code",
+    "revocation clears home view",
+    "claimed task released",
+    "unblock without automatic join",
+    "owner security audit",
+    "320/390/1365px"
+  ],
+  "pageErrors": []
+}

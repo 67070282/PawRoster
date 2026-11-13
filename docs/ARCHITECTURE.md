@@ -100,3 +100,15 @@ Dashboard ส่ง records เฉพาะบ้านปัจจุบัน 
 ### ลบสัตว์เลี้ยงถาวร
 
 `POST /api/pets/:id/purge` รับ `confirm_name` และ `deleted_at` จากข้อมูลถังขยะล่าสุด ตรวจเจ้าของบ้าน ขอบเขตบ้าน ชื่อ และสถานะใน Transaction จากนั้นลบ events → tasks → pet_records → pets ตาม Foreign key โดยไม่เปลี่ยน schema ถ้าเกิดข้อผิดพลาดจะ Rollback ทั้งชุด สัตว์เลี้ยงต้องอยู่ในถังขยะก่อน ไม่มีการลบตามเวลา และไม่ลบไฟล์สำรองของผู้ดูแล
+
+## รุ่น 2.2: การจัดการสมาชิกและ schema 4
+
+เพิ่ม homes.invite_enabled, home_blocks และ home_events โดย migration 3 → 4 แบบ Atomic คงข้อมูลเดิม schema 3 เป็นเวอร์ชันของสมุดบันทึกก่อนหน้า
+
+- `POST /api/homes/members/remove` นำออก บล็อก คืนงาน เปลี่ยนรหัส และ audit ใน Transaction เดียว
+- `POST /api/homes/members/unblock` รับ user_id ตรวจบ้านและเจ้าของ ปลดบล็อกโดยไม่สร้างสมาชิกภาพ
+- `POST /api/homes/invite/toggle` รับ enabled แบบ boolean พัก/เปิดรับสมาชิกโดยเปลี่ยนรหัสใหม่
+- Dashboard ส่ง blocked_members และ security_events ให้เจ้าของบ้านเท่านั้น สมาชิกได้รายการว่าง
+- รหัสเก่าและรหัสของบ้านที่พักรับสมาชิกใช้ไม่ได้ทั้ง register และ homes/join
+
+รายละเอียด: [SECURITY.md](SECURITY.md)
